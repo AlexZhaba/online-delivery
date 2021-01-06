@@ -9,7 +9,7 @@ import TitlePicture from "@components/TitlePicture/TitlePicture";
 //styled
 import Wrapper from './styled/Wrapper';
 import MContainer from './styled/MContainer';
-const Main = () => {
+const MobileMain = () => {
   return (
     <Wrapper>
       <MContainer>
@@ -36,7 +36,34 @@ const Main = () => {
   );
 }
 
-export default Main;
+const DesktopMain = () => {
+  return (
+    <Wrapper>
+      <MContainer>
+        <TitlePicture/>
+        <DiscountsSwiper/>
+        <BigTitle  style={{marginTop: 50}}>
+          Рестораны
+        </BigTitle>
+        <div style={{width: '100%', display: 'flex', alignItems: "center", marginTop: 20}}>
+          <Input placeholder="Название ресторана, кухни или блюда..."/>
+          <Button>Найти</Button>
+        </div>
+        <FoodSection/>
+        <ImageSwiper/>
+        <ItemsList/>
+        <div style={{marginTop: 24}}/>
+        <ImageSwiper/>
+        <ItemsList/>
+        
+        <MoreButton>Показать ещё</MoreButton>
+
+      </MContainer>
+    </Wrapper>
+  );
+}
+
+export {DesktopMain, MobileMain};
 
 const BigTitle = styled.div`
   font-size: 40px;

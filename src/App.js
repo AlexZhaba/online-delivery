@@ -6,14 +6,14 @@ import { ThemeProvider } from "styled-components"
 //components
 import {MobileFooter, DesktopFooter} from '@components/Footer/Footer.jsx';
 import {MobileHeader, DesktopHeader} from './components/Header/Header.jsx';
-import Main from './components/Main/Main';
+import {MobileMain, DesktopMain} from './components/Main/Main';
 
 let MobileLayout = () => {
   return (
     <Wrapper>
-      <DesktopHeader/>
-      <Main/>
-      <DesktopFooter/>
+      <MobileHeader/>
+      <MobileMain/>
+      <MobileFooter/>
     </Wrapper>
   )
 }
@@ -22,7 +22,7 @@ let DeskTopLayout = () => {
   return (
     <Wrapper>
       <DesktopHeader/>
-      <Main/>
+      <DesktopMain/>
       <DesktopFooter/>
     </Wrapper>
   )

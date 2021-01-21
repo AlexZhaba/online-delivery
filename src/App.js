@@ -1,18 +1,32 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import AppWrapper from '@shared/styled/AppWrapper.jsx';
 import Wrapper from './components/shared/styled/Wrapper';
 import { ThemeProvider } from "styled-components"
-
+import {BrowserRouter, Route, Switch, Redirect} from 'react-router-dom';
 //components
 import {MobileFooter, DesktopFooter} from '@components/Footer/Footer.jsx';
 import {MobileHeader, DesktopHeader} from './components/Header/Header.jsx';
-import {MobileMain, DesktopMain} from './components/Main/Main';
+import {DesktopRestaurant} from "./pages/Restaurant";
 
+//pages
+import {MobileMain} from './pages/Main';
+import {MobileNew, DesktopNew} from './pages/New'
+
+import DesktopMain from './pages/Main';
 let MobileLayout = () => {
   return (
     <Wrapper>
       <MobileHeader/>
-      <MobileMain/>
+      {/*<MobileMain/>*/}
+      <BrowserRouter>
+        <Switch>
+          <Route
+            path='/restaurant/:id'
+            exact
+            render={(props) => <DesktopRestaurant {...props}/>}
+          />
+        </Switch>
+      </BrowserRouter>
       <MobileFooter/>
     </Wrapper>
   )
@@ -21,8 +35,30 @@ let MobileLayout = () => {
 let DeskTopLayout = () => {
   return (
     <Wrapper>
-      <DesktopHeader/>
-      <DesktopMain/>
+      <BrowserRouter>
+        <DesktopHeader/>
+        <Switch>
+          <Route
+            path='/main'
+            exact
+            render={() => <DesktopMain/>}
+          />
+          <Route
+            path='/new'
+            exact
+            render={DesktopNew}
+          />
+          <Route
+            path='/restaurant/:id'
+            exact
+            render={(props) => <DesktopRestaurant {...props}/>}
+          />
+          <Route
+            path='/'
+            render={() => <Redirect to='/main'></Redirect>}
+          />
+        </Switch>
+      </BrowserRouter>
       <DesktopFooter/>
     </Wrapper>
   )

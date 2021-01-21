@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import mainTitle from '@assets/mainTitle.jpg'
 import mapPoint from "@assets/mapPoint.png";
 import arrow from "@assets/arrow.png";
-
+import Input from "../Input/Input";
 const TitlePicture = () => {
   return (
     <MContainerWrapper style={{backgroundImage: `url(${mainTitle})`}}>
@@ -14,16 +14,7 @@ const TitlePicture = () => {
           забронировать столик или заказать доставку
           еды из ресторанов и кафе Ташкента
         </SubText>
-        <InputWrapper style={{borderColor: "#fff", flex: 'none', marginLeft: 0}}>
-          <div>
-            <img src={mapPoint} className="header__mapPoint"/>
-          </div>
-          <Input placeholder="Адрес доставки"/>
-          <Select>
-            <span>Сейчас</span>
-            <img src={arrow} style={{marginLeft: 5}}/>
-          </Select>
-        </InputWrapper>
+        <Input borderColor="#fff" flex="none" marginLeft={0}/>
       </WrapperLeft>
       <WrapperRight/>
     </MContainerWrapper>
@@ -75,40 +66,6 @@ const WrapperRight = styled.div`
   }
 `;
 
-const Input = styled.input`
-  flex: 1;
-  outline: none;
-  height: calc(100% - 2px);
-  border: none;
-`;
-
-const InputWrapper = styled.div`
-  flex: 1;
-  height: 40px;
-  display: flex;
-  background: #fff;
-  align-items: center;
-  border-radius: 5px;
-  border: 2px solid ${props => props.theme.primary};
-  margin: 0 60px;
-  @media(max-width: 1150px) {
-    margin: 0 10px;
-    margin-left: 20px;
-  }
-  @media(max-width: 970px) {
-    margin: 0;
-    margin-left: 15px;
-  }
-  @media (max-width: 620px) {
-    margin: 0 5px;
-    margin-right: 0px;
-  }
-`;
-
-const Select = styled.div`
-  margin-right: 15px;
-  display: flex;
-`;
 
 const BigText = styled.div`
   z-index: 4;

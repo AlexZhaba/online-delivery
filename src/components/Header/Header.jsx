@@ -3,15 +3,16 @@ import React from 'react';
 import logo from '@assets/logo.png';
 import mapPoint from "@assets/mapPoint.png";
 import arrow from "@assets/arrow.png";
-
+import {Link} from 'react-router-dom';
 //styled
 import Wrapper from './styled/Wrapper';
 import Main from './styled/Main';
-import InputWrapper from  './styled/InputWrapper';
-import Input from './styled/Input';
-import Select from './styled/Select';
+// import InputWrapper from  './styled/InputWrapper';
+// import Input from './styled/Input';
+// import Select from './styled/Select';
 import LogoImg from './styled/LogoImg';
 //components
+import Input from "../Input/Input";
 import HeaderBurger from './components/HeaderBurger';
 import HeaderConnect from './components/HeaderConnect';
 const MobileHeader = () => {
@@ -20,16 +21,7 @@ const MobileHeader = () => {
       <Main>
         <HeaderBurger/>
         <LogoImg src={logo} className="header__logo"/>
-        <InputWrapper>
-          <div>
-            <img src={mapPoint} className="header__mapPoint"/>
-          </div>
-          <Input placeholder="Адрес доставки"/>
-          <Select>
-            <span>Сейчас</span>
-            <img src={arrow} style={{marginLeft: 5}}/>
-          </Select>
-        </InputWrapper>
+        <Input/>
         <HeaderConnect/>
       </Main>
     </Wrapper>
@@ -41,17 +33,10 @@ const DesktopHeader = () => {
     <Wrapper>
       <Main>
         <HeaderBurger/>
-        <LogoImg src={logo} className="header__logo"/>
-        <InputWrapper>
-          <div>
-            <img src={mapPoint} className="header__mapPoint"/>
-          </div>
-          <Input placeholder="Адрес доставки"/>
-          <Select>
-            <span>Сейчас</span>
-            <img src={arrow} style={{marginLeft: 5}}/>
-          </Select>
-        </InputWrapper>
+        <Link to='/main'>
+          <LogoImg src={logo} className="header__logo"/>
+        </Link>
+        <Input/>
         <HeaderConnect/>
       </Main>
     </Wrapper>

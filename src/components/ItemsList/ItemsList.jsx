@@ -1,29 +1,34 @@
 import React from 'react';
 import styled from 'styled-components';
+import {NavLink} from "react-router-dom";
+
 import pasta from '@assets/food/pasta.jpg'
 import greyStar from '@assets/greyStar.png';
 import greyTime from '@assets/greyTime.png';
 
 import heart from '@assets/heart.png'
 
-let ItemsList = () => {
+let ItemsList = ({venues}) => {
+  console.log('venues =',venues);
+  //onClick={() => document.getElementById('root').scrollIntoView()}
   return (
     <Wrapper>
-      {[...Array(9).keys()].map(e => {
+      {venues && venues.map((venue, index) => {
         return (
+          <NavLink to={`restaurant/${venue.guid}`}>
           <ItemContainer>
             <Heart>
               <img src={heart} style={{width: 30, height: 27}}/>
             </Heart>
-            <ItemImg style={{backgroundImage: `url(${pasta})`}}>
+            <ItemImg style={{backgroundImage: `url(${ venue.thumb_image_urls ? venue.thumb_image_urls : "https://diabetno.ru/wp-content/uploads/2020/07/pp_image_7236_22yecuiyctplaceholder.png"})`}}>
             </ItemImg>
             <ItemBottom>
-              <BottomName>Ресторан</BottomName>
-              <BottomSub>Европейская, обеды, комплексы</BottomSub>
+              <BottomName>{venue.name.ru}</BottomName>
+              <BottomSub>{venue.description.ru}</BottomSub>
               <BottomData>
                 <BottomItem>
                   <img src={greyStar}/>
-                  <span>4,5</span>
+                  <span>{venue.rating}</span>
                 </BottomItem>
                 <BottomItem>
                   <img src={greyTime}/>
@@ -35,6 +40,7 @@ let ItemsList = () => {
               </BottomData>
             </ItemBottom>
           </ItemContainer>
+          </NavLink>
         )
       })}
 
@@ -47,8 +53,8 @@ const Wrapper = styled.div`
   margin-top: 25px;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  column-gap: 25px;
-  row-gap: 25px;
+  column-gap: 30px;
+  row-gap: 30px;
   @media (max-width: 1030px) {
     grid-template-columns: 1fr 1fr;
   }
@@ -58,12 +64,18 @@ const Wrapper = styled.div`
 `;
 
 const ItemContainer = styled.div`
-  height: 420px;
+  height: 320px;
+  cursor: pointer;
   box-shadow: 0 0 15px #cdcdcd;
   border-radius: 5px;
   display: flex;
   flex-direction: column;
   position: relative;
+  transition: .3s all ease-in-out;
+  :hover {
+    transform: translateY(-7px);
+    transition: .3s all ease-in-out;
+  }
 `;
 
 const Heart = styled.div`

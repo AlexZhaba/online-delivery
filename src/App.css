@@ -16,6 +16,7 @@ body {
   min-height: 0;
 }
 
+
 a {
   text-decoration: none;
   color: inherit;
@@ -28,3 +29,6 @@ a {
 .header__mapPoint {
   margin: 0 10px;
 }
+
+
+/* MODAL */

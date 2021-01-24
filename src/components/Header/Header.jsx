@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 
 import logo from '@assets/logo.png';
 import mapPoint from "@assets/mapPoint.png";
@@ -15,7 +15,7 @@ import LogoImg from './styled/LogoImg';
 import Input from "../Input/Input";
 import HeaderBurger from './components/HeaderBurger';
 import HeaderConnect from './components/HeaderConnect';
-const MobileHeader = () => {
+const MobileHeader = (props) => {
   return (
     <Wrapper>
       <Main>
@@ -28,7 +28,17 @@ const MobileHeader = () => {
   );
 }
 
-const DesktopHeader = () => {
+const DesktopHeader = (props) => {
+  console.log(props)
+  const [scroll, setScroll] = useState(0);
+  useEffect(() => {
+    let scrollTop = window.pageYOffset ? window.pageYOffset : (document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop);
+    setScroll(scrollTop)
+    document.addEventListener('scroll', (event) => {
+      let scrollTop = window.pageYOffset ? window.pageYOffset : (document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop);
+      setScroll(scrollTop)
+    })
+  }, [])
   return (
     <Wrapper>
       <Main>
@@ -36,7 +46,9 @@ const DesktopHeader = () => {
         <Link to='/main'>
           <LogoImg src={logo} className="header__logo"/>
         </Link>
-        <Input/>
+        {/* {(scroll >= 400 || (props.location && props.location.pathname !== "/main") || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)  ) && */}
+          <Input/>
+        {/* } */}
         <HeaderConnect/>
       </Main>
     </Wrapper>

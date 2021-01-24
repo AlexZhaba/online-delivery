@@ -6,6 +6,7 @@ const Main = styled.div`
   margin: 0 20px;
   display: flex;
   align-items: center;
+  justify-content: space-between;
 `;
 
 export default Main;

@@ -9,32 +9,32 @@ import axios from 'axios';
 
 import {config} from '../config';
 //styled
-const MobileMain = () => {
-  return (
-    <Wrapper>
-      <MContainer>
-        <TitlePicture/>
-        <DiscountsSwiper/>
-        <BigTitle  style={{marginTop: 50}}>
-          Рестораны
-        </BigTitle>
-        <div style={{width: '100%', display: 'flex', alignItems: "center", marginTop: 20}}>
-          <Input placeholder="Название ресторана, кухни или блюда..."/>
-          <Button>Найти</Button>
-        </div>
-        <FoodSection/>
-        <ImageSwiper/>
-        <ItemsList/>
-        <div style={{marginTop: 24}}/>
-        <ImageSwiper/>
-        <ItemsList/>
+// const MobileMain = () => {
+//   return (
+//     <Wrapper>
+//       <MContainer>
+//         <TitlePicture/>
+//         <DiscountsSwiper/>
+//         <BigTitle  style={{marginTop: 50}}>
+//           Рестораны
+//         </BigTitle>
+//         <div style={{width: '100%', display: 'flex', alignItems: "center", marginTop: 20}}>
+//           <Input placeholder="Название ресторана, кухни или блюда..."/>
+//           <Button>Найти</Button>
+//         </div>
+//         <FoodSection/>
+//         <ImageSwiper/>
+//         <ItemsList/>
+//         <div style={{marginTop: 24}}/>
+//         <ImageSwiper/>
+//         <ItemsList/>
         
-        <MoreButton>Показать ещё</MoreButton>
+//         <MoreButton>Показать ещё</MoreButton>
 
-      </MContainer>
-    </Wrapper>
-  );
-}
+//       </MContainer>
+//     </Wrapper>
+//   );
+// }
 
 const DesktopMain = () => {
   let [venues, setVenues] = useState(null);
@@ -67,13 +67,15 @@ const DesktopMain = () => {
         <div style={{marginTop: 24}}/>
         {/* <ImageSwiper/> */}
         <ItemsList/>
-        
-        <MoreButton>Показать ещё</MoreButton>
-
+        <div style={{width: "100%", display: "flex", justifyContent: "center"}}>
+          <MoreButton>Показать ещё</MoreButton>
+        </div>
       </MContainer>
     </Wrapper>
   );
 }
+
+const MobileMain = DesktopMain;
 
 export default DesktopMain;
 export {DesktopMain, MobileMain};
@@ -93,6 +95,7 @@ const Wrapper = styled.div`
 const MContainer = styled.div`
   width: 1180px;
   margin: 0 20px;
+
   height: 100%;
 `;
 
@@ -121,7 +124,7 @@ const Input = styled.input`
 `;
 
 const MoreButton = styled.div`
-  width: 100%;
+  width: 200px;
   height: 45px;
   color: #fff;
   margin-top: 45px;

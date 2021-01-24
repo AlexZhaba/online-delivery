@@ -56,7 +56,7 @@ const SwiperButton = styled.div`
   top: 50%;
   transform: translateY(-50%);
   position: absolute;
-  z-index: 10;
+  z-index: 8;
   width: 35px;
   height: 35px;
   border-radius: 50%;

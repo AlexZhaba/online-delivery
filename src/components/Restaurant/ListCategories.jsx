@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import styled from 'styled-components';
-
+import CircularProgress from '@material-ui/core/CircularProgress';
 const ListCategories = ({menu}) => {
   const [selectedCategory, setSelectedCategory] = useState(0);
   return (

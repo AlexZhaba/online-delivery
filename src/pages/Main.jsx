@@ -5,7 +5,9 @@ import FoodSection from "@components/FoodSection/FoodSection";
 import ImageSwiper from "@components/ImageSwipper/ImageSwipper";
 import ItemsList from "@components/ItemsList/ItemsList";
 import TitlePicture from "@components/TitlePicture/TitlePicture";
+import { useSelector, useDispatch } from "react-redux";
 import axios from 'axios';
+import {fetchVenues} from "../redux/actions/Menus";
 
 import {config} from '../config';
 //styled
@@ -37,18 +39,15 @@ import {config} from '../config';
 // }
 
 const DesktopMain = () => {
-  let [venues, setVenues] = useState(null);
+  const dispatch = useDispatch();
+  const venues = useSelector(({Menus}) => Menus.venues)
+  const venuesLoad = useSelector(({Menus}) => Menus.venuesLoad)
   useEffect(() => {
-    axios.get(`${config.API}/venues?city_id=e3bb5e76-014c-4dcf-90f6-fc4b5e827558&sort=price-high-to-low&limit=10`, {
-      headers: {
-        "Authorization": 
-        "Bearer eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MTMwMzA5MjAsImp0aSI6ImI5ZTJmODJmLTM1MjctNDE1NS05N2E0LTk2YjVkZDg2YTlkZCIsImlhdCI6MTYxMDQzODkyMCwiaXNzIjoic3RvbGlrYXBwLmNvbSIsInN1YiI6ImRlNjMwZjdmLTJiYmQtNGE3Ny05NmFlLTI5OGZkODViYWFmMiJ9.sHt7PTNsP4aT9IKIeOd2vjwBeAP_SS7WvJ34Z_HFXJDrQ6l4MBVDwVumKd59ozjS9ngeJkjjYEpSLCWQBDIGk7WPtZJNctkQU6wgwAMvoNSs6IWFZv_RCCoSSYwtyWjnE5Mk5YVuHOReBvNg1YyVXQWQWad5cRhhCcPSZLERwwbvEWS7KcUd4u14KR57vyEqoAXr4WqB5xGm9csedL0vUtjvQlgFDrgToY-5GciVuj15w1pLWN1f7Tp3rb7ROCPhmUgIYpUEcCy52Qge_RH9EV-OmsrSRkmxogvgOFJnMMvbd8HJHJrf6xJsybQD5N7BWzQdCzyN58upPzJ_rbo_Lg"
-      }
-    }).then(response => {
-      console.log('response = ', response);
-      setVenues(response.data.venues);
-    })
-  }, []);
+    dispatch(fetchVenues());
+  }, [])
+  useEffect(() => {
+    console.log('VENUES = ', venues)
+  }, [venues])
   return (
     <Wrapper>
       <MContainer>
@@ -63,10 +62,9 @@ const DesktopMain = () => {
         </div>
         <FoodSection/>
         <ImageSwiper/>
-        <ItemsList venues={venues}/>
+        <ItemsList venues={venues} venuesLoad={venuesLoad}/>
         <div style={{marginTop: 24}}/>
         {/* <ImageSwiper/> */}
-        <ItemsList/>
         <div style={{width: "100%", display: "flex", justifyContent: "center"}}>
           <MoreButton>Показать ещё</MoreButton>
         </div>

@@ -15,6 +15,7 @@ import LogoImg from './styled/LogoImg';
 import Input from "../Input/Input";
 import HeaderBurger from './components/HeaderBurger';
 import HeaderConnect from './components/HeaderConnect';
+import EntryModal from './components/EntryModal.jsx';
 const MobileHeader = (props) => {
   return (
     <Wrapper>
@@ -29,7 +30,7 @@ const MobileHeader = (props) => {
 }
 
 const DesktopHeader = (props) => {
-  console.log(props)
+  const [entry, setEntry] = useState(null);
   const [scroll, setScroll] = useState(0);
   useEffect(() => {
     let scrollTop = window.pageYOffset ? window.pageYOffset : (document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop);
@@ -41,6 +42,7 @@ const DesktopHeader = (props) => {
   }, [])
   return (
     <Wrapper>
+      <EntryModal entry={entry} setEntry={setEntry}/>
       <Main>
         <HeaderBurger/>
         <Link to='/main'>
@@ -49,7 +51,7 @@ const DesktopHeader = (props) => {
         {/* {(scroll >= 400 || (props.location && props.location.pathname !== "/main") || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)  ) && */}
           <Input/>
         {/* } */}
-        <HeaderConnect/>
+        <HeaderConnect setEntry={setEntry}/>
       </Main>
     </Wrapper>
   );

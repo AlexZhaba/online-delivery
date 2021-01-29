@@ -18,6 +18,7 @@ const AdditionalEl = ({option}) => {
 
 
 const ModiferModal = ({modal, setModal, openItem}) => {
+  console.log('openItem = ', openItem)
   return (
     <ModalWrapper modal={modal}>
         <ModalContainer  modal={modal}>

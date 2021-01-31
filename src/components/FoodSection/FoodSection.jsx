@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Swiper, SwiperSlide } from 'swiper/react';
 let FoodSection = () => {
   let [sliderPerView, setSlidesPerView] = useState(5);
+  const [isSort, setIsSort] = useState(false);
   const keyValue = useMemo(() => Date.now(), [sliderPerView])
   useEffect(() => {
     let handleResize
@@ -45,7 +46,26 @@ let FoodSection = () => {
         <WrapperItem>Русская</WrapperItem>
 
         <Button>
+          <SortContainer>
+            <TitleSort>
+              Сначала показать
+            </TitleSort>
+            <div>
+              <input type="radio" id="huey" name="drone" value="huey"
+                    checked/>
+              <label for="huey">Huey</label>
+            </div>
 
+            <div>
+              <input type="radio" id="dewey" name="drone" value="dewey"/>
+              <label for="dewey">Dewey</label>
+            </div>
+
+            <div>
+              <input type="radio" id="louie" name="drone" value="louie"/>
+              <label for="louie">Louie</label>
+            </div>
+          </SortContainer>
           <ButtonBurger>
             <BurgerI style={{width: '100%'}}/>
             <BurgerI style={{width: '60%'}}/>
@@ -59,14 +79,33 @@ let FoodSection = () => {
 
 export default FoodSection;
 
+const SortContainer = styled.div`
+  position: absolute;
+  top: calc(100% + 25px);
+  left: 0px;
+  z-index: 10;
+  box-shadow: ${props => props.theme.shadow};
+  width: 200px;
+  height: 200px;
+  background: white;
+  padding: 20px;
+`;
+
+const TitleSort = styled.div`
+  color: #282828;
+  font-size: 16px;
+  font-weight: bold;
+`;
+
 const Wrapper = styled.div`
   display: flex;
   margin-top: 55px;
   margin-bottom: 55px;
   align-items: center;
   width: 100%;
+  // width: auto;
   padding: 3px 0px;
-  overflow-x: hidden;
+  // overflow-x: hidden;
   @media(max-width: 970px) {
     overflow-x: scroll;
   }
@@ -93,9 +132,14 @@ const Button = styled.div`
   height: 41px;
   display: flex;
   align-items: center;
+  position: relative;
   background: ${props => props.theme.primary};
   color: #fff;
   transition: .3s all;
+  :hover {
+    cursor: pointer;
+    background: ${props => props.theme.primaryDark};
+  }
 `;
 
 const ButtonBurger = styled.div`

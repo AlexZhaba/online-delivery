@@ -67,7 +67,7 @@ let DeskTopLayout = () => {
 let isMobile = () => navigator.userAgent.match(/Android|webOS|iPhone|iPod|Blackberry/i);
 
 const Theme = {
-  headerHeight: '120px',
+  headerHeight: '100px',
   shadow: '0 0 15px #cdcdcd',
   primary: "rgb(255, 44, 85)",
   primaryDark: "#d12e4e"

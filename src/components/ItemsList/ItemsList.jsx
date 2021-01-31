@@ -1,22 +1,29 @@
 import React from 'react';
 import styled from 'styled-components';
 import {NavLink} from "react-router-dom";
+import Loader from "@components/Loader/Loader";
 
 import pasta from '@assets/food/pasta.jpg'
 import greyStar from '@assets/greyStar.png';
 import greyTime from '@assets/greyTime.png';
-
 import heart from '@assets/heart.png'
 
-let ItemsList = ({venues}) => {
+let ItemsList = ({venues, venuesLoad}) => {
   console.log('venues =',venues);
+  console.log('venuesLoad:',venuesLoad)
   //onClick={() => document.getElementById('root').scrollIntoView()}
   return (
     <Wrapper>
-      {venues && venues.map((venue, index) => {
+      {(!venues) && <LoaderContainer>
+        <Loader/>
+      </LoaderContainer>}
+      {(venues && venuesLoad) && <LoaderShadow>
+        <Loader/>
+      </LoaderShadow>}
+      {(venues) && venues.map((venue, index) => {
         return (
           <NavLink to={`restaurant/${venue.guid}`}>
-          <ItemContainer>
+          <ItemContainer venuesLoad={venuesLoad}>
             <Heart>
               <img src={heart} style={{width: 30, height: 27}}/>
             </Heart>
@@ -49,12 +56,34 @@ let ItemsList = ({venues}) => {
   )
 }
 
+const LoaderContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  width: calc(300% + 30px);
+  margin-top: 20px;
+`;
+
+const LoaderShadow = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  //margin-top: 100px;
+  z-index: 3;
+  display: flex;
+  justify-content: center;
+  //align-items: center;
+  //background: rgba(0, 0, 0, 0.2);
+`;
+
 const Wrapper = styled.div`
   margin-top: 25px;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   column-gap: 30px;
   row-gap: 30px;
+  position: relative;
   @media (max-width: 1030px) {
     grid-template-columns: 1fr 1fr;
   }
@@ -76,6 +105,23 @@ const ItemContainer = styled.div`
     transform: translateY(-7px);
     transition: .3s all ease-in-out;
   }
+  ${props => {
+    if (props.venuesLoad) {
+      return `
+        ::before {
+          content: "";
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          top: 0;
+          left: 0;
+          background: rgba(255, 255, 255, 0.4);
+          border-radius: 5px;
+          z-index: 5;
+        }
+      `
+    }
+  }}
 `;
 
 const Heart = styled.div`

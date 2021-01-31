@@ -16,18 +16,32 @@ import DesktopMain from './pages/Main';
 let MobileLayout = () => {
   return (
     <Wrapper>
-      <MobileHeader/>
-      {/*<MobileMain/>*/}
       <BrowserRouter>
+        <DesktopHeader/>
+        <div style={{marginBottom: 100}}/>
         <Switch>
+          <Route
+            path='/main'
+            exact
+            render={() => <DesktopMain/>}
+          />
+          <Route
+            path='/new'
+            exact
+            render={DesktopNew}
+          />
           <Route
             path='/restaurant/:id'
             exact
             render={(props) => <DesktopRestaurant {...props}/>}
           />
+          <Route
+            path='/'
+            render={() => <Redirect to='/main'></Redirect>}
+          />
         </Switch>
       </BrowserRouter>
-      <MobileFooter/>
+      <DesktopFooter/>
     </Wrapper>
   )
 }
@@ -36,7 +50,8 @@ let DeskTopLayout = () => {
   return (
     <Wrapper>
       <BrowserRouter>
-        <DesktopHeader/>
+        <Route path='/' render={(props) => <DesktopHeader {...props}/>}/>
+        <div style={{marginBottom: 100}}/>
         <Switch>
           <Route
             path='/main'
@@ -68,7 +83,7 @@ let isMobile = () => navigator.userAgent.match(/Android|webOS|iPhone|iPod|Blackb
 
 const Theme = {
   headerHeight: '100px',
-  shadow: '0 0 15px #cdcdcd',
+  shadow: '0 0 0 1px rgba(0, 0, 0, 0.1)',
   primary: "rgb(255, 44, 85)",
   primaryDark: "#d12e4e"
 }

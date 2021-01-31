@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import styled from 'styled-components';
-
+// import {CircularProgress} from '@material-ui/core';
 const ListCategories = ({menu}) => {
   const [selectedCategory, setSelectedCategory] = useState(0);
   return (
@@ -21,7 +21,7 @@ export default ListCategories;
 
 const Wrapper = styled.div`
   position: sticky;
-  top: 0;
+  top: 100px;
   padding: 10px 0;
   background: white;
   //overflow-x: scroll;
@@ -29,6 +29,7 @@ const Wrapper = styled.div`
     -webkit-overflow-scrolling: touch;
   z-index: 2;  
   display: flex;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   //flex-wrap: wrap;  
   align-items: center;
   margin-bottom: 40px;

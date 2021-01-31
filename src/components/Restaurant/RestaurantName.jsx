@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import styled from 'styled-components';
 
 import whiteStar from '@assets/whiteStar.png'
@@ -7,9 +7,14 @@ import whiteTime from '@assets/whiteTime.png';
 import whiteNavigate from '@assets/whiteNavigate.png';
 import mainTitle from '@assets/mainTitle.jpg'
 
+import ReviewsModal from '@components/Restaurant/ReviewsModal.jsx';
+
 const DesktopRestaurantName = ({venue}) => {
+  const [review, setReview] = useState(null);
+  const [reviewModal, setReviewModal] = useState(false);
   return (
     <Wrapper>
+      <ReviewsModal reviewModal={reviewModal} setReviewModal={setReviewModal}/>
       {venue &&
       <>
         <Comment>
@@ -29,7 +34,7 @@ const DesktopRestaurantName = ({venue}) => {
           {venue.description.ru}
         </Text>
         <CharacterWrapper>
-          <Character>
+          <Character onClick={() => setReviewModal(true)} style={{cursor: "pointer"}}>
             <CharacterImage src={whiteStar}/>
             {venue.rating}
           </Character>
@@ -38,7 +43,7 @@ const DesktopRestaurantName = ({venue}) => {
             25-35 мин
           </Character>
           <Character>
-            от 13 000 сум
+            от {venue.check_value} {venue.check_currency}
           </Character>
           <Character>
             <CharacterImage src={whiteDelivery} style={{marginRight: 7}}/>
@@ -86,7 +91,7 @@ const Wrapper = styled.div`
 const Comment = styled.div`
   font-size: 10px;
   margin-bottom: 10px;
-  z-index: 10;
+  z-index: 5;
   position: relative;
 `;
 

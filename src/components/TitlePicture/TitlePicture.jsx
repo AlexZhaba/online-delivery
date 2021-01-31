@@ -6,7 +6,7 @@ import arrow from "@assets/arrow.png";
 import Input from "../Input/Input";
 const TitlePicture = () => {
   return (
-    <MContainerWrapper style={{backgroundImage: `url(${mainTitle})`}}>
+    <MContainerWrapper style={{backgroundImage: `url(${mainTitle})`}} id="titlePicture">
       <WrapperLeft>
         <BigText>Доставка еды <br/>в Ташкенте</BigText>
         <SubText>

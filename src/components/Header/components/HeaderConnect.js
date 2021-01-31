@@ -34,7 +34,7 @@ const RightItem = styled.div`
   }
 `;
 
-const HeaderConnect = () => (
+const HeaderConnect = ({setEntry}) => (
   <HeaderRight>
     <RightItem>
       <img src={headerPhone}/>
@@ -48,7 +48,7 @@ const HeaderConnect = () => (
       <img src={headerBasket}/>
       <span>0 сумм</span>
     </RightItem>
-    <RightItem>
+    <RightItem onClick={() => setEntry(true)} style={{cursor: "pointer"}}>
       <img src={headerUser}/>
       <span>Войти</span>
     </RightItem>

@@ -1,11 +1,6 @@
 import React, {useState} from 'react';
 import styled from 'styled-components';
 
-import Product from "./Product";
-import image from '@assets/modalImage.png';
-import boxoff from '@assets/boxoff.png';
-
-import ModiferModal from '@components/Restaurant/ModiferModal.jsx';
 import CheckBox from '@components/CheckBox/CheckBox.jsx'
 
 const AdditionalEl = ({option}) => {
@@ -22,82 +17,55 @@ const AdditionalEl = ({option}) => {
 }
 
 
-const ProductsList = ({menu}) => {
-  const [modal, setModal] = useState(null);
-  const [openItem, setOpenItem] = useState(null);
+const ModiferModal = ({modal, setModal, openItem}) => {
+  console.log('openItem = ', openItem)
   return (
-    <Wrapper>
-      <ModiferModal modal={modal} setModal={setModal} openItem={openItem}/>
-      {
-        menu && menu.categories.map((category) => {
-          return (
-            <div style={{position: 'relative'}}>
-              <div style={{position: 'absolute', top: -100}} id={category.guid}/>
-              <CategoryName >
-                {category.name.ru}
-              </CategoryName>
-              {category.child_type === "food" &&
-                <ProductsContainer>
-                  {category.items.map(item => <Product setModal={setModal} item={item} setOpenItem={setOpenItem}/>)}
-                </ProductsContainer>
-              }
-              {category.child_type === "section" &&
-                category.sections.map(section => {
-                  console.log("SECTION = ", section)
-                  return (
-                    <>
-                    <Section>{section.name.ru}</Section>
-                    <ProductsContainer>
-                      {
-                        section.items && section.items.map(item => {
-                          return <Product setModal={setModal} item={item} setOpenItem={setOpenItem}/>
-                        })
-                      }
-                    </ProductsContainer>
-                    </>
-                  )
-                })
-              }
-            </div>
-          )
-        })
-      }
-    </Wrapper>
+    <ModalWrapper modal={modal}>
+        <ModalContainer  modal={modal}>
+        {openItem && 
+        <>
+          <Cross onClick={() => setModal(null)}>
+            <CrossEl style={{transform: "rotate(45deg)"}}/>
+            <CrossEl style={{transform: "rotate(-45deg) translate(2px, -1px)"}}/>
+          </Cross>
+          <ModalImage src={openItem.image_urls ? openItem.image_urls[0] : "https://diabetno.ru/wp-content/uploads/2020/07/pp_image_7236_22yecuiyctplaceholder.png"}/>
+          <Container>
+            <Name>
+              {openItem.name.ru}
+            </Name>
+            <SubName>
+              370 гр 640 ккал
+            </SubName>
+            <Description>
+              {openItem.cooking_desc.ru}
+            </Description>
+            {openItem.modifier_groups && openItem.modifier_groups.map(group => {
+              return (
+                <>
+                <AdditionalName>
+                  {group.name.ru}
+                </AdditionalName>
+                <AdditionalContainer>
+                  {group.options.map(option => <AdditionalEl option={option}/>)}
+                  
+                </AdditionalContainer>
+                </>
+              )
+            })}
+            <Bottom>
+              <Button>
+                В корзину {openItem.portions[0].price} {openItem.portions[0].currency}
+              </Button>
+            </Bottom>
+          </Container>
+          </>
+          }
+        </ModalContainer>
+      </ModalWrapper>
   )
 }
 
-export default ProductsList;
-
-const Section = styled.div`
-  font-size: 20px;
-  font-weight: bold;
-  color: #282828;
-  margin-top: 20px;
-  margin-bottom: 20px;
-`;
-
-const Wrapper = styled.div`
-  width: 100%;
-  padding-right: 2px;
-`;
-
-const ProductsContainer = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  column-gap: 25px;
-  row-gap: 25px;
-  @media(max-width: 600px) {
-    grid-template-columns: 1fr;
-  }
-`;
-
-const CategoryName = styled.div`
-  margin-bottom: 30px;
-  margin-top: 50px;
-  font-weight: bold;
-  font-size: 30px;
-  color: #282828;
-`;
+export default ModiferModal;
 
 const ModalWrapper = styled.div`
   opacity: ${props => props.modal ? "1" : "0"};

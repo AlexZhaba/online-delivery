@@ -50,8 +50,8 @@ const Button = styled.div`
 `;
 
 const Sidebar = styled.div`
-  transform: translateX(${({isOpen}) => isOpen ? `0px` : `-230px`});
-  width: 230px;
+  transform: translateX(${({isOpen}) => isOpen ? `0px` : `-70vw`});
+  width: 70vw;
   height: 100vh;
   background: white;
   display: flex;

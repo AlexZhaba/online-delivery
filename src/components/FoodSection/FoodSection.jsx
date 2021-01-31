@@ -1,10 +1,27 @@
-import React, {useEffect, useState, useMemo} from 'react';
+import React, {useEffect, useState, useMemo, useRef} from 'react';
 import styled from 'styled-components';
+import {fetchVenues, setSortVenues} from "../../redux/actions/Menus";
+import {useDispatch, useSelector} from "react-redux";
 import { Swiper, SwiperSlide } from 'swiper/react';
+
+
+
 let FoodSection = () => {
+  const dispatch = useDispatch();
   let [sliderPerView, setSlidesPerView] = useState(5);
-  const [isSort, setIsSort] = useState(false);
+  const [openSort, setOpenSort] = useState(false);
+  const sortVenues = useSelector(({Menus}) => Menus.sortVenues);
   const keyValue = useMemo(() => Date.now(), [sliderPerView])
+  let SortButton = useRef(null);
+  useEffect(() => {
+    document.addEventListener('click', (event) => {
+      if (SortButton.current && SortButton.current.contains(event.target)) {
+        setOpenSort(true)
+      } else {
+        setOpenSort(false)
+      }
+    })
+  }, [])
   useEffect(() => {
     let handleResize
     window.addEventListener('resize', (event) => {
@@ -23,10 +40,16 @@ let FoodSection = () => {
       }
     })
   }, []);
+
+  const handleSelectSort = (sortVenues) => {
+    dispatch(setSortVenues(sortVenues));
+  }
+  useEffect(( ) => {
+    dispatch(fetchVenues());
+  }, [sortVenues])
   //TODO: Adaptive
   return (
     <Wrapper>
-
         <WrapperItem>Все</WrapperItem>
 
         <WrapperItem>Плов</WrapperItem>
@@ -44,57 +67,81 @@ let FoodSection = () => {
         <WrapperItem>Завтраки</WrapperItem>
 
         <WrapperItem>Русская</WrapperItem>
-
-        <Button>
-          <SortContainer>
-            <TitleSort>
-              Сначала показать
-            </TitleSort>
+        <div style={{position: 'relative'}} ref={SortButton} id="sortButton">
+          <Button onClick={(event) => {
+            event.stopPropagation();
+            setOpenSort(!openSort);
+          }}>
+            <ButtonBurger>
+              <BurgerI style={{width: '100%'}}/>
+              <BurgerI style={{width: '60%'}}/>
+              <BurgerI style={{width: '30%'}}/>
+            </ButtonBurger>
+            <span>Сортировка</span>
+          </Button>
+          {/*{openSort &&*/}
+          {/*  <SortWrapper style={{height: openSort ? "190px" : "0px", visibility: openSort ? "visible" : "hidden", paddingTop: openSort ? "" : "0px"}}>*/}
+          <SortWrapper openSort={openSort}>
+              <SortTitle>Сначала показать</SortTitle>
             <div>
-              <input type="radio" id="huey" name="drone" value="huey"
-                    checked/>
-              <label for="huey">Huey</label>
+              <SortSelect type="radio" id="huey" name="drone" value="huey" onChange={() => handleSelectSort("distance")}
+                     checked={sortVenues === "distance"}/>
+              <label for="huey">Ближайшие</label>
             </div>
 
             <div>
-              <input type="radio" id="dewey" name="drone" value="dewey"/>
-              <label for="dewey">Dewey</label>
+              <SortSelect type="radio" id="dewey" name="drone" value="dewey" onChange={() => handleSelectSort("popularity")}
+                     checked={sortVenues === "popularity"}
+              />
+              <label for="dewey">Популярные</label>
             </div>
 
             <div>
-              <input type="radio" id="louie" name="drone" value="louie"/>
-              <label for="louie">Louie</label>
+              <SortSelect type="radio" id="louie" name="drone" value="louie" onChange={() => handleSelectSort("price-low-to-high")}
+                     checked={sortVenues === "price-low-to-high"}
+              />
+              <label for="louie">Недорогие</label>
             </div>
-          </SortContainer>
-          <ButtonBurger>
-            <BurgerI style={{width: '100%'}}/>
-            <BurgerI style={{width: '60%'}}/>
-            <BurgerI style={{width: '30%'}}/>
-          </ButtonBurger>
-          <span>Сортировка</span>
-        </Button>
+            <div>
+              <SortSelect type="radio" id="louie1" name="drone" value="louie1" onChange={() => handleSelectSort("price-high-to-low")}
+                     checked={sortVenues === "price-high-to-low"}
+              />
+              <label htmlFor="louie1">Дорогие</label>
+            </div>
+          </SortWrapper>
+          {/*}*/}
+        </div>
+
     </Wrapper>
   )
 }
 
 export default FoodSection;
 
-const SortContainer = styled.div`
-  position: absolute;
-  top: calc(100% + 25px);
-  left: 0px;
-  z-index: 10;
-  box-shadow: ${props => props.theme.shadow};
-  width: 200px;
-  height: 200px;
-  background: white;
-  padding: 20px;
+const SortSelect = styled.input`
+  margin-top: 15px;
+  margin-right: 5px;
 `;
 
-const TitleSort = styled.div`
-  color: #282828;
+const SortWrapper = styled.div`
+  position: absolute;
+  z-index: 4;
+  cursor: default;
+  top: calc(100% + 20px);
+  left: 0;
+  padding: ${props => props.openSort ? "20px" : "0px 20px"};
+  overflow: hidden;
+  width: 300px;
+  height: ${props => props.openSort ? "190px" : "0px"};
+  background: #fff;
+  transition: .2s all;
+  box-shadow: ${props => props.openSort ? props.theme.shadow : ""};
+`;
+
+const SortTitle = styled.div`
   font-size: 16px;
   font-weight: bold;
+  color: #282828;
 `;
 
 const Wrapper = styled.div`
@@ -105,7 +152,7 @@ const Wrapper = styled.div`
   width: 100%;
   // width: auto;
   padding: 3px 0px;
-  // overflow-x: hidden;
+  
   @media(max-width: 970px) {
     overflow-x: scroll;
   }
@@ -136,6 +183,7 @@ const Button = styled.div`
   background: ${props => props.theme.primary};
   color: #fff;
   transition: .3s all;
+  position: relative;
   :hover {
     cursor: pointer;
     background: ${props => props.theme.primaryDark};

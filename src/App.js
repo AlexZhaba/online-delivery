@@ -88,6 +88,7 @@ const Theme = {
   primaryDark: "#d12e4e"
 }
 
+
 const App = () => {
   return (
     <ThemeProvider theme={isMobile() ? {userAgent: "mobile", ...Theme} : {userAgent: "desktop", ...Theme}}>

@@ -1,9 +1,12 @@
 const initialState = {
   venues: null,
   sortVenues: "price-high-to-low",  //distance, popularity, price-low-to-high, price-high-to-low
-  venuesLoad: false,
+  venuesLoad: false, 
   activeVenue: null,
-  activeMenu: null
+  activeMenu: null,
+  categories: null, 
+  activeCategory: null,
+  collections: null
 }
 
 const Menus = (state = initialState, action) => {
@@ -36,6 +39,24 @@ const Menus = (state = initialState, action) => {
       return {
         ...state,
         activeVenue: action.activeVenue
+      }
+    }
+    case "SET_CATEGORIES": {
+      return {
+        ...state,
+        categories: action.categories
+      }
+    }
+    case "SET_ACTIVE_CATEGORY": {
+      return {
+        ...state,
+        activeCategory: action.categoryId
+      }
+    }
+    case "SET_COLLECTIONS": {
+      return {
+        ...state,
+        collections: action.collections
       }
     }
     default:

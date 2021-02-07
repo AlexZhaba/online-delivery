@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import {NavLink} from 'react-router-dom';
 
 import headerPhone from '@assets/headerPhone.png'
 import headerLang from '@assets/headerLang.png'
@@ -44,10 +45,12 @@ const HeaderConnect = ({setEntry}) => (
       <img src={headerLang}/>
       <span>Рус</span>
     </RightItem>
-    <RightItem>
-      <img src={headerBasket}/>
-      <span>0 сумм</span>
-    </RightItem>
+    <NavLink to='/makeOrder'>
+      <RightItem>
+          <img src={headerBasket}/>
+          <span>0 сумм</span>
+      </RightItem>
+    </NavLink>
     <RightItem onClick={() => setEntry(true)} style={{cursor: "pointer"}}>
       <img src={headerUser}/>
       <span>Войти</span>

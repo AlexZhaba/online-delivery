@@ -26,6 +26,61 @@ export const setActiveMenu = (activeMenu) => ({
   activeMenu
 })
 
+export const setCategories = (categories) => ({
+  type: "SET_CATEGORIES",
+  categories
+})
+
+export const setActiveCategory = (categoryId) => ({
+  type: "SET_ACTIVE_CATEGORY",
+  categoryId
+})
+
+export const setCollections = (collections) => ({
+  type: "SET_COLLECTIONS",
+  collections
+})
+
+export const fetchCollections = () => (dispatch, getState) => {
+  const token = getState().User.token;
+  axios.get(`${config.API}/collections?city_id=e3bb5e76-014c-4dcf-90f6-fc4b5e827558&limit=10`, {
+    headers: {
+      "Authorization":
+        `Bearer ${token}`
+    }
+  }).then(({data}) => {
+    dispatch(setCollections(data.collections))
+    //console.log('collections: ', data)
+  })
+}
+
+export const fetchVenuesByCategory = (categoryId) => (dispatch, getState) => {
+  const token = getState().User.token;
+  dispatch(setVenuesLoad(true));
+  dispatch(setActiveCategory(categoryId))
+  axios.get(`${config.API}/categories/${categoryId}/venues?limit=10`, {
+    headers: {
+      "Authorization":
+        `Bearer ${token}`
+    }
+  }).then(({data}) => {
+    dispatch(setVenues(data.venues))
+    dispatch(setVenuesLoad(false));
+  })
+}
+
+export const fetchCategories = () => (dispatch, getState) => {
+  const token = getState().User.token;
+  axios.get(`${config.API}/categories?city_id=e3bb5e76-014c-4dcf-90f6-fc4b5e827558&limit=10`, {
+    headers: {
+      "Authorization":
+        `Bearer ${token}`
+    }
+  }).then(({data}) => {
+    dispatch(setCategories(data.categories))
+  })  
+}
+
 export const fetchVenueById = (id) => (dispatch, getState) => {
   const token = getState().User.token;
   axios.get(`${config.API}/venues/${id}`, {

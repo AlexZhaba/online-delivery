@@ -1,20 +1,59 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
 import soup from '@assets/soup1.png';
-const Product = ({setModal, item, setOpenItem}) => {
-  if (!item) return <div></div>
 
+import Add from '@assets/add.png';
+import Delete from '@assets/delete.png';
+
+import {useDispatch, useSelector} from 'react-redux';
+import {addItemToBasket, increaseItemCount, decreaseItemCount, clearBasket} from '../../redux/actions/Order';
+
+const Product = ({setModal, item, setOpenItem, setClearBasketModal, clearBasketModal}) => {
+  const dispatch = useDispatch();
+
+  const [itemInBasket, setItemInBasket] = useState(false);
+  const [itemCount, setItemCount] = useState(0);
+
+  const basketItems = useSelector(({Order}) => Order.basketItems);
+
+  useEffect(() => {
+    let isBasket = basketItems.filter(itemB => itemB.guid === item.guid).length !== 0;
+    setItemInBasket(isBasket);
+    if (isBasket) {
+      setItemCount(basketItems.filter(itemB => itemB.guid === item.guid)[0].count);
+    }
+    // console.log(basketItems.filter(item => item.guid === item.guid).length !== 0)
+  }, [basketItems])
+  console.log('item = ', item);
   const handleClick = () => {
+    if (!item.online) return;
+    if (item.max_order_size <= 0) return;
     if (item.modifier_groups) {
-      console.log('item = ', item);
       setOpenItem(item);
       setModal(true)
+    } else {
+      dispatch(addItemToBasket(item));
+    }
+  }
+  
+  const onIncreaseCount = () => {
+    if (!item.online) return;
+    if (itemCount + 1 <= item.max_order_size) {
+      dispatch(increaseItemCount(item))
     }
   }
 
+  const onDecreaseCount = () => {
+    if (!item.online) return;
+    dispatch(decreaseItemCount(item))
+  }
+
+
+  
+  if (!item) return <div></div>
   return (
-    <Wrapper url={item.image_urls}>
-      <Cart>
+    <Wrapper url={item.image_urls} online={item.online}>
+      <Cart itemInBasket={itemInBasket}>
         <Name>
           {item.name.ru}
         </Name>
@@ -24,10 +63,25 @@ const Product = ({setModal, item, setOpenItem}) => {
         <Price>
           {item.portions[0].price} {item.portions[0].currency}
         </Price>
-        <BottomContainer>
-          <Button onClick={() => handleClick()}>
-            В корзину
-          </Button>
+        <BottomContainer >
+        {itemInBasket &&
+          <CountContainer>
+            <CountButton onClick={onDecreaseCount}>
+              <CountImage src={Delete}/>
+            </CountButton>
+            <CountValue>
+              {itemCount}
+            </CountValue>
+            <CountButton onClick={onIncreaseCount}>
+            <CountImage src={Add}/>
+          </CountButton>
+          </CountContainer> 
+          }
+          {(!itemInBasket)  &&
+            <Button onClick={() => handleClick()}>
+              В корзину
+            </Button>
+          }
         </BottomContainer>
       </Cart>
     </Wrapper>
@@ -35,6 +89,37 @@ const Product = ({setModal, item, setOpenItem}) => {
 }
 
 export default Product;
+
+const CountContainer = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const CountButton = styled.div`
+  background: ${props => props.theme.primary};
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: .2s all;
+  margin: 0 5px;
+  :hover {
+    transition: .2s all;
+    background: ${props => props.theme.primaryDark};
+  }
+`;
+
+const CountImage = styled.img`
+  width: 15px;
+  user-select: none;
+`;
+
+const CountValue = styled.div`
+  font-weight: 500;
+  font-size: 21px;
+`;
 
 const Wrapper = styled.div`
   box-shadow: 0px 4px 16px rgba(0,0,0,0.10);
@@ -45,16 +130,23 @@ const Wrapper = styled.div`
   background-repeat: no-repeat;
   display: flex;
   align-items: flex-end;
-  cursor: pointer;
+  ${
+    props => props.online ? "cursor: pointer;": ""
+  }
   overflow: hidden;
-
+  ${
+    props => !props.online ? "filter: grayscale(100%);" : ""
+  }
   max-width: 400px;
-  :hover {
-    & > :first-child {
-      //width: calc(100% + 1);
-      transform: translate(0px);
-      transition: .3s all;
-    }
+  ${ props => props.online ? `
+      :hover {
+        & > :first-child {
+          //width: calc(100% + 1);
+          transform: translate(0px);
+          transition: .3s all;
+        }
+      }
+  ` : ""
   }
   @media(max-width: 780px) {
     cursor: auto;
@@ -71,6 +163,17 @@ const Cart = styled.div`
   align-items: flex-start;
   transform: translateY(57px);
   transition: .3s all;
+  ${
+    (props) => props.itemInBasket ? `
+      transform: translateY(0);
+      transition: none !important;
+      border: 4px solid ${props.theme.primary};
+      border-radius: 5px;
+      border-top-right-radius: 0;
+      border-top-left-radius: 0;
+      border-top: none;
+    ` : ""
+  }
   @media(max-width: 780px) {
     transform: translateY(0px);
   }

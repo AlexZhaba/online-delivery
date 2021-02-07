@@ -8,7 +8,6 @@ import boxoff from '@assets/boxoff.png';
 import ModiferModal from '@components/Restaurant/ModiferModal.jsx';
 import CheckBox from '@components/CheckBox/CheckBox.jsx'
 
-import CircularProgress from '@material-ui/core/CircularProgress';
 const AdditionalEl = ({option}) => {
   const [selected, setSelected] = useState(false);
   return (
@@ -26,6 +25,7 @@ const AdditionalEl = ({option}) => {
 const ProductsList = ({menu}) => {
   const [modal, setModal] = useState(null);
   const [openItem, setOpenItem] = useState(null);
+  const [clearBasketModal, setClearBasketModal] = useState(false);
   return (
     <Wrapper>
       <ModiferModal modal={modal} setModal={setModal} openItem={openItem}/>
@@ -51,7 +51,12 @@ const ProductsList = ({menu}) => {
                     <ProductsContainer>
                       {
                         section.items && section.items.map(item => {
-                          return <Product setModal={setModal} item={item} setOpenItem={setOpenItem}/>
+                          return <Product 
+                              setModal={setModal} 
+                              item={item} 
+                              setOpenItem={setOpenItem}
+
+                            />
                         })
                       }
                     </ProductsContainer>

@@ -7,7 +7,7 @@ import ItemsList from "@components/ItemsList/ItemsList";
 import TitlePicture from "@components/TitlePicture/TitlePicture";
 import { useSelector, useDispatch } from "react-redux";
 import axios from 'axios';
-import {fetchVenues} from "../redux/actions/Menus";
+import {fetchCategories, fetchVenues, fetchCollections} from "../redux/actions/Menus";
 
 import {config} from '../config';
 //styled
@@ -42,8 +42,12 @@ const DesktopMain = () => {
   const dispatch = useDispatch();
   const venues = useSelector(({Menus}) => Menus.venues)
   const venuesLoad = useSelector(({Menus}) => Menus.venuesLoad)
-  useEffect(() => {
-    dispatch(fetchVenues());
+  const categories = useSelector(({Menus}) => Menus.categories);
+  const collections = useSelector(({Menus}) => Menus.collections)
+  useEffect(() => {  
+    if (!Array.isArray(venues)) dispatch(fetchVenues());
+    if (!Array.isArray(collections)) dispatch(fetchCollections());
+    dispatch(fetchCategories())
   }, [])
   useEffect(() => {
     console.log('VENUES = ', venues)
@@ -52,7 +56,7 @@ const DesktopMain = () => {
     <Wrapper>
       <MContainer>
         <TitlePicture/>
-        <DiscountsSwiper/>
+        <DiscountsSwiper collections={collections} />
         <BigTitle  style={{marginTop: 50}}>
           Рестораны
         </BigTitle>
@@ -60,7 +64,7 @@ const DesktopMain = () => {
           <Input placeholder="Название ресторана, кухни или блюда..."/>
           <Button>Найти</Button>
         </div>
-        <FoodSection/>
+        <FoodSection categories={categories}/>
         <ImageSwiper/>
         <ItemsList venues={venues} venuesLoad={venuesLoad}/>
         <div style={{marginTop: 24}}/>

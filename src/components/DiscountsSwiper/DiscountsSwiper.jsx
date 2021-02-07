@@ -3,25 +3,19 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import styled from 'styled-components';
 import 'swiper/swiper.scss';
 import burger1 from '@assets/burger1.jpg'
-let DiscountsSwiper = () => {
-  let [sliderPerView, setSlidesPerView] = useState(5);
+
+const widthByCount = {
+  
+}
+
+let DiscountsSwiper = ({collections}) => {
+  const []
   const keyValue = useMemo(() => Date.now(), [sliderPerView])
   useEffect(() => {
     let handleResize
     window.addEventListener('resize', (event) => {
       let width = parseInt(event.currentTarget.innerWidth);
-      if (width > 1000) {
-        if (sliderPerView !== 5) setSlidesPerView(5);
-      }
-      if (width <= 1000) {
-        if (sliderPerView !== 4) setSlidesPerView(4);
-      }
-      if (width <= 760) {
-        if (sliderPerView !== 3) setSlidesPerView(3);
-      }
-      if (width <= 600) {
-        if (sliderPerView !== 2) setSlidesPerView(2);
-      }
+      
     })
   }, []);
   useEffect(() => {
@@ -40,38 +34,30 @@ let DiscountsSwiper = () => {
     }
   }, [])
   return (
-    <SwiperContainer>
-    <Swiper
-      key={keyValue}
-      spaceBetween={24}
-      slidesPerView={sliderPerView}
-      touchReleaseOnEdges={true}
-      grabCursor={true}
-
-    >
+    <Container>
       {
-       [1, 2, 3, 4, 5, 6, 7, 8].map((e, index) => {
+       collections && collections.map((collection, index) => {
          return (
-             <SwiperSlide>
-               <ItemContainer image={burger1}>
+      
+               <ItemContainer image={collection.images ? collection.images["312"] : null}>
                  <ContainerText>
-                   {`Две пиццы 
-            по цене одной`}
+                   {collection.description.ru}
                  </ContainerText>
                  <ContainerDiscount>
-                   HOT2
+                   {collection.short_text}
                  </ContainerDiscount>
                </ItemContainer>
-             </SwiperSlide>
+
          )
        })
       }
-
-
-    </Swiper>
-    </SwiperContainer>
+    </Container>
   )
 }
+
+const Container = styled.div`
+  display: flex;
+`;
 
 const SwiperContainer = styled.div`
   margin-top: 40px;
@@ -80,6 +66,7 @@ const SwiperContainer = styled.div`
 
 const ItemContainer = styled.div`
   height: 170px;
+  max-width: 1200px;
   position: relative;
   border-radius: 5px;
   background-image: ${props => `url(${props.image})`};

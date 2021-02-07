@@ -7,18 +7,21 @@ import {DesktopRestaurantName} from '@components/Restaurant/RestaurantName.jsx';
 import List from '@components/Restaurant/ListCategories.jsx';
 import Basket from "../components/Restaurant/Basket";
 import ProductsList from "../components/Restaurant/ProductsList";
-
+import ClearBasketModal from '../components/Restaurant/ClearBasketModal';
 import {config} from '../config';
-import CircularProgress from '@material-ui/core/CircularProgress';
 
 import {useDispatch, useSelector} from "react-redux";
 import {fetchMenuById, fetchVenueById, setActiveMenu, setActiveVenue} from "../redux/actions/Menus";
 
+
 const DesktopRestaurant = (props) => {
   const dispatch = useDispatch();
+
   let menu = useSelector(({Menus}) => Menus.activeMenu);
   let venue = useSelector(({Menus}) => Menus.activeVenue);
-  console.log('props= ',props)
+
+  const [clearBasketModal, setClearBasketModal] = useState(false);
+
   useEffect(() => {
     document.getElementById('root').scrollIntoView();
   }, [])
@@ -44,12 +47,16 @@ const DesktopRestaurant = (props) => {
             <Button>Найти</Button>
             <ProductsList menu={menu}/>
           </div>
-          <Basket/>
+          <Basket clearBasketModal={clearBasketModal} setClearBasketModal={setClearBasketModal}/>
+          <ClearBasketModal clearBasketModal={clearBasketModal} setClearBasketModal={setClearBasketModal}/>
         </Container>
       </MContainer>
     </Wrapper>
   )
 }
+
+
+
 
 const Container = styled.div`
   display: flex;

@@ -1,5 +1,21 @@
 @import "~normalize.css";
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+@font-face {
+  font-family: Stem;
+  src: url("./assets/fonts/Stem-Light.otf") format("opentype");
+}
+
+@font-face {
+  font-family: Stem;
+  font-weight: bold;
+  src: url("./assets/fonts/Stem-Medium.otf") format("opentype");
+}
+
+
+
+
+
 html,
 body {
   margin: 0;
@@ -14,6 +30,7 @@ body {
   box-sizing: border-box;
   min-width: 0;
   min-height: 0;
+  font-family: Stem;
 }
 
 
@@ -87,4 +104,123 @@ a {
     -o-transform: translateY(-20px);
     transform: translateY(-20px);
   }
+}
+
+
+/* basic stylings ------------------------------------------ */
+body 				 { background:url(https://scotch.io/wp-content/uploads/2014/07/61.jpg); }
+.container 		{ 
+  font-family:'Roboto';
+  width:600px; 
+  margin:30px auto 0; 
+  display:block; 
+  background:#FFF;
+  padding:10px 50px 50px;
+}
+h2 		 { 
+  text-align:center; 
+  margin-bottom:50px; 
+}
+h2 small { 
+  font-weight:normal; 
+  color:#888; 
+  display:block; 
+}
+.footer 	{ text-align:center; }
+.footer a  { color:#53B2C8; }
+
+/* form starting stylings ------------------------------- */
+.group 			  { 
+  margin-top: 20px;
+  position:relative; 
+  margin-bottom:45px; 
+}
+.input__order 				{
+  font-size:18px;
+  padding:10px 10px 10px 5px;
+  display:block;
+  width:300px;
+  border:none;
+  border-bottom:1px solid #757575;
+}
+.input__order:focus 		{ outline:none; }
+
+/* LABEL ======================================= */
+.order__label 				 {
+  color:#999; 
+  font-size:18px;
+  font-weight:normal;
+  position:absolute;
+  pointer-events:none;
+  left:5px;
+  top:10px;
+  font-family: Stem;
+  font-style: normal;
+  font-weight: 350;
+  font-size: 18px;
+  line-height: 20px;
+  color: #686868;
+  transition:0.2s ease all; 
+  -moz-transition:0.2s ease all; 
+  -webkit-transition:0.2s ease all;
+}
+
+/* active state */
+.input__order:focus ~ .order__label, .input__order:valid ~ .order__label 		{
+  top:-20px;
+  left: 0;
+  font-family: Stem;
+font-style: normal;
+font-weight: 350;
+font-size: 14px;
+line-height: 16px;
+
+color: #686868;
+}
+
+/* BOTTOM BARS ================================= */
+.bar 	{ position:relative; display:block; width:300px; }
+/* .bar:before, .bar:after 	{
+  content:'';
+  height:2px; 
+  width:0;
+  bottom:1px; 
+  position:absolute;
+  background:#FF2C55; 
+  transition:0.2s ease all; 
+  -moz-transition:0.2s ease all; 
+  -webkit-transition:0.2s ease all;
+} */
+.bar:before {
+  left:50%;
+}
+.bar:after {
+  right:50%; 
+}
+
+/* active state */
+.input__order:focus ~ .bar:before, .input__order:focus ~ .bar:after {
+  width:50%;
+}
+
+
+/* active state */
+.input__order:focus ~ .highlight {
+  -webkit-animation:inputHighlighter 0.3s ease;
+  -moz-animation:inputHighlighter 0.3s ease;
+  animation:inputHighlighter 0.3s ease;
+}
+
+/* ANIMATIONS ================ */
+@-webkit-keyframes inputHighlighter {
+	from { background:#FF2C55; }
+  to 	{ width:0; background:transparent; }
+}
+@-moz-keyframes inputHighlighter {
+	from { background:#FF2C55; }
+  to 	{ width:0; background:transparent; }
+}
+@keyframes inputHighlighter {
+	from { background:#FF2C55; }
+  to 	{ width:0; background:transparent; }
 }

@@ -1,17 +1,18 @@
 import React, {useEffect, useState, useMemo, useRef} from 'react';
 import styled from 'styled-components';
-import {fetchVenues, setSortVenues} from "../../redux/actions/Menus";
+import {fetchVenues, fetchVenuesByCategory, setActiveCategory, setSortVenues, setVenuesByCategory} from "../../redux/actions/Menus";
 import {useDispatch, useSelector} from "react-redux";
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 
 
-let FoodSection = () => {
+let FoodSection = ({categories}) => {
   const dispatch = useDispatch();
   let [sliderPerView, setSlidesPerView] = useState(5);
   const [openSort, setOpenSort] = useState(false);
   const sortVenues = useSelector(({Menus}) => Menus.sortVenues);
-  const keyValue = useMemo(() => Date.now(), [sliderPerView])
+  const venues = useSelector(({Menus}) => Menus.venues)
+  const activeCategory = useSelector(({Menus}) => Menus.activeCategory);
   let SortButton = useRef(null);
   useEffect(() => {
     document.addEventListener('click', (event) => {
@@ -23,7 +24,6 @@ let FoodSection = () => {
     })
   }, [])
   useEffect(() => {
-    let handleResize
     window.addEventListener('resize', (event) => {
       let width = parseInt(event.currentTarget.innerWidth);
       if (width > 1000) {
@@ -43,14 +43,28 @@ let FoodSection = () => {
 
   const handleSelectSort = (sortVenues) => {
     dispatch(setSortVenues(sortVenues));
-  }
-  useEffect(( ) => {
     dispatch(fetchVenues());
-  }, [sortVenues])
+  }
+
+  const handleSelectCategory = (categoryId) => {
+    dispatch(fetchVenuesByCategory(categoryId))
+  }
+  const handleRemoveCategory = () => {
+    dispatch(setActiveCategory(null))
+    dispatch(fetchVenues());
+  }
+  // useEffect(( ) => {
+  //   if (!Array.isArray(venues)) dispatch(fetchVenues());
+  // }, [sortVenues])
   //TODO: Adaptive
+  console.log('activeCategory:', activeCategory)
   return (
     <Wrapper>
-        <WrapperItem>Все</WrapperItem>
+      <WrapperItem onClick={handleRemoveCategory} isActive={activeCategory === null}>Все</WrapperItem>
+        {categories && categories.map(category => {
+          return <WrapperItem onClick={() => handleSelectCategory(category.guid)} isActive={activeCategory === category.guid}>{category.title.ru}</WrapperItem>
+        })}
+        {/* <WrapperItem>Все</WrapperItem>
 
         <WrapperItem>Плов</WrapperItem>
 
@@ -66,7 +80,7 @@ let FoodSection = () => {
 
         <WrapperItem>Завтраки</WrapperItem>
 
-        <WrapperItem>Русская</WrapperItem>
+        <WrapperItem>Русская</WrapperItem> */}
         <div style={{position: 'relative'}} ref={SortButton} id="sortButton">
           <Button onClick={(event) => {
             event.stopPropagation();
@@ -150,6 +164,7 @@ const Wrapper = styled.div`
   margin-bottom: 55px;
   align-items: center;
   width: 100%;
+  // width: auto;
   padding: 3px 0px;
   
   @media(max-width: 970px) {
@@ -159,9 +174,9 @@ const Wrapper = styled.div`
 
 const WrapperItem = styled.div`
   flex-shrink: 0;
-  padding: 7px 5px;
+  padding: 10px 15px;
   margin: 0 5px;
-  border-radius: 30px;
+  border-radius: 25px;
   transition: .15s all;
   &:hover {
       transition: .15s all;
@@ -169,6 +184,10 @@ const WrapperItem = styled.div`
       background: ${props => props.theme.primary};
       color: #fff;
     }
+  ${props => props.isActive ? `
+    background: ${props.theme.primary};
+    color: #fff;
+  ` : ``}
 `;
 
 const Button = styled.div`
@@ -178,6 +197,7 @@ const Button = styled.div`
   height: 41px;
   display: flex;
   align-items: center;
+  position: relative;
   background: ${props => props.theme.primary};
   color: #fff;
   transition: .3s all;

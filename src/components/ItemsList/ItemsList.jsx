@@ -8,10 +8,12 @@ import greyStar from '@assets/greyStar.png';
 import greyTime from '@assets/greyTime.png';
 import heart from '@assets/heart.png'
 
-let ItemsList = ({venues, venuesLoad}) => {
+let ItemsList = ({venues, venuesLoad, history, handleOpenRestaurant}) => {
   console.log('venues =',venues);
   console.log('venuesLoad:',venuesLoad)
-  //onClick={() => document.getElementById('root').scrollIntoView()}
+
+  //onClick={ () => history.push(`restaurant/${venue.guid}`)}
+
   return (
     <Wrapper>
       {(!venues) && <LoaderContainer>
@@ -22,7 +24,7 @@ let ItemsList = ({venues, venuesLoad}) => {
       </LoaderShadow>}
       {(venues) && venues.map((venue, index) => {
         return (
-          <NavLink to={`restaurant/${venue.guid}`}>
+          <div onClick={() => handleOpenRestaurant(venue.guid)}>
           <ItemContainer venuesLoad={venuesLoad} online={venue.online}>
             <Heart>
               <img src={heart} style={{width: 30, height: 27}}/>
@@ -47,7 +49,7 @@ let ItemsList = ({venues, venuesLoad}) => {
               </BottomData>
             </ItemBottom>
           </ItemContainer>
-          </NavLink>
+          </div>
         )
       })}
 
@@ -133,7 +135,7 @@ const Heart = styled.div`
 
 const ItemImg = styled.div`
   flex: 1;
-  background: red;
+  background: white;
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;

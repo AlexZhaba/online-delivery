@@ -3,7 +3,10 @@ import styled, { keyframes, css } from 'styled-components';
 import {useDispatch, useSelector} from 'react-redux';
 import {clearBasket, decreaseItemCount, increaseItemCount} from '../../redux/actions/Order'
 import Add from '@assets/add.png';
+
+// import {withRouter} from 'react-router-dom';
 import Delete from '@assets/delete.png';
+import { createBrowserHistory } from 'history';
 
 import trash from '@assets/trash_full.png';
 
@@ -61,6 +64,8 @@ const Basket = ({clearBasketModal, setClearBasketModal}) => {
                    </ListItem>
           })}
         </ListContainer>
+        {basket.length !== 0 &&
+        <>
         <DeliveryContainer>
           <DeliveryText>
             Доставка
@@ -83,6 +88,8 @@ const Basket = ({clearBasketModal, setClearBasketModal}) => {
         <MakeButton>
           Оформить заказ
         </MakeButton>
+        </>
+        }
       </GlobalContainer>
     </Wrapper>
   )

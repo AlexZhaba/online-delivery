@@ -3,75 +3,44 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import styled from 'styled-components';
 import 'swiper/swiper.scss';
 import burger1 from '@assets/burger1.jpg'
-let DiscountsSwiper = () => {
-  let [sliderPerView, setSlidesPerView] = useState(5);
-  const keyValue = useMemo(() => Date.now(), [sliderPerView])
+
+const widthByCount = {
+  
+}
+
+let DiscountsSwiper = ({collections}) => {
+
   useEffect(() => {
     let handleResize
     window.addEventListener('resize', (event) => {
       let width = parseInt(event.currentTarget.innerWidth);
-      if (width > 1000) {
-        if (sliderPerView !== 5) setSlidesPerView(5);
-      }
-      if (width <= 1000) {
-        if (sliderPerView !== 4) setSlidesPerView(4);
-      }
-      if (width <= 760) {
-        if (sliderPerView !== 3) setSlidesPerView(3);
-      }
-      if (width <= 600) {
-        if (sliderPerView !== 2) setSlidesPerView(2);
-      }
+      
     })
   }, []);
-  useEffect(() => {
-    let width = window.innerWidth;
-    if (width > 1000) {
-      if (sliderPerView !== 5) setSlidesPerView(5);
-    }
-    if (width <= 1000) {
-      if (sliderPerView !== 4) setSlidesPerView(4);
-    }
-    if (width <= 760) {
-      if (sliderPerView !== 3) setSlidesPerView(3);
-    }
-    if (width <= 600) {
-      if (sliderPerView !== 2) setSlidesPerView(2);
-    }
-  }, [])
   return (
-    <SwiperContainer>
-    <Swiper
-      key={keyValue}
-      spaceBetween={24}
-      slidesPerView={sliderPerView}
-      touchReleaseOnEdges={true}
-      grabCursor={true}
-
-    >
+    <Container>
       {
-       [1, 2, 3, 4, 5, 6, 7, 8].map((e, index) => {
+       collections && collections.map((collection, index) => {
          return (
-             <SwiperSlide>
-               <ItemContainer image={burger1}>
-                 <ContainerText>
-                   {`Две пиццы 
-            по цене одной`}
-                 </ContainerText>
-                 <ContainerDiscount>
-                   HOT2
-                 </ContainerDiscount>
-               </ItemContainer>
-             </SwiperSlide>
+          <ItemContainer image={collection.images ? collection.images["312"] : null}>
+            <ContainerText>
+              {collection.description.ru}
+            </ContainerText>
+            <ContainerDiscount>
+              {collection.short_text}
+            </ContainerDiscount>
+          </ItemContainer>
          )
        })
       }
-
-
-    </Swiper>
-    </SwiperContainer>
+    </Container>
   )
 }
+
+const Container = styled.div`
+  margin-top: 20px;
+  display: flex;
+`;
 
 const SwiperContainer = styled.div`
   margin-top: 40px;
@@ -80,12 +49,14 @@ const SwiperContainer = styled.div`
 
 const ItemContainer = styled.div`
   height: 170px;
+  max-width: 1200px;
   position: relative;
   border-radius: 5px;
   background-image: ${props => `url(${props.image})`};
   background-size: cover;
   background-repeat: no-repeat;
   display: flex;
+  margin-right: 20px;
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
@@ -107,7 +78,7 @@ const ItemContainer = styled.div`
 
 const ContainerText = styled.div`
   position: relative;
-  z-index: 10;
+  z-index: 3;
   white-space: pre-line;
   font-size: 18px;
   line-height: 24px;
@@ -117,7 +88,7 @@ const ContainerText = styled.div`
 
 const ContainerDiscount = styled.div`
   margin-top: 15px;
-  z-index: 10;
+  z-index: 3;
   position: relative;
   padding: 12px 28px;
   font-weight: bold;

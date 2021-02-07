@@ -5,7 +5,7 @@ import whiteStar from '@assets/whiteStar.png'
 import whiteDelivery from '@assets/whiteDelivery.png';
 import whiteTime from '@assets/whiteTime.png';
 import whiteNavigate from '@assets/whiteNavigate.png';
-import mainTitle from '@assets/mainTitle.png';
+import mainTitle from '@assets/mainTitle.png'
 
 import ReviewsModal from '@components/Restaurant/ReviewsModal.jsx';
 

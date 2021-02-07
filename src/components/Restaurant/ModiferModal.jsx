@@ -17,7 +17,7 @@ const AdditionalEl = ({option}) => {
 }
 
 
-const ModiferModal = ({modal, setModal, openItem}) => {
+const ModiferModal = ({modal, setModal, openItem, handleClick}) => {
   console.log('openItem = ', openItem)
   return (
     <ModalWrapper modal={modal}>
@@ -53,7 +53,7 @@ const ModiferModal = ({modal, setModal, openItem}) => {
               )
             })}
             <Bottom>
-              <Button>
+              <Button onClick={() => handleClick(openItem)}>
                 В корзину {openItem.portions[0].price} {openItem.portions[0].currency}
               </Button>
             </Bottom>

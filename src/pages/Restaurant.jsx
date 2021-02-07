@@ -23,11 +23,11 @@ const DesktopRestaurant = (props) => {
   const [clearBasketModal, setClearBasketModal] = useState(false);
 
   useEffect(() => {
-    document.getElementById('root').scrollIntoView();
+    window.scrollTo({ top: 0 });
   }, [])
   useEffect(() => {
-    dispatch(setActiveVenue(null))
-    dispatch(setActiveMenu(null));
+    // dispatch(setActiveVenue(null))
+    // dispatch(setActiveMenu(null));
     dispatch(fetchVenueById(props.match.params.id));
     dispatch(fetchMenuById(props.match.params.id));
   }, []);

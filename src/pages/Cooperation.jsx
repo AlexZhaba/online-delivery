@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
+
 import agreement from '@assets/agreement.png';
 
 const FAQElement = ({text, id}) => {
@@ -30,7 +31,8 @@ const FAQElement = ({text, id}) => {
   )
 }
 
-const Cooperation = () => {
+const Cooperation = (props) => {
+
   return (
     <Wrapper>
       <MContainer>

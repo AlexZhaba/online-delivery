@@ -1,5 +1,8 @@
 import React, {useState} from 'react';
 import styled from 'styled-components';
+import {useDispatch} from 'react-redux';
+
+import {addItemToBasket} from '../../redux/actions/Order'
 
 import Product from "./Product";
 import image from '@assets/modalImage.png';
@@ -23,12 +26,20 @@ const AdditionalEl = ({option}) => {
 
 
 const ProductsList = ({menu}) => {
+  const dispatch = useDispatch();
+
   const [modal, setModal] = useState(null);
   const [openItem, setOpenItem] = useState(null);
   const [clearBasketModal, setClearBasketModal] = useState(false);
+
+  const handleClick = (item) => {
+    dispatch(addItemToBasket(item));
+    setModal(false);
+  }
+
   return (
     <Wrapper>
-      <ModiferModal modal={modal} setModal={setModal} openItem={openItem}/>
+      <ModiferModal modal={modal} setModal={setModal} openItem={openItem} handleClick={handleClick}/>
       {
         menu && menu.categories.map((category) => {
           return (

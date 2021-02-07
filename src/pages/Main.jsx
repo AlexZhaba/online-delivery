@@ -5,9 +5,12 @@ import FoodSection from "@components/FoodSection/FoodSection";
 import ImageSwiper from "@components/ImageSwipper/ImageSwipper";
 import ItemsList from "@components/ItemsList/ItemsList";
 import TitlePicture from "@components/TitlePicture/TitlePicture";
+import Loader from '@components/Loader/Loader';
 import { useSelector, useDispatch } from "react-redux";
 import axios from 'axios';
-import {fetchVenues} from "../redux/actions/Menus";
+import {fetchCategories, fetchVenues, fetchCollections, 
+  setActiveVenue, setActiveMenu, fetchVenueById, fetchMenuById, setRestaurantLoading } from "../redux/actions/Menus";
+import { useHistory } from "react-router-dom";
 
 import {config} from '../config';
 //styled
@@ -40,19 +43,42 @@ import {config} from '../config';
 
 const DesktopMain = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
+
   const venues = useSelector(({Menus}) => Menus.venues)
   const venuesLoad = useSelector(({Menus}) => Menus.venuesLoad)
-  useEffect(() => {
-    dispatch(fetchVenues());
+  const categories = useSelector(({Menus}) => Menus.categories);
+  const collections = useSelector(({Menus}) => Menus.collections);
+  const restaurantLoading = useSelector(({Menus}) => Menus.restaurantLoading);
+  useEffect(() => {  
+    if (!Array.isArray(venues)) dispatch(fetchVenues());
+    if (!Array.isArray(collections)) dispatch(fetchCollections());
+    dispatch(fetchCategories())
   }, [])
   useEffect(() => {
     console.log('VENUES = ', venues)
   }, [venues])
+
+  const handleOpenRestaurant = (guid) => {
+    dispatch(setActiveVenue(null))
+    dispatch(setActiveMenu(null));
+    dispatch(setRestaurantLoading(true))
+    dispatch(fetchVenueById(guid));
+    dispatch(fetchMenuById(guid));
+  }
+  useEffect(() => {
+    if (typeof restaurantLoading === "string") {
+      dispatch(setRestaurantLoading(null));
+      history.push(`restaurant/${restaurantLoading}`);
+
+    }
+  }, [restaurantLoading])
+
   return (
     <Wrapper>
       <MContainer>
         <TitlePicture/>
-        <DiscountsSwiper/>
+        <DiscountsSwiper collections={collections} />
         <BigTitle  style={{marginTop: 50}}>
           Рестораны
         </BigTitle>
@@ -60,14 +86,14 @@ const DesktopMain = () => {
           <Input placeholder="Название ресторана, кухни или блюда..."/>
           <Button>Найти</Button>
         </div>
-        <FoodSection/>
+        <FoodSection categories={categories}/>
         <ImageSwiper/>
-        <ItemsList venues={venues} venuesLoad={venuesLoad}/>
+        <ItemsList venues={venues} venuesLoad={venuesLoad} history={history} handleOpenRestaurant={handleOpenRestaurant}/>
         <div style={{marginTop: 24}}/>
         {/* <ImageSwiper/> */}
-        <div style={{width: "100%", display: "flex", justifyContent: "center"}}>
+        {/* <div style={{width: "100%", display: "flex", justifyContent: "center"}}>
           <MoreButton>Показать ещё</MoreButton>
-        </div>
+        </div> */}
       </MContainer>
     </Wrapper>
   );
@@ -77,6 +103,7 @@ const MobileMain = DesktopMain;
 
 export default DesktopMain;
 export {DesktopMain, MobileMain};
+
 
 const BigTitle = styled.div`
   font-size: 40px;

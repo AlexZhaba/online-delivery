@@ -27,8 +27,8 @@ const Product = ({setModal, item, setOpenItem, setClearBasketModal, clearBasketM
   console.log('item = ', item);
   const handleClick = () => {
     if (!item.online) return;
-    if (item.max_order_size <= 0) return;
-    if (item.modifier_groups) {
+    // if (item.max_order_size <= 0) return;
+    if (item.modifier_groups || (item.portions && item.portions.length > 1)) {
       setOpenItem(item);
       setModal(true)
     } else {

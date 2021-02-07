@@ -44,7 +44,7 @@ const Wrapper = styled.div`
 `;
 
 const MContainer = styled.div`
-  width: 1480px;
+  width: 1180px;
   margin: 0 20px;
   height: 100%;
 `;

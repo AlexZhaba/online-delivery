@@ -23,7 +23,7 @@ let ItemsList = ({venues, venuesLoad}) => {
       {(venues) && venues.map((venue, index) => {
         return (
           <NavLink to={`restaurant/${venue.guid}`}>
-          <ItemContainer venuesLoad={venuesLoad}>
+          <ItemContainer venuesLoad={venuesLoad} online={venue.online}>
             <Heart>
               <img src={heart} style={{width: 30, height: 27}}/>
             </Heart>
@@ -42,7 +42,7 @@ let ItemsList = ({venues, venuesLoad}) => {
                   <span>4,5</span>
                 </BottomItem>
                 <BottomItem>
-                  <span style={{margin: 0}}>от 13 000 сум</span>
+                  <span style={{margin: 0}}>от {venue.check_value} {venue.check_currency}</span>
                 </BottomItem>
               </BottomData>
             </ItemBottom>
@@ -101,12 +101,13 @@ const ItemContainer = styled.div`
   flex-direction: column;
   position: relative;
   transition: .3s all ease-in-out;
+  ${props => !props.online ? "filter: grayscale(100%);" : ""}
   :hover {
     transform: translateY(-7px);
     transition: .3s all ease-in-out;
   }
   ${props => {
-    if (props.venuesLoad) {
+    if (props.venuesLoad || !props.online) {
       return `
         ::before {
           content: "";

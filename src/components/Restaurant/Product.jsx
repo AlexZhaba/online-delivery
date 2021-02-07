@@ -6,28 +6,53 @@ import Add from '@assets/add.png';
 import Delete from '@assets/delete.png';
 
 import {useDispatch, useSelector} from 'react-redux';
-import {addItemToBasket} from '../../redux/actions/Order';
+import {addItemToBasket, increaseItemCount, decreaseItemCount, clearBasket} from '../../redux/actions/Order';
 
-const Product = ({setModal, item, setOpenItem}) => {
+const Product = ({setModal, item, setOpenItem, setClearBasketModal, clearBasketModal}) => {
   const dispatch = useDispatch();
+
   const [itemInBasket, setItemInBasket] = useState(false);
+  const [itemCount, setItemCount] = useState(0);
+
   const basketItems = useSelector(({Order}) => Order.basketItems);
+
   useEffect(() => {
-    setItemInBasket(basketItems.filter(itemB => itemB.guid === item.guid).length !== 0);
+    let isBasket = basketItems.filter(itemB => itemB.guid === item.guid).length !== 0;
+    setItemInBasket(isBasket);
+    if (isBasket) {
+      setItemCount(basketItems.filter(itemB => itemB.guid === item.guid)[0].count);
+    }
     // console.log(basketItems.filter(item => item.guid === item.guid).length !== 0)
   }, [basketItems])
+  console.log('item = ', item);
   const handleClick = () => {
+    if (!item.online) return;
+    if (item.max_order_size <= 0) return;
     if (item.modifier_groups) {
-      console.log('item = ', item);
       setOpenItem(item);
       setModal(true)
     } else {
       dispatch(addItemToBasket(item));
     }
   }
+  
+  const onIncreaseCount = () => {
+    if (!item.online) return;
+    if (itemCount + 1 <= item.max_order_size) {
+      dispatch(increaseItemCount(item))
+    }
+  }
+
+  const onDecreaseCount = () => {
+    if (!item.online) return;
+    dispatch(decreaseItemCount(item))
+  }
+
+
+  
   if (!item) return <div></div>
   return (
-    <Wrapper url={item.image_urls}>
+    <Wrapper url={item.image_urls} online={item.online}>
       <Cart itemInBasket={itemInBasket}>
         <Name>
           {item.name.ru}
@@ -41,18 +66,18 @@ const Product = ({setModal, item, setOpenItem}) => {
         <BottomContainer >
         {itemInBasket &&
           <CountContainer>
-            <CountButton>
+            <CountButton onClick={onDecreaseCount}>
               <CountImage src={Delete}/>
             </CountButton>
             <CountValue>
-              1
+              {itemCount}
             </CountValue>
-            <CountButton>
+            <CountButton onClick={onIncreaseCount}>
             <CountImage src={Add}/>
           </CountButton>
           </CountContainer> 
           }
-          {!itemInBasket &&
+          {(!itemInBasket)  &&
             <Button onClick={() => handleClick()}>
               В корзину
             </Button>
@@ -88,6 +113,7 @@ const CountButton = styled.div`
 
 const CountImage = styled.img`
   width: 15px;
+  user-select: none;
 `;
 
 const CountValue = styled.div`
@@ -104,16 +130,23 @@ const Wrapper = styled.div`
   background-repeat: no-repeat;
   display: flex;
   align-items: flex-end;
-  cursor: pointer;
+  ${
+    props => props.online ? "cursor: pointer;": ""
+  }
   overflow: hidden;
-
+  ${
+    props => !props.online ? "filter: grayscale(100%);" : ""
+  }
   max-width: 400px;
-  :hover {
-    & > :first-child {
-      //width: calc(100% + 1);
-      transform: translate(0px);
-      transition: .3s all;
-    }
+  ${ props => props.online ? `
+      :hover {
+        & > :first-child {
+          //width: calc(100% + 1);
+          transform: translate(0px);
+          transition: .3s all;
+        }
+      }
+  ` : ""
   }
   @media(max-width: 780px) {
     cursor: auto;

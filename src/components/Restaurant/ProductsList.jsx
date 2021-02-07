@@ -25,6 +25,7 @@ const AdditionalEl = ({option}) => {
 const ProductsList = ({menu}) => {
   const [modal, setModal] = useState(null);
   const [openItem, setOpenItem] = useState(null);
+  const [clearBasketModal, setClearBasketModal] = useState(false);
   return (
     <Wrapper>
       <ModiferModal modal={modal} setModal={setModal} openItem={openItem}/>
@@ -50,7 +51,12 @@ const ProductsList = ({menu}) => {
                     <ProductsContainer>
                       {
                         section.items && section.items.map(item => {
-                          return <Product setModal={setModal} item={item} setOpenItem={setOpenItem}/>
+                          return <Product 
+                              setModal={setModal} 
+                              item={item} 
+                              setOpenItem={setOpenItem}
+
+                            />
                         })
                       }
                     </ProductsContainer>

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import mainTitle from '@assets/mainTitle.jpg'
+import mainTitle from '@assets/mainTitle.png'
 import mapPoint from "@assets/mapPoint.png";
 import arrow from "@assets/arrow.png";
 import Input from "../Input/Input";

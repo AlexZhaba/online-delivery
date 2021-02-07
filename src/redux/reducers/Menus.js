@@ -1,6 +1,7 @@
 const initialState = {
   venues: null,
-  sortVenues: "price-high-to-low",  //distance, popularity, price-low-to-high, price-high-to-low
+  sortVenues: "price-high-to-low",  //distance, popularity, price-low-to-high, price-high-to-lowб
+  collection: null,
   venuesLoad: false,
   activeVenue: null,
   activeMenu: null

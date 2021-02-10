@@ -6,7 +6,8 @@ import Add from '@assets/add.png';
 
 // import {withRouter} from 'react-router-dom';
 import Delete from '@assets/delete.png';
-import { createBrowserHistory } from 'history';
+import { useHistory } from "react-router-dom";
+
 
 import trash from '@assets/trash_full.png';
 
@@ -14,6 +15,8 @@ import lightning from '@assets/lightning.png';
 
 const Basket = ({clearBasketModal, setClearBasketModal}) => {
   const dispatch = useDispatch();
+  const history = useHistory();
+
   const basket = useSelector(({Order}) => Order.basketItems);
 
 
@@ -85,7 +88,7 @@ const Basket = ({clearBasketModal, setClearBasketModal}) => {
             <TimeValue>150 000 сум </TimeValue>
           </TimeContainer>
         </BottomContainer>
-        <MakeButton>
+        <MakeButton onClick={() => history.push('/makeOrder')}>
           Оформить заказ
         </MakeButton>
         </>

@@ -31,16 +31,25 @@ const OrderCard = () => {
             </CodeButton>
           </div>
         </NumberContainer>
-        <Title style={{marginTop: 30}}>Тип доставки</Title>
-
-        <SelectContainer>
+        <Title style={{marginTop: 30, marginBottom: 30}}>Тип доставки</Title>
+        <label class="container">
+          <span>Доставка курьером</span>
+          <input type="radio" name="radio1" defaultChecked/>
+          <span class="checkmark"></span>
+        </label>
+        <label class="container">
+          <span>Самовызов</span>
+          <input type="radio" name="radio1"/>
+          <span class="checkmark"></span>
+        </label>
+        {/* <SelectContainer>
           <input type="radio" id="huey" name="drone" value="huey" defaultChecked/>
           <SelectLabel for="huey">Доставка курьером</SelectLabel>
         </SelectContainer>
         <SelectContainer>
           <input type="radio" id="huey1" name="drone" value="huey1"/>
           <SelectLabel for="huey1">Самовызов</SelectLabel>
-        </SelectContainer>
+        </SelectContainer> */}
 
         <Title style={{marginTop: 30}}>Адрес доставки</Title>
         <OrderInput text="Адрес доставки" style={{width: 470}}/>
@@ -58,8 +67,19 @@ const OrderCard = () => {
           <SelectImg src={arrowBottom}/>
         </DateSelect>
         
-        <Title style={{marginTop: 30}}>Способы оплаты</Title>
-        <SelectContainer>
+        <Title style={{marginTop: 30, marginBottom: 30}}>Способы оплаты</Title>
+        <label class="container">
+        <span>Картой онлайн</span>
+          <input type="radio" name="radio" defaultChecked/>
+          <span class="checkmark"></span>
+          <ButtonCard style={{transform: 'translateY(-5px)'}}>Добавить карту</ButtonCard>
+        </label>
+        <label class="container">
+          <span>Наличными курьером</span>
+          <input type="radio" name="radio"/>
+          <span class="checkmark"></span>
+        </label>
+        {/* <SelectContainer>
           <input type="radio" id="carta" name="payment" value="carta" defaultChecked/>
           <SelectLabel for="carta">
             <span>Картой онлайн</span>
@@ -71,7 +91,7 @@ const OrderCard = () => {
           <SelectLabel for="nal">
             <span>Наличными курьером</span>
           </SelectLabel>
-        </SelectContainer>
+        </SelectContainer> */}
         <OrderInput text="Промокод" style={{width: 200, marginTop: 30}}/>
         {/* <DateWrapper>
           <DateTitle>Сегодня</DateTitle>

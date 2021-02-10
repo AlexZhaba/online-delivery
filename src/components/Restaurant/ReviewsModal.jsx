@@ -89,6 +89,7 @@ const ModalContainer = styled.div`
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  max-height: calc(100vh - 20px);
 
 `;
 
@@ -119,6 +120,7 @@ const CrossEl = styled.div`
 `;
 
 const Top = styled.div`
+  min-height: 50px;
   width: 100%;
   color: #282828;
   display: flex;

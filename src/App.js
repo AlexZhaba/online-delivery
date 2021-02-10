@@ -75,7 +75,9 @@ let DeskTopLayout = () => {
       </LoadingRestaurantWrapper>
       <BrowserRouter>
         <Route path='/' render={(props) => <DesktopHeader {...props}/>}/>
+        
         <div style={{marginBottom: 100}}/>
+        
         <Switch>
           <Route
             path='/main'

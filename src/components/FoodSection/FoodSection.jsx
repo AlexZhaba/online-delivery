@@ -93,11 +93,32 @@ let FoodSection = ({categories}) => {
             </ButtonBurger>
             <span>Сортировка</span>
           </Button>
+          
           {/*{openSort &&*/}
           {/*  <SortWrapper style={{height: openSort ? "190px" : "0px", visibility: openSort ? "visible" : "hidden", paddingTop: openSort ? "" : "0px"}}>*/}
           <SortWrapper openSort={openSort} >
               <SortTitle>Сначала показать</SortTitle>
-            <div>
+              <label class="container" style={{fontSize: 17, marginTop: 10}} onClick={() => handleSelectSort("distance")}>
+                <span>Ближайшие</span>
+                <input type="radio" name="radio2" checked={sortVenues === "distance"}/>
+                <span class="checkmark"></span>
+              </label>
+                  <label class="container" style={{fontSize: 17}} onClick={() => handleSelectSort("popularity")}>
+                <span>Популярные</span>
+                <input type="radio" name="radio2" checked={sortVenues === "popularity"}/>
+                <span class="checkmark" ></span>
+              </label>
+              <label class="container" style={{fontSize: 17}} onClick={() => handleSelectSort("price-low-to-high")}>
+                <span>Сначала недорогие</span>
+                <input type="radio" name="radio2" checked={sortVenues === "price-low-to-high"}/>
+                <span class="checkmark"></span>
+              </label>
+              <label class="container" style={{fontSize: 17}}  onClick={() => handleSelectSort("price-high-to-low")}>
+                <span>Сначала дорогие</span>
+                <input type="radio" name="radio2" checked={sortVenues === "price-high-to-low"}/>
+                <span class="checkmark"></span>
+              </label>
+            {/* <div>
               <SortSelect type="radio" id="huey" name="drone" value="huey" onChange={() => handleSelectSort("distance")}
                      checked={sortVenues === "distance"}/>
               <label for="huey" style={{cursor: "pointer"}}>Ближайшие</label>
@@ -121,7 +142,7 @@ let FoodSection = ({categories}) => {
                      checked={sortVenues === "price-high-to-low"}
               />
               <label htmlFor="louie1" style={{cursor: "pointer"}}>Дорогие</label>
-            </div>
+            </div> */}
           </SortWrapper>
           {/*}*/}
         </div>
@@ -149,11 +170,12 @@ const SortWrapper = styled.div`
   height: ${props => props.openSort ? "190px" : "0px"};
   background: #fff;
   transition: .2s all;
-  box-shadow: ${props => props.openSort ? props.theme.shadow : ""};
+  box-shadow: ${props => props.openSort ? "0 0 15px #cdcdcd" : ""};
+  border-radius: 5px;
 `;
 
 const SortTitle = styled.div`
-  font-size: 16px;
+  font-size: 18px;
   font-weight: bold;
   color: #282828;
 `;

@@ -3,20 +3,21 @@ import styled, { keyframes, css } from 'styled-components';
 import {useDispatch, useSelector} from 'react-redux';
 import {clearBasket, decreaseItemCount, increaseItemCount} from '../../redux/actions/Order'
 import Add from '@assets/add.png';
-
+import basketIcon from '@assets/basketIcon.png';
 // import {withRouter} from 'react-router-dom';
 import Delete from '@assets/delete.png';
-import { useHistory } from "react-router-dom";
+import { NavLink, useHistory } from "react-router-dom";
 
 
 import trash from '@assets/trash_full.png';
 
 import lightning from '@assets/lightning.png';
 
-const Basket = ({clearBasketModal, setClearBasketModal}) => {
+const Basket = ({clearBasketModal, setClearBasketModal, ...props}) => {
   const dispatch = useDispatch();
   const history = useHistory();
-
+  let {match} = props;
+  console.log('MATCH MATCH ', match)
   const basket = useSelector(({Order}) => Order.basketItems);
 
 
@@ -37,6 +38,14 @@ const Basket = ({clearBasketModal, setClearBasketModal}) => {
 
   return (
     <Wrapper>
+      {basket.length !== 0 && match.path !== "/makeOrder"  &&
+
+        <MobileWrapper onClick={() => history.push('/makeOrder')}>
+            <BasketIcon src={basketIcon}/>
+            <span>168 000 сум</span>
+        </MobileWrapper>
+        
+      }
       <GlobalContainer>
         <TitleContainer>
           Мой заказ
@@ -88,9 +97,11 @@ const Basket = ({clearBasketModal, setClearBasketModal}) => {
             <TimeValue>150 000 сум </TimeValue>
           </TimeContainer>
         </BottomContainer>
-        <MakeButton onClick={() => history.push('/makeOrder')}>
-          Оформить заказ
-        </MakeButton>
+        { match.path !== "/makeOrder" && 
+          <MakeButton onClick={() => history.push('/makeOrder')}>
+            Оформить заказ
+          </MakeButton>
+        }
         </>
         }
       </GlobalContainer>
@@ -99,6 +110,39 @@ const Basket = ({clearBasketModal, setClearBasketModal}) => {
 }
 
 export default Basket;
+
+const BasketIcon = styled.img`
+  margin-right: 20px;
+  width: 20px;
+  height: 20px;
+`;
+
+
+const MobileWrapper = styled.div`
+  position: fixed;
+  left: 0px;
+  bottom: 0;
+  width: 100%;
+  /* right: 20px; */
+  height: 60px;
+  z-index: 3;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  font-weight: 500;
+  font-size: 18px;
+  background: ${props => props.theme.primary};
+  transition: .2s all;
+  @media(max-width: 1180px) {
+    display: flex;
+  }
+  :hover {
+    cursor: pointer;
+    transition: .2s all;
+    background: ${props => props.theme.primaryDark};
+  }
+`;
 
 const MakeButton = styled.div`
   margin-top: 17px;
@@ -169,7 +213,7 @@ const Wrapper = styled.div`
   position: sticky;
   top: 180px;
   min-width: 380px;
-  min-height: 350px; 
+  min-height: 320px; 
   box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.15);
   border-radius: 5px;
   margin-left: 20px;

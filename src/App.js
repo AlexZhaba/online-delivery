@@ -97,7 +97,7 @@ let DeskTopLayout = () => {
           <Route
             path='/makeOrder'
             exact
-            render={() => <MakeOrder/>}
+            render={(props) => <MakeOrder {...props}/>}
           />
           <Route
             path='/cooperation'
@@ -130,7 +130,7 @@ const App = () => {
     <ThemeProvider theme={isMobile() ? {userAgent: "mobile", ...Theme} : {userAgent: "desktop", ...Theme}}>
       <AppWrapper>
         {isMobile() ? 
-          <MobileLayout/>
+          <DeskTopLayout/>
         :
           <DeskTopLayout/>
         }

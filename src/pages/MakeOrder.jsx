@@ -5,8 +5,8 @@ import Back from '@components/Back/Back'
 import Basket from '@components/Restaurant/Basket';
 import ClearBasketModal from '@components/Restaurant/ClearBasketModal';
 import OrderCard from '@components/Order/OrderCard';
-const MakeOrder = () => {
-  console.log('MAKEORDER')
+const MakeOrder = (props) => {
+  console.log('MAKEORDER ', props)
   const [clearBasketModal, setClearBasketModal] = useState(false);
   useEffect(() => {
     window.scrollTo({ top: 0 });
@@ -17,7 +17,7 @@ const MakeOrder = () => {
         <Back text={"В ресторан"}/>
         <Container>
           <OrderCard/>
-          <Basket clearBasketModal={clearBasketModal} setClearBasketModal={setClearBasketModal}/>
+          <Basket {...props} clearBasketModal={clearBasketModal} setClearBasketModal={setClearBasketModal}/>
           <ClearBasketModal clearBasketModal={clearBasketModal} setClearBasketModal={setClearBasketModal}/>
         </Container>
       </MContainer>

@@ -23,6 +23,9 @@ const DesktopRestaurant = (props) => {
   const [clearBasketModal, setClearBasketModal] = useState(false);
 
   useEffect(() => {
+    console.log('"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""')
+    console.log('PROPS : ', props)
+    console.log(`%c`, props, 'background: #222; color: #bada55');
     window.scrollTo({ top: 0 });
   }, [])
   useEffect(() => {
@@ -47,7 +50,7 @@ const DesktopRestaurant = (props) => {
             <Button>Найти</Button>
             <ProductsList menu={menu}/>
           </div>
-          <Basket clearBasketModal={clearBasketModal} setClearBasketModal={setClearBasketModal}/>
+          <Basket {...props} clearBasketModal={clearBasketModal} setClearBasketModal={setClearBasketModal}/>
           <ClearBasketModal clearBasketModal={clearBasketModal} setClearBasketModal={setClearBasketModal}/>
         </Container>
       </MContainer>

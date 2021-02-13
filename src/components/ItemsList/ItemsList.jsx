@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import {NavLink} from "react-router-dom";
 import Loader from "@components/Loader/Loader";
+import {useSelector} from 'react-redux';
 
 import pasta from '@assets/food/pasta.jpg'
 import greyStar from '@assets/greyStar.png';
@@ -11,6 +12,8 @@ import heart from '@assets/heart.png'
 let ItemsList = ({venues, venuesLoad, history, handleOpenRestaurant}) => {
   console.log('venues =',venues);
   console.log('venuesLoad:',venuesLoad)
+
+  const lang = useSelector(({User}) => User.lang);
 
   //onClick={ () => history.push(`restaurant/${venue.guid}`)}
 
@@ -32,8 +35,8 @@ let ItemsList = ({venues, venuesLoad, history, handleOpenRestaurant}) => {
             <ItemImg style={{backgroundImage: `url(${ venue.thumb_image_urls ? venue.thumb_image_urls : "https://diabetno.ru/wp-content/uploads/2020/07/pp_image_7236_22yecuiyctplaceholder.png"})`}}>
             </ItemImg>
             <ItemBottom>
-              <BottomName>{venue.name.ru}</BottomName>
-              <BottomSub>{venue.description.ru}</BottomSub>
+              <BottomName>{venue.name[lang]}</BottomName>
+              <BottomSub>{venue.description[lang]}</BottomSub>
               <BottomData>
                 <BottomItem>
                   <img src={greyStar}/>

@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import styled from 'styled-components';
 // import {CircularProgress} from '@material-ui/core';
-const ListCategories = ({menu}) => {
+const ListCategories = ({menu, lang}) => {
   const [selectedCategory, setSelectedCategory] = useState(0);
   return (
     <Wrapper>
@@ -10,7 +10,7 @@ const ListCategories = ({menu}) => {
           document.getElementById(category.guid).scrollIntoView({behavior: "smooth"});
           setSelectedCategory(index);
         }} key={index} selected={index === selectedCategory}>
-                  {category.name.ru}
+                  {category.name[lang]}
                 </Item>
       })}
     </Wrapper>

@@ -2,6 +2,11 @@ import axios from 'axios';
 
 import {config} from '../../config';
 
+export const setLang = (lang) => ({
+  type: "SET_LANG",
+  lang
+})
+
 export const userSignUp = (name, phone_number, password) => (dispatch, getState) => {
   axios.post(`${config.API}/users/signup`, {
     name,

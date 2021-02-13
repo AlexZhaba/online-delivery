@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import styled from 'styled-components';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import {addItemToBasket} from '../../redux/actions/Order'
 
@@ -25,12 +25,13 @@ const AdditionalEl = ({option}) => {
 }
 
 
-const ProductsList = ({menu}) => {
+const ProductsList = ({menu, lang}) => {
   const dispatch = useDispatch();
 
   const [modal, setModal] = useState(null);
   const [openItem, setOpenItem] = useState(null);
   const [clearBasketModal, setClearBasketModal] = useState(false);
+
 
   const handleClick = (item) => {
     dispatch(addItemToBasket(item));
@@ -46,7 +47,7 @@ const ProductsList = ({menu}) => {
             <div style={{position: 'relative'}}>
               <div style={{position: 'absolute', top: -100}} id={category.guid}/>
               <CategoryName >
-                {category.name.ru}
+                {category.name[lang]}
               </CategoryName>
               {category.child_type === "food" &&
                 <ProductsContainer>
@@ -65,6 +66,7 @@ const ProductsList = ({menu}) => {
                           return <Product 
                               setModal={setModal} 
                               item={item} 
+                              lang={lang}
                               setOpenItem={setOpenItem}
 
                             />

@@ -13,6 +13,7 @@ let FoodSection = ({categories}) => {
   const sortVenues = useSelector(({Menus}) => Menus.sortVenues);
   const venues = useSelector(({Menus}) => Menus.venues)
   const activeCategory = useSelector(({Menus}) => Menus.activeCategory);
+  const lang  = useSelector(({User}) => User.lang);
   let SortButton = useRef(null);
   useEffect(() => {
     document.addEventListener('click', (event) => {
@@ -62,7 +63,7 @@ let FoodSection = ({categories}) => {
     <Wrapper>
       <WrapperItem onClick={handleRemoveCategory} isActive={activeCategory === null}>Все</WrapperItem>
         {categories && categories.map(category => {
-          return <WrapperItem onClick={() => handleSelectCategory(category.guid)} isActive={activeCategory === category.guid}>{category.title.ru}</WrapperItem>
+          return <WrapperItem onClick={() => handleSelectCategory(category.guid)} isActive={activeCategory === category.guid}>{category.title[lang]}</WrapperItem>
         })}
         {/* <WrapperItem>Все</WrapperItem>
 

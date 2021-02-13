@@ -19,6 +19,7 @@ const DesktopRestaurant = (props) => {
 
   let menu = useSelector(({Menus}) => Menus.activeMenu);
   let venue = useSelector(({Menus}) => Menus.activeVenue);
+  const lang = useSelector(({User}) => User.lang);
 
   const [clearBasketModal, setClearBasketModal] = useState(false);
 
@@ -43,12 +44,12 @@ const DesktopRestaurant = (props) => {
       <MContainer>
         <Back text="Все рестораны"/>
         <DesktopRestaurantName venue={venue}/>
-        <List menu={menu}/>
+        <List menu={menu} lang={lang}/>
         <Container>
           <div>
             <Input placeholder="Поиск блюд..."/>
             <Button>Найти</Button>
-            <ProductsList menu={menu}/>
+            <ProductsList menu={menu} lang={lang}/>
           </div>
           <Basket {...props} clearBasketModal={clearBasketModal} setClearBasketModal={setClearBasketModal}/>
           <ClearBasketModal clearBasketModal={clearBasketModal} setClearBasketModal={setClearBasketModal}/>

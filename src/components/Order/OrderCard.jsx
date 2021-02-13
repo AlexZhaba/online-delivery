@@ -1,8 +1,10 @@
-import React from 'react';
+import React, {useState} from 'react';
 import styled from 'styled-components';
 
 import arrowBottom from '@assets/arrowBottom.png';
 
+import ModalNewCard from './ModalNewCard';
+import ModalMakeOrder from './ModalMakeOrder';
 const OrderInput = ({text, style}) => (
   <div class="group" style={style}>      
     <input type="text" class="input__order" required/>
@@ -13,8 +15,12 @@ const OrderInput = ({text, style}) => (
 )
 
 const OrderCard = () => {
-  return (
+  const [openNewCard, setOpenNewCard] = useState(false);
+  const [isOrderMade, setIsOrderMade] = useState(false);
+  return ( 
     <Wrapper>
+      <ModalNewCard openNewCard={openNewCard} setOpenNewCard={setOpenNewCard}/>
+      <ModalMakeOrder isOrderMade={isOrderMade} setIsOrderMade={setIsOrderMade}/>
       <MainTitle>
           Оформление заказа
         </MainTitle>
@@ -70,9 +76,9 @@ const OrderCard = () => {
         <Title style={{marginTop: 30, marginBottom: 30}}>Способы оплаты</Title>
         <label class="container">
         <span>Картой онлайн</span>
-          <input type="radio" name="radio" defaultChecked/>
+          <input type="radio" name="radio" defaultChecked data-trash="true"/>
           <span class="checkmark"></span>
-          <ButtonCard style={{transform: 'translateY(-5px)'}}>Добавить карту</ButtonCard>
+          <ButtonCard style={{transform: 'translateY(-5px)'}} onClick={() => setOpenNewCard(true)} data-trash="true">Добавить карту</ButtonCard>
         </label>
         <label class="container">
           <span>Наличными курьером</span>
@@ -110,7 +116,7 @@ const OrderCard = () => {
           </DateContainer>
         </DateWrapper> */}
         <ButtonContainer>
-          <OrderButton>
+          <OrderButton onClick={() => setIsOrderMade(true)} data-trash="true">
             Заказать
           </OrderButton>
         </ButtonContainer>

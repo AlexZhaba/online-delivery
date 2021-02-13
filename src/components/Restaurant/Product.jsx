@@ -8,7 +8,7 @@ import Delete from '@assets/delete.png';
 import {useDispatch, useSelector} from 'react-redux';
 import {addItemToBasket, increaseItemCount, decreaseItemCount, clearBasket} from '../../redux/actions/Order';
 
-const Product = ({setModal, item, setOpenItem, setClearBasketModal, clearBasketModal}) => {
+const Product = ({setModal, item, setOpenItem, setClearBasketModal, clearBasketModal, lang}) => {
   const dispatch = useDispatch();
 
   const [itemInBasket, setItemInBasket] = useState(false);
@@ -55,10 +55,10 @@ const Product = ({setModal, item, setOpenItem, setClearBasketModal, clearBasketM
     <Wrapper url={item.image_urls} online={item.online}>
       <Cart itemInBasket={itemInBasket}>
         <Name>
-          {item.name.ru}
+          {item.name[lang]}
         </Name>
         <Description>
-          {item.ingredient_desc.ru}
+          {item.ingredient_desc[lang]}
         </Description>
         <Price>
           {item.portions[0].price} {item.portions[0].currency}

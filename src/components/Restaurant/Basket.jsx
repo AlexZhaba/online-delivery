@@ -15,14 +15,11 @@ import lightning from '@assets/lightning.png';
 
 const Basket = ({clearBasketModal, setClearBasketModal, ...props}) => {
   const dispatch = useDispatch();
-  const history = useHistory();
-  let {match} = props;
-  console.log('MATCH MATCH ', match)
+  const history  = useHistory();
+  let   {match}  = props;
   const basket = useSelector(({Order}) => Order.basketItems);
 
-
   const onIncreaseCount = (item) => {
-    console.log('item = ', item)
     if (item.count + 1 <= item.max_order_size) {
       dispatch(increaseItemCount(item))
     }
@@ -35,6 +32,12 @@ const Basket = ({clearBasketModal, setClearBasketModal, ...props}) => {
   const handleClearBasket = () => {
     setClearBasketModal(true)
   }
+
+  useEffect(() => {
+    if (basket.length !== 0) {
+      alert('try reload');
+    }
+  }, [basket])
 
   return (
     <Wrapper>

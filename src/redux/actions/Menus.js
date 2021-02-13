@@ -48,7 +48,8 @@ export const setRestaurantLoading = (isLoading) => ({
 
 export const fetchCollections = () => (dispatch, getState) => {
   const token = getState().User.token;
-  axios.get(`${config.API}/collections?city_id=e3bb5e76-014c-4dcf-90f6-fc4b5e827558&limit=10`, {
+  const cityGUID = getState().User.city.guid;
+  axios.get(`${config.API}/collections?city_id=${cityGUID}&limit=10`, {
     headers: {
       "Authorization":
         `Bearer ${token}`
@@ -76,7 +77,8 @@ export const fetchVenuesByCategory = (categoryId) => (dispatch, getState) => {
 
 export const fetchCategories = () => (dispatch, getState) => {
   const token = getState().User.token;
-  axios.get(`${config.API}/categories?city_id=e3bb5e76-014c-4dcf-90f6-fc4b5e827558&limit=10`, {
+  const cityGUID = getState().User.city.guid;
+  axios.get(`${config.API}/categories?city_id=${cityGUID}&limit=10`, {
     headers: {
       "Authorization":
         `Bearer ${token}`
@@ -134,9 +136,10 @@ export const fetchMenuById = (id) => (dispatch, getState) => {
 export const fetchVenues = () => (dispatch, getState) => {
   const token = getState().User.token;
   const sortVenues = getState().Menus.sortVenues;
+  const cityGUID = getState().User.city.guid;
   console.log('token:', token);
   dispatch(setVenuesLoad(true))
-  axios.get(`${config.API}/venues?city_id=e3bb5e76-014c-4dcf-90f6-fc4b5e827558&sort=${sortVenues}&limit=10`, {
+  axios.get(`${config.API}/venues?city_id=${cityGUID}&sort=${sortVenues}&limit=10`, {
     headers: {
       "Authorization":
         `Bearer ${token}`

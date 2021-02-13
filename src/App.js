@@ -9,7 +9,7 @@ import Loader from '@components/Loader/Loader'
 
 //redux
 import {useSelector, useDispatch} from 'react-redux'
-import {userSignUp} from './redux/actions/User'
+import {userSignUp, getCity} from './redux/actions/User'
 
 //components
 import {MobileFooter, DesktopFooter} from '@components/Footer/Footer.jsx';
@@ -22,6 +22,7 @@ import {MobileNew, DesktopNew} from './pages/New'
 import {Cooperation} from './pages/Cooperation'
 import {MakeOrder} from './pages/MakeOrder'
 import DesktopMain from './pages/Main';
+import {AccountContainer} from './pages/AccountContainer';
 
 let MobileLayout = () => {
   return (
@@ -65,7 +66,10 @@ let DeskTopLayout = () => {
   const dispatch = useDispatch();
   const restaurantLoading = useSelector(({Menus}) => Menus.restaurantLoading);
   useEffect(() => {
-    // dispatch(userSignUp("Alex", "+998901234567", "85808"))
+    navigator.geolocation.getCurrentPosition(function(position) {
+      console.log(position.coords.latitude, position.coords.longitude);
+      dispatch(getCity(position.coords.latitude, position.coords.longitude))
+    });
   }, [])
 
   return (
@@ -103,6 +107,10 @@ let DeskTopLayout = () => {
             path='/cooperation'
             exact
             render={() => <Cooperation/>}
+          />
+          <Route
+            path='/account'
+            render={(props) => <AccountContainer {...props}/>}
           />
           <Route
             path='/'

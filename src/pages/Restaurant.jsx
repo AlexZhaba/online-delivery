@@ -24,9 +24,6 @@ const DesktopRestaurant = (props) => {
   const [clearBasketModal, setClearBasketModal] = useState(false);
 
   useEffect(() => {
-    console.log('"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""')
-    console.log('PROPS : ', props)
-    console.log(`%c`, props, 'background: #222; color: #bada55');
     window.scrollTo({ top: 0 });
   }, [])
   useEffect(() => {
@@ -35,10 +32,6 @@ const DesktopRestaurant = (props) => {
     dispatch(fetchVenueById(props.match.params.id));
     dispatch(fetchMenuById(props.match.params.id));
   }, []);
-  useEffect(() => {
-    console.log('MENU:', venue)
-  }, [venue])
-
   return (
     <Wrapper>
       <MContainer>

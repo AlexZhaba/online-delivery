@@ -50,11 +50,15 @@ const DesktopMain = () => {
   const categories = useSelector(({Menus}) => Menus.categories);
   const collections = useSelector(({Menus}) => Menus.collections);
   const restaurantLoading = useSelector(({Menus}) => Menus.restaurantLoading);
+  const city = useSelector(({User}) => User.city);
+  
   useEffect(() => {  
-    if (!Array.isArray(venues)) dispatch(fetchVenues());
-    if (!Array.isArray(collections)) dispatch(fetchCollections());
-    dispatch(fetchCategories())
-  }, [])
+    if (city) {
+      if (!Array.isArray(venues)) dispatch(fetchVenues());
+      if (!Array.isArray(collections)) dispatch(fetchCollections());
+      dispatch(fetchCategories())
+    }
+  }, [city])
   useEffect(() => {
     console.log('VENUES = ', venues)
   }, [venues])

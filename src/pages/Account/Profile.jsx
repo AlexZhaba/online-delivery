@@ -103,6 +103,7 @@ const Button = styled.div`
   width: 300px;
   padding: 13px 0;
   transition: .2s all;
+
   :hover {
     cursor: pointer;
     transition: .2s all;

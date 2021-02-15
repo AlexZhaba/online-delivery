@@ -35,7 +35,6 @@ const Basket = ({clearBasketModal, setClearBasketModal, ...props}) => {
 
   useEffect(() => {
     if (basket.length !== 0) {
-      alert('try reload');
     }
   }, [basket])
 

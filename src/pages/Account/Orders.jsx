@@ -164,6 +164,14 @@ const TopHeader = styled.div`
   color: #282828;
   display: flex;
   align-items: center;
+  
+  @media(max-width: 700px) {
+    font-size: 18px;
+    line-height: 22px;
+    height: auto;
+    margin-left: 10px;
+
+  }
 `;
 
 const Container = styled.div`

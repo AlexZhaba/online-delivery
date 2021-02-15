@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import styled from 'styled-components';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {addItemToBasket} from '../../redux/actions/Order'
+import {addItemToBasket, increaseItemCount} from '../../redux/actions/Order'
 
 import Product from "./Product";
 import image from '@assets/modalImage.png';
@@ -33,8 +33,11 @@ const ProductsList = ({menu, lang}) => {
   const [clearBasketModal, setClearBasketModal] = useState(false);
 
 
-  const handleClick = (item) => {
+  const handleClick = (item, count) => {
     dispatch(addItemToBasket(item));
+    for (let i = 0; i < count - 1; i++) {
+      dispatch(increaseItemCount(item))
+    }
     setModal(false);
   }
 
@@ -86,6 +89,8 @@ const ProductsList = ({menu, lang}) => {
 }
 
 export default ProductsList;
+
+
 
 const Section = styled.div`
   font-size: 20px;

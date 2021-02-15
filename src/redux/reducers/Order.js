@@ -1,12 +1,21 @@
 const initialState = {
-  basketItems: localStorage.getItem('basket') ? JSON.parse(localStorage.getItem('basket')) : []
+  basketItems: localStorage.getItem('basket') ? JSON.parse(localStorage.getItem('basket')) : [],
+  
 }
 
 const Order = (state = initialState, action) => {
+  const lang = localStorage.getItem('lang');
+  
   switch (action.type) {
     case "ADD_ITEM_TO_BASKET": {
       const newBasket = [
-        ...state.basketItems, {
+        ...state.basketItems, 
+        {
+        guid: action.item.guid,
+        name: action.item.name[lang],
+        price: action.item.price,
+        image_url: action.item.image_urls,
+
         ...action.item,
         count: 1
       }]

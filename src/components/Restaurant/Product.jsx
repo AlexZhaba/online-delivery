@@ -64,7 +64,7 @@ const Product = ({setModal, item, setOpenItem, setClearBasketModal, clearBasketM
           {item.portions[0].price} {item.portions[0].currency}
         </Price>
         <BottomContainer >
-        {itemInBasket &&
+        {(itemInBasket && !(item.modifier_groups && item.modifier_groups.length > 1 )) &&
           <CountContainer>
             <CountButton onClick={onDecreaseCount}>
               <CountImage src={Delete}/>
@@ -76,12 +76,12 @@ const Product = ({setModal, item, setOpenItem, setClearBasketModal, clearBasketM
             <CountImage src={Add}/>
           </CountButton>
           </CountContainer> 
-          }
-          {(!itemInBasket)  &&
-            <Button onClick={() => handleClick()}>
-              В корзину
-            </Button>
-          }
+        }
+        {(!itemInBasket || (itemInBasket && item.modifier_groups && item.modifier_groups.length > 1 ))  &&
+          <Button onClick={() => handleClick()}>
+            В корзину
+          </Button>
+        }
         </BottomContainer>
       </Cart>
     </Wrapper>

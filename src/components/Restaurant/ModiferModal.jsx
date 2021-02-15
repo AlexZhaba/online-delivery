@@ -1,6 +1,9 @@
 import React, {useState} from 'react';
 import styled from 'styled-components';
 
+import Add from '@assets/add.png';
+import Delete from '@assets/delete.png';
+
 import CheckBox from '@components/CheckBox/CheckBox.jsx'
 
 const AdditionalEl = ({option}) => {
@@ -18,7 +21,8 @@ const AdditionalEl = ({option}) => {
 
 
 const ModiferModal = ({modal, setModal, openItem, handleClick}) => {
-  console.log('openItem = ', openItem)
+  const [itemCount, setItemCount] = useState(1);
+
   return (
     <ModalWrapper modal={modal}>
         <ModalContainer  modal={modal}>
@@ -53,7 +57,25 @@ const ModiferModal = ({modal, setModal, openItem, handleClick}) => {
               )
             })}
             <Bottom>
-              <Button onClick={() => handleClick(openItem)}>
+              <CountContainer style={{marginRight: 10}}>
+                <CountButton onClick={() => {
+                    if (itemCount - 1 >= openItem.min_order_size) setItemCount(itemCount - 1);
+                  }}>
+                  <CountImage src={Delete}/>
+                </CountButton>
+                <CountValue>
+                  {itemCount}
+                </CountValue>
+                <CountButton onClick={() => {
+                  if (itemCount + 1 <= openItem.max_order_size) setItemCount(itemCount + 1)
+                }}>
+                <CountImage src={Add}/>
+              </CountButton>
+              </CountContainer> 
+              <Button onClick={() => {
+                  setItemCount(1);  
+                  handleClick(openItem, itemCount)
+                }}>
                 В корзину {openItem.portions[0].price} {openItem.portions[0].currency}
               </Button>
             </Bottom>
@@ -66,6 +88,37 @@ const ModiferModal = ({modal, setModal, openItem, handleClick}) => {
 }
 
 export default ModiferModal;
+
+const CountContainer = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const CountButton = styled.div`
+  background: ${props => props.theme.primary};
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: .2s all;
+  margin: 0 5px;
+  :hover {
+    transition: .2s all;
+    background: ${props => props.theme.primaryDark};
+  }
+`;
+
+const CountImage = styled.img`
+  width: 15px;
+  user-select: none;
+`;
+
+const CountValue = styled.div`
+  font-weight: 500;
+  font-size: 21px;
+`;
 
 const ModalWrapper = styled.div`
   opacity: ${props => props.modal ? "1" : "0"};
@@ -197,6 +250,10 @@ const Bottom = styled.div`
   margin-top: 50px;
   display: flex;
   justify-content: flex-start;
+  @media(max-width: 470px) {
+    flex-direction: column;
+    align-items: center;
+  }
 `;
 
 const Button = styled.div`

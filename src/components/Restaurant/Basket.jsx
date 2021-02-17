@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import styled, { keyframes, css } from 'styled-components';
 import {useDispatch, useSelector} from 'react-redux';
-import {clearBasket, decreaseItemCount, increaseItemCount} from '../../redux/actions/Order'
+import {clearBasket, decreaseItemCount, increaseItemCount, setBasketSum, fetchOrderConstraints} from '../../redux/actions/Order'
 import Add from '@assets/add.png';
 import basketIcon from '@assets/basketIcon.png';
 // import {withRouter} from 'react-router-dom';
@@ -16,10 +16,17 @@ import lightning from '@assets/lightning.png';
 const Basket = ({clearBasketModal, setClearBasketModal, ...props}) => {
   const dispatch = useDispatch();
   const history  = useHistory();
-  let   {match}  = props;
-  const basket = useSelector(({Order}) => Order.basketItems);
+  let   {match, lang}  = props;
+  let basketSum = useSelector(({Order}) => Order.basketSum);
+  let lat = useSelector(({User}) => User.lat);
+  let lon = useSelector(({User}) => User.lon);
+
+  let constraints = useSelector(({Order}) => Order.constraints);
+  let basket = useSelector(({Order}) => Order.basketItems);
+  // const [sum, setSum] = useState(0);
 
   const onIncreaseCount = (item) => {
+    console.log(item)
     if (item.count + 1 <= item.max_order_size) {
       dispatch(increaseItemCount(item))
     }
@@ -35,9 +42,25 @@ const Basket = ({clearBasketModal, setClearBasketModal, ...props}) => {
 
   useEffect(() => {
     if (basket.length !== 0) {
-      alert('try reload');
-    }
+      let sum = 0;
+      basket.forEach(item => {
+        let itemSum = 0;
+        itemSum = item.portion.price;
+        item.modifer_groups.forEach(group => {
+          itemSum += group.price;
+        })
+        sum += itemSum * item.count;
+      })     
+      dispatch(setBasketSum(sum))
+      // setSum(sum);
+    } else localStorage.setItem('basketVenue', '');
   }, [basket])
+
+  useEffect(() => {
+    if (basket.length !== 0) {
+      dispatch(fetchOrderConstraints())
+    }
+  }, [basket, lon, lat])
 
   return (
     <Wrapper>
@@ -58,25 +81,35 @@ const Basket = ({clearBasketModal, setClearBasketModal, ...props}) => {
         }
         <ListContainer>
           {basket.map(item => {
-            return <ListItem>
-                      <div style={{flex: 1}}>
-                      {item.name.ru}
-                      </div>
-                      <CountContainer>
-                        <CountButton onClick={() => onDecreaseCount(item)}>
-                          <CountImage src={Delete}/>
-                        </CountButton>
-                        <CountValue>
-                          {item.count}
-                        </CountValue>
-                        <CountButton onClick={() => onIncreaseCount(item)}>
-                          <CountImage src={Add}/>
-                        </CountButton>
-                      </CountContainer> 
-                      <ListItemPrice>
-                        {item.portions[0].price}
-                      </ListItemPrice>
-                   </ListItem>
+            return (
+              <>
+            <ListItem>
+              <div style={{flex: 1}}>
+                <div>{item.name[lang]}</div>
+              </div>
+              <CountContainer>
+                <CountButton onClick={() => onDecreaseCount(item)}>
+                  <CountImage src={Delete}/>
+                </CountButton>
+                <CountValue>
+                  {item.count}
+                </CountValue>
+                <CountButton onClick={() => onIncreaseCount(item)}>
+                  <CountImage src={Add}/>
+                </CountButton>
+              </CountContainer> 
+              <ListItemPrice>
+                {item.portion.price}
+              </ListItemPrice>
+            </ListItem>
+            <div style={{fontSize: 12, marginTop: -10}}>
+              <div>{item.portion && item.portion.name[lang]}</div>
+              {item.modifer_groups && item.modifer_groups.map(group => {
+                return <div>{group.name[lang]}</div>
+              })}
+            </div>
+            </>
+            )
           })}
         </ListContainer>
         {basket.length !== 0 &&
@@ -87,7 +120,7 @@ const Basket = ({clearBasketModal, setClearBasketModal, ...props}) => {
             <img src={lightning} style={{marginLeft: 5}}/>
           </DeliveryText>
           <DelliverySum>
-            50 000 сум
+            {constraints && `${constraints.statements.delivery_fare} ${constraints.currency}`}
           </DelliverySum>
         </DeliveryContainer>
         <BottomContainer>
@@ -97,7 +130,7 @@ const Basket = ({clearBasketModal, setClearBasketModal, ...props}) => {
           </TimeContainer>
           <TimeContainer>
             <TimeTitle>Итого</TimeTitle>
-            <TimeValue>150 000 сум </TimeValue>
+            <TimeValue>{basketSum} сум </TimeValue>
           </TimeContainer>
         </BottomContainer>
         { match.path !== "/makeOrder" && 

@@ -8,13 +8,14 @@ import {Profile} from './Account/Profile';
 import {Points} from './Account/Points';
 import {Orders} from './Account/Orders';
 import {FavPlaces} from './Account/FavPlaces';
-
+import {Cards} from './Account/Cards';
+import {Addresses} from './Account/Addresses';
 const AccountContainer = (props) => {
   let {location} = props;
   return (
     <Wrapper>
       <MContainer>
-        <Back text="Все рестораны"/>
+        <Back text="Все рестораны" margin="15px 0px 15px 10px"/>
         <Container>
           <RightContent>
             
@@ -33,6 +34,14 @@ const AccountContainer = (props) => {
               <Route
                 path='/account/favplaces'
                 render={() => <FavPlaces/>}
+              />
+              <Route
+                path='/account/cards'
+                render={() => <Cards/>}
+              />
+              <Route
+                path='/account/addresses'
+                render={() => <Addresses/>}
               />
               <Route
                 path='/account'
@@ -74,12 +83,18 @@ const Wrapper = styled.div`
   
   display: flex;
   justify-content: center;
+  background: #F6F6F6;
+  padding-bottom: 110px;
 `;
 
 const MContainer = styled.div`
   width: 1180px;
   margin: 0 20px;
   height: 100%;
+  @media(max-width: 700px) {
+    margin: 0;
+    box-shadow: none;
+  }
 `;
 
 const Container = styled.div`
@@ -100,11 +115,14 @@ const LeftSidebar = styled.div`
   height: 450px;
   background: #fff;
   border-radius: 5px;
-  box-shadow: 0 0 15px #cdcdcd;
+  /* box-shadow: 0 0 15px #cdcdcd; */
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
   padding: 20px;
+  @media(max-width: 1000px) {
+    display: none;
+  }
 `;
 
 const SidebarItem = styled.div`

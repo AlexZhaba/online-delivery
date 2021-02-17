@@ -92,6 +92,7 @@ const Profile = (props) => {
 export {Profile};
 
 const Button = styled.div`
+  max-width: 100%;
   margin-top: 38px;
   font-weight: 500;
   font-size: 16px;
@@ -140,6 +141,7 @@ const DropdownItem = styled.div`
 `;
 
 const Wrapper = styled.div`
+  width: 100%;
 `;
 
 const SexWrapper = styled.div`
@@ -191,6 +193,7 @@ const ProfileInput = styled.input`
   font-size: 18px;
   line-height: 22px;
   color: #000;
+  max-width: 100%;
 `;
 
 const SubTitle = styled.div`
@@ -219,13 +222,27 @@ const TopHeader = styled.div`
   color: #282828;
   display: flex;
   align-items: center;
+  @media(max-width: 700px) {
+    font-size: 18px;
+    line-height: 22px;
+    height: auto;
+  }@media(max-width: 700px) {
+    font-size: 18px;
+    line-height: 22px;
+    height: auto;
+    margin-left: 10px;
+  }
 `;
 
 const Container = styled.div`
   margin-top: 25px;
   width: 100%;
   min-height: 500px;
-  box-shadow: 0 0 15px #cdcdcd;
+  /* box-shadow: 0 0 15px #cdcdcd; */
+  background: #fff;
   border-radius: 5px;
   padding: 35px 70px;
+  @media(max-width: 700px) {
+    padding: 10px;
+  }
 `;

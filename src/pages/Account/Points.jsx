@@ -15,8 +15,8 @@ const Points = (props) => {
             <FlexColumn>
               Дата
             </FlexColumn>
-            <FlexColumn>
-              Кол-во баллов
+            <FlexColumn style={{minWidth: 50}}>
+              {window.innerWidth > 600 ? "Кол-во баллов" : "Кол-во"}
             </FlexColumn>
 
           </FlexContainer>
@@ -24,12 +24,12 @@ const Points = (props) => {
           {Array(8).fill(0).map(e => (
             <PointContainer>
               <FlexColumn>
-                Списание 1 
+                Списание 1
               </FlexColumn>
-              <FlexColumn>
+              <FlexColumn >
                 15.02.2020
               </FlexColumn>
-              <FlexColumn>
+              <FlexColumn style={{minWidth: 30}}>
                 1555
               </FlexColumn>
             </PointContainer>
@@ -48,11 +48,14 @@ const Container = styled.div`
   margin-top: 25px;
   width: 100%;
   min-height: 500px;
-  box-shadow: 0 0 15px #cdcdcd;
+  /* box-shadow: 0 0 15px #cdcdcd; */
+  background: #fff;
   border-radius: 5px;
   padding: 35px 70px;
-  
   position: relative;
+  @media(max-width: 700px) {
+    padding: 20px 10px
+  }
 `;
 
 const Button = styled.div`
@@ -94,7 +97,14 @@ const FlexColumn = styled.div`
   flex: 1;
   font-size: 22px;
   line-height: 27px;
+  min-width: 100px;
   color: #404040;
+  @media(max-width: 700px) {
+    font-size: 14px;
+  }
+  @media(max-width: 400px) {
+    flex-shrink: 1;
+  }
 `;
 
 const Wrapper = styled.div`
@@ -108,4 +118,11 @@ const TopHeader = styled.div`
   color: #282828;
   display: flex;
   align-items: center;
+  @media(max-width: 700px) {
+    font-size: 18px;
+    line-height: 22px;
+    height: auto;
+    margin-left: 10px;
+
+  }
 `;

@@ -291,6 +291,7 @@ const NumberContainer = styled.div`
 
 const Wrapper = styled.div`
   width: 100%;
+  
 `;
 
 const MainTitle = styled.div`

@@ -2,13 +2,14 @@ import React, {useState} from 'react';
 import styled from 'styled-components';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {addItemToBasket} from '../../redux/actions/Order'
+import {addItemToBasket, increaseItemCount, setBasketVenue} from '../../redux/actions/Order'
 
 import Product from "./Product";
 import image from '@assets/modalImage.png';
 import boxoff from '@assets/boxoff.png';
 
 import ModiferModal from '@components/Restaurant/ModiferModal.jsx';
+import OtherRestModal from '@components/Restaurant/OtherRestModal.jsx';
 import CheckBox from '@components/CheckBox/CheckBox.jsx'
 
 const AdditionalEl = ({option}) => {
@@ -25,22 +26,32 @@ const AdditionalEl = ({option}) => {
 }
 
 
-const ProductsList = ({menu, lang}) => {
+const ProductsList = ({menu, lang, venue}) => {
   const dispatch = useDispatch();
+
+  const basketVenue = useSelector(({Order}) => Order.basketVenue);
 
   const [modal, setModal] = useState(null);
   const [openItem, setOpenItem] = useState(null);
-  const [clearBasketModal, setClearBasketModal] = useState(false);
+  const [otherRest, setOtherRest] = useState(false);
 
-
-  const handleClick = (item) => {
-    dispatch(addItemToBasket(item));
+  const handleClick = (item, count, addition) => {
+    dispatch(addItemToBasket(item, addition));
+    for (let i = 0; i < count - 1; i++) {
+      console.log('------------------')
+      dispatch(increaseItemCount({
+        ...item,
+        portion: addition.portion,
+        modifer_groups: addition.modiferGroups
+      }))
+    }
     setModal(false);
   }
 
   return (
     <Wrapper>
-      <ModiferModal modal={modal} setModal={setModal} openItem={openItem} handleClick={handleClick}/>
+      <ModiferModal modal={modal} setModal={setModal} openItem={openItem} handleClick={handleClick} lang={lang}/>
+      <OtherRestModal otherRest={otherRest} setOtherRest={setOtherRest} venue={venue} lang={lang} basketVenue={basketVenue}/>
       {
         menu && menu.categories.map((category) => {
           return (
@@ -51,7 +62,15 @@ const ProductsList = ({menu, lang}) => {
               </CategoryName>
               {category.child_type === "food" &&
                 <ProductsContainer>
-                  {category.items.map(item => <Product setModal={setModal} item={item} setOpenItem={setOpenItem}/>)}
+                  {category.items.map(item => <Product 
+                  venue={venue} 
+                  setModal={setModal} 
+                  item={item} 
+                  setOpenItem={setOpenItem} 
+                  lang={lang} 
+                  basketVenue={basketVenue}
+                  setOtherRest={setOtherRest}
+                  />)}
                 </ProductsContainer>
               }
               {category.child_type === "section" &&
@@ -67,8 +86,10 @@ const ProductsList = ({menu, lang}) => {
                               setModal={setModal} 
                               item={item} 
                               lang={lang}
+                              venue={venue}
                               setOpenItem={setOpenItem}
-
+                              setOtherRest={setOtherRest}
+                              basketVenue={basketVenue}
                             />
                         })
                       }
@@ -86,6 +107,8 @@ const ProductsList = ({menu, lang}) => {
 }
 
 export default ProductsList;
+
+
 
 const Section = styled.div`
   font-size: 20px;

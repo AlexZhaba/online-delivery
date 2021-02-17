@@ -12,6 +12,17 @@ export const setCity = (city) => ({
   city
 })
 
+export const setLongitude = (lon) => ({
+  type: "SET_LONGITUDE",
+  lon
+})
+
+export const setLatitude = (lat) => ({
+  type: "SET_LATITUDE",
+  lat
+})
+
+
 export const getCity = (lon, lat) => (dispatch, getState) => {
   const token = getState().User.token;
   axios.get(`${config.API}/cities?ll=${lon},${lat}&limit=1`, {

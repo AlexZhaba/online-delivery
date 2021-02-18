@@ -7,11 +7,18 @@ const initialState = {
   categories: null, 
   activeCategory: null,
   collections: null,
-  restaurantLoading: null
+  restaurantLoading: null,
+  banners: null,
 }
 
 const Menus = (state = initialState, action) => {
   switch (action.type) {
+    case "SET_BANNERS": {
+      return {
+        ...state,
+        banners: action.banners
+      }
+    }
     case "SET_VENUES": {
       return {
         ...state,

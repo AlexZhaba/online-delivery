@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import styled from 'styled-components';
 
 import Add from '@assets/add.png';
@@ -6,13 +6,41 @@ import Delete from '@assets/delete.png';
 
 import CheckBox from '@components/CheckBox/CheckBox.jsx'
 
-const AdditionalEl = ({option}) => {
+const AdditionalEl = ({option, setAddition, addition, modal}) => {
   const [selected, setSelected] = useState(false);
+  useEffect(() => {
+    // alert('nice')
+    setSelected(false);
+  },[modal])
   return (
     <Additional>
-      <Con>
+      <Con onClick={() => {
+      if (!selected) {
+        setAddition({
+          ...addition,
+          modiferGroups: [
+            ...addition.modiferGroups,
+            option
+          ]
+        })
+      } else {
+        let ad = [...addition.modiferGroups];
+        let index = 0;
+        ad.forEach((mod, i) => {
+          if (mod.guid === option.guid) {
+            index = i; 
+          }
+        })
+        ad.splice(index, 1);
+        setAddition({
+          ...addition,
+          modiferGroups: ad
+        })
+      }
+      setSelected(!selected)
+    }}>
         <CheckBox selected={selected} setSelected={setSelected}/>
-        <Description style={{margin: 0, marginLeft: 10, cursor: 'pointer'}} onClick={() => setSelected(!selected)}>{option.description.ru}</Description>
+        <Description style={{margin: 0, marginLeft: 10, cursor: 'pointer'}}>{option.description.ru}</Description>
       </Con>
       <Text selected={selected}>{option.price} {option.currency}</Text>
     </Additional>
@@ -20,9 +48,17 @@ const AdditionalEl = ({option}) => {
 }
 
 
-const ModiferModal = ({modal, setModal, openItem, handleClick}) => {
+const ModiferModal = ({modal, setModal, openItem, handleClick, lang}) => {
   const [itemCount, setItemCount] = useState(1);
-
+  const [addition, setAddition] = useState({
+    portion: null,
+    modiferGroups: []
+  });
+  useEffect(() => {
+    console.log('addition:', addition)
+    setItemCount(1);
+  }, [addition])
+  console.log(addition.portion, ' ', openItem)
   return (
     <ModalWrapper modal={modal}>
         <ModalContainer  modal={modal}>
@@ -35,24 +71,41 @@ const ModiferModal = ({modal, setModal, openItem, handleClick}) => {
           <ModalImage src={openItem.image_urls ? openItem.image_urls[0] : "https://diabetno.ru/wp-content/uploads/2020/07/pp_image_7236_22yecuiyctplaceholder.png"}/>
           <Container>
             <Name>
-              {openItem.name.ru}
+              {openItem.name[lang]}
             </Name>
             <SubName>
               370 гр 640 ккал
             </SubName>
             <Description>
-              {openItem.cooking_desc.ru}
+              {openItem.cooking_desc[lang]}
             </Description>
+            {openItem.portions && openItem.portions.length > 1 && 
+              <AdditionalName style={{marginBottom: 15}}>Выберите порцию:</AdditionalName>
+            }
+            {openItem.portions && openItem.portions.length > 1 && openItem.portions.map(portion => (
+              <Additional>
+                <label class="container" style={{width: "auto", margin: 0}} onClick={() => setAddition({
+                  ...addition,
+                  portion
+                })}>
+                  <span>{portion.name[lang]}</span>
+                  <input type="radio" name="radio1" checked={addition.portion ? addition.portion.id === portion.id ? true : false : false}/>
+                  <span class="checkmark"></span>
+                </label>
+                <Text>
+                  {portion.price} {portion.currency}
+                </Text>
+              </Additional>
+            ))}
             {openItem.modifier_groups && openItem.modifier_groups.map(group => {
               return (
                 <>
-                <AdditionalName>
-                  {group.name.ru}
-                </AdditionalName>
-                <AdditionalContainer>
-                  {group.options.map(option => <AdditionalEl option={option}/>)}
-                  
-                </AdditionalContainer>
+                  <AdditionalName>
+                    {group.name[lang]}
+                  </AdditionalName>
+                  <AdditionalContainer>
+                    {group.options.map(option => <AdditionalEl option={option} setAddition={setAddition} addition={addition} modal={modal}/>)}
+                  </AdditionalContainer>
                 </>
               )
             })}
@@ -67,14 +120,18 @@ const ModiferModal = ({modal, setModal, openItem, handleClick}) => {
                   {itemCount}
                 </CountValue>
                 <CountButton onClick={() => {
-                  if (itemCount + 1 <= openItem.max_order_size) setItemCount(itemCount + 1)
+                  if (itemCount + 1 + openItem.itemCount <= openItem.max_order_size) setItemCount(itemCount + 1)
                 }}>
                 <CountImage src={Add}/>
               </CountButton>
               </CountContainer> 
               <Button onClick={() => {
                   setItemCount(1);  
-                  handleClick(openItem, itemCount)
+                  setAddition({
+                    portion: null,
+                    modiferGroups: []
+                  })
+                  handleClick(openItem, itemCount, addition)
                 }}>
                 В корзину {openItem.portions[0].price} {openItem.portions[0].currency}
               </Button>
@@ -92,6 +149,9 @@ export default ModiferModal;
 const CountContainer = styled.div`
   display: flex;
   align-items: center;
+  @media(max-width: 470px) {
+    margin-bottom: 10px;
+  }
 `;
 
 const CountButton = styled.div`
@@ -105,6 +165,7 @@ const CountButton = styled.div`
   transition: .2s all;
   margin: 0 5px;
   :hover {
+    cursor: pointer;
     transition: .2s all;
     background: ${props => props.theme.primaryDark};
   }
@@ -137,6 +198,8 @@ const ModalWrapper = styled.div`
 `;
 
 const ModalContainer = styled.div`
+  max-height: calc(100% - 10px);
+  /* height: auto; */
   width: 911px;
   // min-height: ${props => props.modal ? "443px" : "0px"};
   transition: .5s all;
@@ -147,10 +210,16 @@ const ModalContainer = styled.div`
   padding: 40px;
   display: flex;
   align-items: flex-start;
-  overflow: hidden;
+  /* overflow: hidden; */
+  overflow-y: auto;
   @media(max-width: 1000px) {
-    width: calc(100% - 40px);
-    margin: 0 20px;
+    /* width: calc(100% - 40px); */
+    /* margin: 0 20px; */
+    max-height: 100%;
+    margin: 0;
+    border-radius: 0;
+    width: 100%;
+    height: 100vh;
     flex-direction: column;
     align-items: center;
   }
@@ -192,9 +261,11 @@ const ModalImage = styled.img`
 
 const Container = styled.div`
   margin-left: 30px;
-  // @media(max-width: 1000px) {
-  //   margin-left: 0;
-  // }
+  flex: 1;
+  @media(max-width: 1000px) {
+     width: 100%;
+     margin-top: 20px;
+  }
 `;
 
 const Name = styled.div`
@@ -215,7 +286,7 @@ const Description = styled.div`
   color: #080808;
   font-size: 14px;
   font-weight: 500;
-  margin-bottom: 40px;
+  margin-bottom: 10px;
 `;
 
 const AdditionalName = styled(Name)`
@@ -253,6 +324,7 @@ const Bottom = styled.div`
   @media(max-width: 470px) {
     flex-direction: column;
     align-items: center;
+    margin-top: 15px;
   }
 `;
 
@@ -267,5 +339,8 @@ const Button = styled.div`
   :hover {
     background: ${props => props.theme.primaryDark};
     transition: .2s all;
+  }
+  @media(max-width: 1000px) {
+    /* margin-bottom: 30px; */
   }
 `;

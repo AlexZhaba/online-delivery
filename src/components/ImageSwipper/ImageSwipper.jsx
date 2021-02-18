@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import styled from 'styled-components';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import SwiperCore, { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
@@ -10,10 +10,35 @@ import 'swiper/components/scrollbar/scrollbar.scss';
 import imageBurger from '@assets/slider/burger.png';
 import imageBreakfast from '@assets/slider/breakfast.png'
 import swiperArrow from '@assets/swiperArrow.png'
+import { parse } from '@babel/core';
 // SwiperCore.use([Navigation, Pagination, Scrollbar, A11y]);
 
-const ImageSwiper = () => {
+const ImageSwiper = ({banners}) => {
   const [sw, setSw] = useState(null);
+  const [size, setSize] = useState('1024');
+
+  const SwiperRef = useRef(null);
+
+  useEffect(() => {
+    if (banners) {
+      const handleResize = (event) => {
+        let temp = false;
+        Object.keys(banners[0].image).forEach(size => {
+          
+            if (parseInt(size) <= parseInt(SwiperRef.current.clientWidth)) {
+              setSize(size);
+              temp = true;
+          
+          }
+        })
+      };
+      window.removeEventListener('resize', handleResize)
+      window.addEventListener('resize', handleResize)
+      handleResize();
+    }
+  }, [banners])
+  if (!banners) return <div></div>;
+  // console.log('banners: ', banners)
   return (
     <SwiperContainer>
       <SwiperButton style={{left: -20}}  onClick={() => sw.slidePrev()}>
@@ -23,22 +48,30 @@ const ImageSwiper = () => {
         <img src={swiperArrow}/>
       </SwiperButton>
       <Swiper
+        ref={SwiperRef}
         sliderPerView={1}
         touchReleaseOnEdges={true}
         grabCursor={true}
         speed={500}
         onSwiper={(swiper) => setSw(swiper)}
       >
-        <SwiperSlide>
-          <SwiperItem style={{backgroundImage: `url(${imageBurger})`}}>
+        {banners && banners.map(banner => (
+          <SwiperSlide>
+            <a href={banner.url} target={banner.target}>
+          <SwiperItem style={{backgroundImage: `url(${banner.image[size]})`}}>
             {/*<img src={imageBurger}/>*/}
+          </SwiperItem>
+          </a>
+        </SwiperSlide>  
+        ))}
+        {/* <SwiperSlide>
+          <SwiperItem style={{backgroundImage: `url(${imageBurger})`}}>
           </SwiperItem>
         </SwiperSlide>
         <SwiperSlide>
           <SwiperItem style={{backgroundImage: `url(${imageBreakfast})`}}>
-            {/*<img src={imageBreakfast}/>*/}
           </SwiperItem>
-        </SwiperSlide>
+        </SwiperSlide> */}
       </Swiper>
     </SwiperContainer>
   )

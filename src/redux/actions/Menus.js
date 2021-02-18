@@ -46,6 +46,21 @@ export const setRestaurantLoading = (isLoading) => ({
   isLoading
 })
 
+export const setBanners = (banners) => ({
+  type: "SET_BANNERS",
+  banners
+})
+
+export const fetchBanners = () => (dispatch, getState) => {
+  const city_guid = getState().User.city.guid;
+  axios.get(`${config.API}/banners/group/first?city_id=${city_guid}`).then(({data}) => {
+    // console.log('_______dataBanners:', response)
+    // if (data.enabled) {
+      dispatch(setBanners(data.items));
+    // }
+  })
+}
+
 export const fetchCollections = () => (dispatch, getState) => {
   const token = getState().User.token;
   const cityGUID = getState().User.city.guid;

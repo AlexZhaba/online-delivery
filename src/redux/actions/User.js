@@ -12,6 +12,50 @@ export const setCity = (city) => ({
   city
 })
 
+export const setLongitude = (lon) => ({
+  type: "SET_LONGITUDE",
+  lon
+})
+
+export const setLatitude = (lat) => ({
+  type: "SET_LATITUDE",
+  lat
+})
+
+export const setProfile = (profile) => ({
+  type: "SET_PROFILE",
+  profile
+})
+
+
+export const fetchProfile = () => (dispatch, getState) => {
+  const token = getState().User.token;
+  axios.get(`${config.API}/users/me`, {
+    headers: {
+      "Authorization":
+        `Bearer ${token}`
+    }
+  }).then(({data}) => {
+    dispatch(setProfile(data))
+    console.log('USER:',data)
+  })
+}
+
+export const fetchUpdateProfile = (profile) => (dispatch, getState) => {
+  const token = getState().User.token;
+  axios({
+    url: `${config.API}/users/me`,
+    method: 'put',
+    headers: {
+      "Authorization":
+        `Bearer ${token}`
+    },
+    data: profile
+  }).then(({data}) => {
+    console.log('data:',data)
+  })
+}
+
 export const getCity = (lon, lat) => (dispatch, getState) => {
   const token = getState().User.token;
   axios.get(`${config.API}/cities?ll=${lon},${lat}&limit=1`, {

@@ -62,6 +62,7 @@ const Wrapper = styled.div`
 
 const VenuesWrapper = styled.div`
   box-shadow: 0 0 15px #cdcdcd;
+  /* box-shadow: 0 0 15px #cdcdcd; */
   border-radius: 5px;
   cursor: pointer;
   position: relative;
@@ -103,6 +104,8 @@ const VenueSubTitle = styled.div`
   color: #969595;
   margin-top: 6px;
   padding: 15px;
+  padding-left: 15px;
+  padding-right: 15px;
   padding-top: 0;
   @media(max-width: 500px) {
     font-size: 9.33333px;
@@ -136,6 +139,7 @@ const Container = styled.div`
   grid-template-columns: 1fr 1fr 1fr;
   column-gap: 25px;
   row-gap: 50px;
+  row-gap: 25px;
   @media(max-width: 1100px) {
     grid-template-columns: 1fr 1fr;
   }

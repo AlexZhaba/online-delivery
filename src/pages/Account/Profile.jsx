@@ -3,8 +3,14 @@ import styled from 'styled-components';
 
 import selectArrow from '@assets/selectArrow.png';
 
+import {useDispatch, useSelector} from 'react-redux';
+import { fetchProfile, fetchUpdateProfile } from '../../redux/actions/User';
+
+
 const SelProfile = ({date, children}) => {
+
   const [isOpen, setIsOpen] = useState(false);
+
   useEffect(() => {
     document.addEventListener("click", (event) => {
       setIsOpen(false);
@@ -32,13 +38,35 @@ const SelProfile = ({date, children}) => {
 }
 
 const Profile = (props) => {
+  const dispatch = useDispatch();
+
+  let profile = useSelector(({User}) => User.profile)
+  const [activeProfile, setActiveProfile] = useState(null);
+
   const [sex, setSex] = useState("WOMAN"); // WOMAN OR MAN
-  
   const [date, setDate] = useState('дд')
   const [month, setMonth] = useState('мм');
   const [year, setYear] = useState('гггг');
-  let currentTime = new Date()
 
+  useEffect(() => {
+    dispatch(fetchProfile());
+  }, [])
+
+  useEffect(() => {
+    if (profile) {
+      const birth = profile.dob.split('-');
+      console.log(birth)
+      console.log('birth:', birth)
+      setActiveProfile(profile);
+    }
+  }, [profile])
+
+  const handleSave = () => {
+    dispatch(fetchUpdateProfile(activeProfile))
+  }
+
+  let currentTime = new Date()
+  if (!activeProfile) return <div></div>;
   return (
     <Wrapper>
       <TopHeader>
@@ -47,7 +75,10 @@ const Profile = (props) => {
       <Container>
         <Title>Личные данные</Title>
         <SubTitle>Имя</SubTitle>
-        <ProfileInput/>
+        <ProfileInput value={activeProfile.first_name} onChange={(event) => setActiveProfile({...activeProfile, first_name: event.target.value})}/>
+
+        <SubTitle>Имя</SubTitle>
+        <ProfileInput value={activeProfile.last_name} onChange={(event) => setActiveProfile({...activeProfile, last_name: event.target.value})}/>
 
         <SubTitle>Дата рождения</SubTitle>
         <SexWrapper>
@@ -72,16 +103,16 @@ const Profile = (props) => {
         </SexWrapper>
         <SubTitle>Пол</SubTitle>
         <SexWrapper>
-          <SexContainer active={sex === "WOMAN"} onClick={() => setSex("WOMAN")}>Жен</SexContainer>
-          <SexContainer active={sex === "MAN"}   onClick={() => setSex("MAN")}  >Муж</SexContainer>
+          <SexContainer active={activeProfile.gender === "WOMAN"} onClick={() => setActiveProfile({...activeProfile, gender: "WOMAN"})}> Жен</SexContainer>
+          <SexContainer active={activeProfile.gender === "MAN"}   onClick={() => setActiveProfile({...activeProfile, gender: "MAN"})}>Муж</SexContainer>
         </SexWrapper>
 
         <SubTitle>Номер телефона</SubTitle>
-        <ProfileInput/>
+        <ProfileInput value={activeProfile.phone_number} onChange={(event) => setActiveProfile({...activeProfile, phone_number: event.target.value})}/>
 
         <SubTitle>E-mail</SubTitle>
-        <ProfileInput/>
-        <Button>
+        <ProfileInput value={activeProfile.email} onChange={(event) => setActiveProfile({...activeProfile, email: event.target.value})}/>
+        <Button onClick={() => handleSave()}>
           Сохранить
         </Button>
       </Container>
@@ -238,7 +269,8 @@ const Container = styled.div`
   margin-top: 25px;
   width: 100%;
   min-height: 500px;
-  box-shadow: 0 0 15px #cdcdcd;
+  /* box-shadow: 0 0 15px #cdcdcd; */
+  background: #fff;
   border-radius: 5px;
   padding: 35px 70px;
   @media(max-width: 700px) {

@@ -8,7 +8,8 @@ import {Profile} from './Account/Profile';
 import {Points} from './Account/Points';
 import {Orders} from './Account/Orders';
 import {FavPlaces} from './Account/FavPlaces';
-
+import {Cards} from './Account/Cards';
+import {Addresses} from './Account/Addresses';
 const AccountContainer = (props) => {
   let {location} = props;
   return (
@@ -33,6 +34,14 @@ const AccountContainer = (props) => {
               <Route
                 path='/account/favplaces'
                 render={() => <FavPlaces/>}
+              />
+              <Route
+                path='/account/cards'
+                render={() => <Cards/>}
+              />
+              <Route
+                path='/account/addresses'
+                render={() => <Addresses/>}
               />
               <Route
                 path='/account'
@@ -74,6 +83,8 @@ const Wrapper = styled.div`
   
   display: flex;
   justify-content: center;
+  background: #F6F6F6;
+  padding-bottom: 110px;
 `;
 
 const MContainer = styled.div`
@@ -104,7 +115,7 @@ const LeftSidebar = styled.div`
   height: 450px;
   background: #fff;
   border-radius: 5px;
-  box-shadow: 0 0 15px #cdcdcd;
+  /* box-shadow: 0 0 15px #cdcdcd; */
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;

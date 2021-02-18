@@ -6,9 +6,9 @@ import Add from '@assets/add.png';
 import Delete from '@assets/delete.png';
 
 import {useDispatch, useSelector} from 'react-redux';
-import {addItemToBasket, increaseItemCount, decreaseItemCount, clearBasket} from '../../redux/actions/Order';
+import {addItemToBasket, increaseItemCount, decreaseItemCount, clearBasket, setBasketVenue} from '../../redux/actions/Order';
 
-const Product = ({setModal, item, setOpenItem, setClearBasketModal, clearBasketModal, lang}) => {
+const Product = ({setModal, item, setOpenItem, setClearBasketModal, clearBasketModal, lang, basketVenue, venue, setOtherRest}) => {
   const dispatch = useDispatch();
 
   const [itemInBasket, setItemInBasket] = useState(false);
@@ -20,26 +20,41 @@ const Product = ({setModal, item, setOpenItem, setClearBasketModal, clearBasketM
     let isBasket = basketItems.filter(itemB => itemB.guid === item.guid).length !== 0;
     setItemInBasket(isBasket);
     if (isBasket) {
-      setItemCount(basketItems.filter(itemB => itemB.guid === item.guid)[0].count);
+      let count = 0;
+      basketItems.filter(itemB => itemB.guid === item.guid).forEach(item => {
+        count += item.count
+      });
+      setItemCount(count);
     }
-    // console.log(basketItems.filter(item => item.guid === item.guid).length !== 0)
   }, [basketItems])
-  console.log('item = ', item);
   const handleClick = () => {
     if (!item.online) return;
+    if (basketVenue === null) {
+      dispatch(setBasketVenue(venue));
+    } else if (venue.guid !== basketVenue.guid) {
+      setOtherRest(true);
+      window.item_guid = item.guid;
+      return;
+    }
     // if (item.max_order_size <= 0) return;
     if (item.modifier_groups || (item.portions && item.portions.length > 1)) {
       setOpenItem(item);
       setModal(true)
     } else {
-      dispatch(addItemToBasket(item));
+      dispatch(addItemToBasket(item, {
+        portion: item.portions[0],
+        modiferGroups: []
+      }));
     }
   }
   
   const onIncreaseCount = () => {
     if (!item.online) return;
     if (itemCount + 1 <= item.max_order_size) {
-      dispatch(increaseItemCount(item))
+      if (item.modifier_groups || (item.portions && item.portions.length > 1)) {
+        setOpenItem({...item, itemCount});
+        setModal(true)
+      } else dispatch(increaseItemCount(item))
     }
   }
 
@@ -64,7 +79,7 @@ const Product = ({setModal, item, setOpenItem, setClearBasketModal, clearBasketM
           {item.portions[0].price} {item.portions[0].currency}
         </Price>
         <BottomContainer >
-        {(itemInBasket && !(item.modifier_groups && item.modifier_groups.length > 1 )) &&
+        {(itemInBasket) &&
           <CountContainer>
             <CountButton onClick={onDecreaseCount}>
               <CountImage src={Delete}/>
@@ -77,8 +92,8 @@ const Product = ({setModal, item, setOpenItem, setClearBasketModal, clearBasketM
           </CountButton>
           </CountContainer> 
         }
-        {(!itemInBasket || (itemInBasket && item.modifier_groups && item.modifier_groups.length > 1 ))  &&
-          <Button onClick={() => handleClick()}>
+        {(!itemInBasket)  &&
+          <Button onClick={() => handleClick()} data-trash="true" id={`button_item_${item.guid}`}>
             В корзину
           </Button>
         }

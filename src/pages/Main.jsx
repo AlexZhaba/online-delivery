@@ -8,7 +8,7 @@ import TitlePicture from "@components/TitlePicture/TitlePicture";
 import Loader from '@components/Loader/Loader';
 import { useSelector, useDispatch } from "react-redux";
 import axios from 'axios';
-import {fetchCategories, fetchVenues, fetchCollections, 
+import {fetchCategories, fetchVenues, fetchCollections, fetchBanners,
   setActiveVenue, setActiveMenu, fetchVenueById, fetchMenuById, setRestaurantLoading } from "../redux/actions/Menus";
 import { useHistory } from "react-router-dom";
 
@@ -50,6 +50,7 @@ const DesktopMain = () => {
   const categories = useSelector(({Menus}) => Menus.categories);
   const collections = useSelector(({Menus}) => Menus.collections);
   const restaurantLoading = useSelector(({Menus}) => Menus.restaurantLoading);
+  const banners = useSelector(({Menus}) => Menus.banners);
   const city = useSelector(({User}) => User.city);
   
   useEffect(() => {  
@@ -57,6 +58,7 @@ const DesktopMain = () => {
       if (!Array.isArray(venues)) dispatch(fetchVenues());
       if (!Array.isArray(collections)) dispatch(fetchCollections());
       dispatch(fetchCategories())
+      dispatch(fetchBanners());
     }
   }, [city])
   useEffect(() => {
@@ -69,6 +71,7 @@ const DesktopMain = () => {
     dispatch(setRestaurantLoading(true))
     dispatch(fetchVenueById(guid));
     dispatch(fetchMenuById(guid));
+    
   }
   useEffect(() => {
     if (typeof restaurantLoading === "string") {
@@ -91,7 +94,7 @@ const DesktopMain = () => {
           <Button>Найти</Button>
         </div>
         <FoodSection categories={categories}/>
-        <ImageSwiper/>
+        <ImageSwiper banners={banners}/>
         <ItemsList venues={venues} venuesLoad={venuesLoad} history={history} handleOpenRestaurant={handleOpenRestaurant}/>
         <div style={{marginTop: 24}}/>
         {/* <ImageSwiper/> */}

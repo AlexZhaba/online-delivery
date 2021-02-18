@@ -1,25 +1,34 @@
 import React, {useState, useEffect} from 'react';
 import styled, { keyframes, css } from 'styled-components';
 import {useDispatch, useSelector} from 'react-redux';
-import {clearBasket, decreaseItemCount, increaseItemCount} from '../../redux/actions/Order'
+import {clearBasket, decreaseItemCount, increaseItemCount, setBasketSum, fetchOrderConstraints} from '../../redux/actions/Order'
 import Add from '@assets/add.png';
 import basketIcon from '@assets/basketIcon.png';
 // import {withRouter} from 'react-router-dom';
 import Delete from '@assets/delete.png';
 import { NavLink, useHistory } from "react-router-dom";
-
+import CircleLoader from '@components/Loader/CircleLoader';
 
 import trash from '@assets/trash_full.png';
 
 import lightning from '@assets/lightning.png';
+import { constants } from 'fs-extra';
 
 const Basket = ({clearBasketModal, setClearBasketModal, ...props}) => {
   const dispatch = useDispatch();
   const history  = useHistory();
-  let   {match}  = props;
-  const basket = useSelector(({Order}) => Order.basketItems);
+  let   {match, lang}  = props;
+  let basketSum = useSelector(({Order}) => Order.basketSum);
+  let basketLoading = useSelector(({Order}) => Order.basketLoading);
+  let lat = useSelector(({User}) => User.lat);
+  let lon = useSelector(({User}) => User.lon);
+
+  let constraints = useSelector(({Order}) => Order.constraints);
+  let basket = useSelector(({Order}) => Order.basketItems);
+  // const [sum, setSum] = useState(0);
 
   const onIncreaseCount = (item) => {
+    console.log(item)
     if (item.count + 1 <= item.max_order_size) {
       dispatch(increaseItemCount(item))
     }
@@ -35,8 +44,25 @@ const Basket = ({clearBasketModal, setClearBasketModal, ...props}) => {
 
   useEffect(() => {
     if (basket.length !== 0) {
-    }
+      let sum = 0;
+      basket.forEach(item => {
+        let itemSum = 0;
+        itemSum = item.portion.price;
+        item.modifer_groups.forEach(group => {
+          itemSum += group.price;
+        })
+        sum += itemSum * item.count;
+      })     
+      dispatch(setBasketSum(sum))
+      // setSum(sum);
+    } else localStorage.setItem('basketVenue', '');
   }, [basket])
+
+  useEffect(() => {
+    if (basket.length !== 0) {
+      dispatch(fetchOrderConstraints())
+    }
+  }, [basket, lon, lat])
 
   return (
     <Wrapper>
@@ -48,6 +74,10 @@ const Basket = ({clearBasketModal, setClearBasketModal, ...props}) => {
         </MobileWrapper>
         
       }
+      {basketLoading && <LoaderWrapper>
+                          <CircleLoader/>
+                          
+                        </LoaderWrapper>}
       <GlobalContainer>
         <TitleContainer>
           Мой заказ
@@ -57,46 +87,98 @@ const Basket = ({clearBasketModal, setClearBasketModal, ...props}) => {
         }
         <ListContainer>
           {basket.map(item => {
-            return <ListItem>
-                      <div style={{flex: 1}}>
-                      {item.name.ru}
-                      </div>
-                      <CountContainer>
-                        <CountButton onClick={() => onDecreaseCount(item)}>
-                          <CountImage src={Delete}/>
-                        </CountButton>
-                        <CountValue>
-                          {item.count}
-                        </CountValue>
-                        <CountButton onClick={() => onIncreaseCount(item)}>
-                          <CountImage src={Add}/>
-                        </CountButton>
-                      </CountContainer> 
-                      <ListItemPrice>
-                        {item.portions[0].price}
-                      </ListItemPrice>
-                   </ListItem>
+            return (
+              <>
+            <ListItem>
+              <div style={{flex: 5}}>
+                <div>{item.name[lang]}</div>
+              </div>
+              <CountContainer>
+                <CountButton onClick={() => onDecreaseCount(item)}>
+                  <CountImage src={Delete}/>
+                </CountButton>
+                <CountValue>
+                  {item.count}
+                </CountValue>
+                <CountButton onClick={() => onIncreaseCount(item)}>
+                  <CountImage src={Add}/>
+                </CountButton>
+              </CountContainer> 
+              <ListItemPrice>
+                {item.portion.price} {item.portion.currency}
+              </ListItemPrice>
+            </ListItem>
+            <div style={{fontSize: 12, marginTop: -10}}>
+              <div>{item.portion && item.portion.name[lang]}</div>
+              {item.modifer_groups && item.modifer_groups.map(group => {
+                return <div>{group.name[lang]}</div>
+              })}
+            </div>
+            </>
+            )
           })}
         </ListContainer>
-        {basket.length !== 0 &&
+        {(basket.length !== 0 && constraints) &&
         <>
-        <DeliveryContainer>
-          <DeliveryText>
-            Доставка
-            <img src={lightning} style={{marginLeft: 5}}/>
-          </DeliveryText>
-          <DelliverySum>
-            50 000 сум
-          </DelliverySum>
-        </DeliveryContainer>
+        <AdditionContainer>
+          <DeliveryContainer>
+            <DeliveryText>
+              Доставка
+              <img src={lightning} style={{marginLeft: 5}}/>
+            </DeliveryText>
+            <DelliverySum>
+              {`${constraints.statements.delivery_fare} ${constraints.currency}`}
+            </DelliverySum>
+          </DeliveryContainer>
+          <AdditionSubstring>
+            {constraints.statements.delivery_fare_notes && constraints.statements.delivery_fare_notes.ru}
+          </AdditionSubstring>
+          
+          <DeliveryContainer>
+            <DeliveryText>
+              Стоимость упаковки
+            </DeliveryText>
+            <DelliverySum>
+              {`${constraints.statements.packaging_charge} ${constraints.currency}`}
+            </DelliverySum>
+          </DeliveryContainer>
+          <AdditionSubstring>
+            {constraints.statements.packaging_charge_notes && constraints.statements.packaging_charge_notes.ru}
+          </AdditionSubstring>
+
+          <DeliveryContainer>
+            <DeliveryText>
+              Обслуживание
+            </DeliveryText>
+            <DelliverySum>
+              {`${constraints.statements.service_charge} ${constraints.currency}`}
+            </DelliverySum>
+          </DeliveryContainer>
+          <AdditionSubstring>
+            {constraints.statements.service_charge_notes && constraints.statements.service_charge_notes.ru}
+          </AdditionSubstring>
+
+          <DeliveryContainer>
+            <DeliveryText>
+              Скидка
+            </DeliveryText>
+            <DelliverySum>
+              {`${constraints.statements.discount_value} ${constraints.currency}`}
+            </DelliverySum>
+          </DeliveryContainer>
+          <AdditionSubstring>
+            {constraints.statements.discount_value_notes && constraints.statements.discount_value_notes.ru}
+          </AdditionSubstring>
+
+        </AdditionContainer>
         <BottomContainer>
           <TimeContainer>
             <TimeTitle>Время доставки</TimeTitle>
-            <TimeValue>35-40 мин </TimeValue>
+            {/* <TimeValue>{constraints.statements.hours}</TimeValue> */}
           </TimeContainer>
           <TimeContainer>
             <TimeTitle>Итого</TimeTitle>
-            <TimeValue>150 000 сум </TimeValue>
+            <TimeValue>{basketSum} {basket[0].portion.currency}</TimeValue>
           </TimeContainer>
         </BottomContainer>
         { match.path !== "/makeOrder" && 
@@ -112,6 +194,34 @@ const Basket = ({clearBasketModal, setClearBasketModal, ...props}) => {
 }
 
 export default Basket;
+
+const AdditionSubstring = styled.div`
+  color: grey;
+  margin-top: 0px;
+  font-size: 12px;
+`;
+
+const AdditionContainer = styled.div`
+  padding: 12px 0px;
+  border-top: 1.5px solid #C4C4C4;
+  margin-top: 65px;
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1.5px solid #C4C4C4;
+`;
+
+const LoaderWrapper = styled.div`
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.5);
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 
 const BasketIcon = styled.img`
   margin-right: 20px;
@@ -187,12 +297,9 @@ const TimeValue = styled.div`
 `;
 
 const DeliveryContainer = styled.div`
-  padding: 12px 0px;
-  border-top: 1.5px solid #C4C4C4;
-  margin-top: 65px;
+  padding: 6px 0px;
   display: flex;
   justify-content: space-between;
-  border-bottom: 1.5px solid #C4C4C4;
 `;
 
 const DeliveryText = styled.div`
@@ -281,12 +388,14 @@ const ListItemPrice = styled.div`
   line-height: 20px;
   color: #000003;
   font-size: 17px;
+  flex: 4;
 `;
 
 const CountContainer = styled.div`
   display: flex;
   align-items: center;
-  flex: 1;
+  flex: 5;
+  /* width: 100px; */
 `;
 
 const CountButton = styled.div`

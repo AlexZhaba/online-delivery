@@ -68,7 +68,7 @@ const Orders = (props) => {
               <StepContainer>
                 <StepImage src={finish}/>
               </StepContainer>
-
+              
             </StepWrapper>
             <Center style={{marginTop: 60}}>
               <Button>Связаться с нами</Button>
@@ -178,7 +178,7 @@ const Container = styled.div`
   margin-top: 25px;
   width: 100%;
   min-height: 500px;
-  box-shadow: 0 0 15px #cdcdcd;
+  background: #fff;
   border-radius: 5px;
   /* padding: 35px 70px; */
 `;

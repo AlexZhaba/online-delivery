@@ -42,9 +42,9 @@ const DesktopRestaurant = (props) => {
           <div>
             <Input placeholder="Поиск блюд..."/>
             <Button>Найти</Button>
-            <ProductsList menu={menu} lang={lang}/>
+            <ProductsList menu={menu} lang={lang} venue={venue}/>
           </div>
-          <Basket {...props} clearBasketModal={clearBasketModal} setClearBasketModal={setClearBasketModal}/>
+          <Basket {...props} clearBasketModal={clearBasketModal} setClearBasketModal={setClearBasketModal} lang={lang}/>
           <ClearBasketModal clearBasketModal={clearBasketModal} setClearBasketModal={setClearBasketModal}/>
         </Container>
       </MContainer>
@@ -101,6 +101,7 @@ const Button = styled.div`
 
 const Wrapper = styled.div`
   min-height: 100vh;
+  padding-bottom: 110px;
   display: flex;
   justify-content: center;
 `;

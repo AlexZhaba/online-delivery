@@ -22,7 +22,7 @@ let DiscountsSwiper = ({collections}) => {
       {
        collections && collections.map((collection, index) => {
          return (
-          <ItemContainer image={collection.images ? collection.images["312"] : null}>
+          <ItemContainer image={collection.images ? collection.images["786"] : null}>
             <ContainerText>
               {collection.description.ru}
             </ContainerText>
@@ -40,6 +40,10 @@ let DiscountsSwiper = ({collections}) => {
 const Container = styled.div`
   margin-top: 20px;
   display: flex;
+  
+  & > :last-child {
+    margin: 0;
+  }
 `;
 
 const SwiperContainer = styled.div`
@@ -50,6 +54,8 @@ const SwiperContainer = styled.div`
 const ItemContainer = styled.div`
   height: 170px;
   max-width: 1200px;
+  //width: 786px;
+  flex: 1;
   position: relative;
   border-radius: 5px;
   background-image: ${props => `url(${props.image})`};
@@ -59,7 +65,8 @@ const ItemContainer = styled.div`
   margin-right: 20px;
   flex-direction: column;
   justify-content: center;
-  align-items: flex-start;
+  //align-items: flex-start;
+  align-items: center;
   padding: 15px;
   padding-left: 20px;
   

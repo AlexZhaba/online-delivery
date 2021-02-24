@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from 'react';
+import styled from 'styled-components'
 
 import logo from '@assets/logo.png';
 import mapPoint from "@assets/mapPoint.png";
 import arrow from "@assets/arrow.png";
-import {Link} from 'react-router-dom';
+import {Link, NavLink} from 'react-router-dom';
 //styled
 import Wrapper from './styled/Wrapper';
 import Main from './styled/Main';
@@ -16,12 +17,15 @@ import Input from "../Input/Input";
 import HeaderBurger from './components/HeaderBurger';
 import HeaderConnect from './components/HeaderConnect';
 import EntryModal from './components/EntryModal.jsx';
+import { useSelector } from 'react-redux';
 const MobileHeader = (props) => {
   return (
     <Wrapper>
       <Main>
         <HeaderBurger/>
-        <LogoImg src={logo} className="header__logo"/>
+        <NavLink to='/main'>
+          <LogoImg src={logo} className="header__logo"/>
+        </NavLink>
         <Input/>
         <HeaderConnect/>
       </Main>
@@ -32,6 +36,9 @@ const MobileHeader = (props) => {
 const DesktopHeader = (props) => {
   const [entry, setEntry] = useState(null);
   const [scroll, setScroll] = useState(0);
+
+  let profile = useSelector(({User}) => User.profile);
+
   useEffect(() => {
     let scrollTop = window.pageYOffset ? window.pageYOffset : (document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop);
     setScroll(scrollTop)
@@ -44,13 +51,17 @@ const DesktopHeader = (props) => {
     <Wrapper>
       <EntryModal entry={entry} setEntry={setEntry}/>
       <Main>
-        <HeaderBurger/>
+        <HeaderBurger profile={profile} setEntry={setEntry}/>
         <Link to='/main'>
           <LogoImg src={logo} className="header__logo"/>
         </Link>
-        {/* {(scroll >= 400 || (props.location && props.location.pathname !== "/main") || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)  ) && */}
+        {/*{*/}
+        {/*  (props.location.pathname === "/makeOrder" && <MakeOrderTitle>Оформление заказа</MakeOrderTitle>*/}
+        {/*}*/}
+         {((true)&&
+             (scroll >= 400 || (props.location && props.location.pathname !== "/main") || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))) &&
           <Input/>
-        {/* } */}
+         }
         <HeaderConnect setEntry={setEntry}/>
       </Main>
     </Wrapper>
@@ -58,3 +69,12 @@ const DesktopHeader = (props) => {
 }
 
 export {MobileHeader, DesktopHeader};
+
+const MakeOrderTitle = styled.div`
+  text-align: center;
+  font-weight: bold;
+  font-size: 20px;
+  @media(max-width: 620px) {
+    width: 100%;
+  }
+`;

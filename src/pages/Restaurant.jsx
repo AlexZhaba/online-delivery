@@ -19,8 +19,8 @@ const DesktopRestaurant = (props) => {
 
   let menu = useSelector(({Menus}) => Menus.activeMenu);
   let venue = useSelector(({Menus}) => Menus.activeVenue);
-  const lang = useSelector(({User}) => User.lang);
-
+  let lang = useSelector(({User}) => User.lang);
+  let token = useSelector(({User}) => User.token);
   const [clearBasketModal, setClearBasketModal] = useState(false);
 
   useEffect(() => {
@@ -29,9 +29,11 @@ const DesktopRestaurant = (props) => {
   useEffect(() => {
     // dispatch(setActiveVenue(null))
     // dispatch(setActiveMenu(null));
-    dispatch(fetchVenueById(props.match.params.id));
-    dispatch(fetchMenuById(props.match.params.id));
-  }, []);
+    if (token) {
+      dispatch(fetchVenueById(props.match.params.id));
+      dispatch(fetchMenuById(props.match.params.id));
+    }
+  }, [token]);
   return (
     <Wrapper>
       <MContainer>

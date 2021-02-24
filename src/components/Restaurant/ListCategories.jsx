@@ -33,6 +33,9 @@ const Wrapper = styled.div`
   //flex-wrap: wrap;  
   align-items: center;
   margin-bottom: 40px;
+  @media(max-width: 960px) {
+    top: 70px;
+  }
   //scrollbar-track-color: red;
 `;
 

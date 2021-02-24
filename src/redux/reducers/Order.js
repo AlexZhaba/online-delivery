@@ -60,13 +60,14 @@ const Order = (state = initialState, action) => {
           min_order_size: action.item.min_order_size,
           guid: action.item.guid,
           name: action.item.name,
+          packaging_price: action.addition.portion ? action.addition.portion.packaging_price : action.item.portions[0].packaging_price,
           image_url: action.item.image_urls,
           portion: action.addition.portion || action.item.portions[0],
           modifer_groups: action.addition.modiferGroups,
           count: 1
       }]
       console.log('|||||||||||||||||||||||||||||||');
-      
+      console.log(newBasket)
       localStorage.setItem('basket', JSON.stringify(newBasket))
       return {
         ...state,
@@ -115,7 +116,7 @@ const Order = (state = initialState, action) => {
       })
       if (!isSearch) {
         newBasket = state.basketItems.map((item, index) => {
-          if (isSearch) return;
+          if (isSearch) return item;
           if (item.guid === action.item.guid) {
             if (item.count - 1 < 1 ) removeIndex = index;
             isSearch = true;
@@ -128,6 +129,7 @@ const Order = (state = initialState, action) => {
       }
 
       if (removeIndex !== null) {
+        console.log('REMOVE_INDEX:', removeIndex)
         newBasket.splice(removeIndex, 1);
       }
       console.log('newBasket:', newBasket)

@@ -38,7 +38,7 @@ const Product = ({setModal, item, setOpenItem, setClearBasketModal, clearBasketM
     }
     // if (item.max_order_size <= 0) return;
     if (item.modifier_groups || (item.portions && item.portions.length > 1)) {
-      setOpenItem(item);
+      setOpenItem({...item, itemCount: 0});
       setModal(true)
     } else {
       dispatch(addItemToBasket(item, {

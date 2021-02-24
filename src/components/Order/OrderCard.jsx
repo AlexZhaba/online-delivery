@@ -5,6 +5,8 @@ import arrowBottom from '@assets/arrowBottom.png';
 
 import ModalNewCard from './ModalNewCard';
 import ModalMakeOrder from './ModalMakeOrder';
+import {useDispatch} from "react-redux";
+import {fetchOrderConstraints} from "../../redux/actions/Order";
 const OrderInput = ({text, style}) => (
   <div class="group" style={style}>      
     <input type="text" class="input__order" required/>
@@ -14,9 +16,21 @@ const OrderInput = ({text, style}) => (
   </div>
 )
 
-const OrderCard = () => {
+const OrderCard = ({constraints}) => {
+  const dispatch = useDispatch();
+
   const [openNewCard, setOpenNewCard] = useState(false);
   const [isOrderMade, setIsOrderMade] = useState(false);
+  if (!constraints) return <div></div>
+
+  const setDelivery = () => {
+    dispatch(fetchOrderConstraints('delivery'))
+  }
+
+  const setTakeaway = () => {
+    dispatch(fetchOrderConstraints('takeaway'))
+  }
+
   return ( 
     <Wrapper>
       <ModalNewCard openNewCard={openNewCard} setOpenNewCard={setOpenNewCard}/>
@@ -25,25 +39,25 @@ const OrderCard = () => {
           Оформление заказа
         </MainTitle>
       <OrderWrapper>
-        <Title>Подтверждение номера телефона</Title>
-        <NumberContainer>
-          <div>
-            <OrderInput text="Телефон"/>
-            <OrderInput text="Код из СМС(4 цифры)" style={{marginTop: 30}}/>
-          </div>
-          <div>
-            <CodeButton>
-                Получить код
-            </CodeButton>
-          </div>
-        </NumberContainer>
-        <Title style={{marginTop: 30, marginBottom: 30}}>Тип доставки</Title>
-        <label class="container">
+        {/*<Title>Подтверждение номера телефона</Title>*/}
+        {/*<NumberContainer>*/}
+        {/*  <div>*/}
+        {/*    <OrderInput text="Телефон"/>*/}
+        {/*    <OrderInput text="Код из СМС(4 цифры)" style={{marginTop: 30}}/>*/}
+        {/*  </div>*/}
+        {/*  <div>*/}
+        {/*    <CodeButton>*/}
+        {/*        Получить код*/}
+        {/*    </CodeButton>*/}
+        {/*  </div>*/}
+        {/*</NumberContainer>*/}
+        <Title style={{marginBottom: 30}}>Тип доставки</Title>
+        <label class="container" onClick={() => setDelivery()}>
           <span>Доставка курьером</span>
           <input type="radio" name="radio1" defaultChecked/>
           <span class="checkmark"></span>
         </label>
-        <label class="container">
+        <label class="container" onClick={() => setTakeaway()}>
           <span>Самовызов</span>
           <input type="radio" name="radio1"/>
           <span class="checkmark"></span>
@@ -74,17 +88,38 @@ const OrderCard = () => {
         </DateSelect>
         
         <Title style={{marginTop: 30, marginBottom: 30}}>Способы оплаты</Title>
-        <label class="container">
-        <span>Картой онлайн</span>
-          <input type="radio" name="radio" defaultChecked data-trash="true"/>
-          <span class="checkmark"></span>
-          <ButtonCard style={{transform: 'translateY(-5px)'}} onClick={() => setOpenNewCard(true)} data-trash="true">Добавить карту</ButtonCard>
+        {constraints.payment_option === 0 &&
+          <label className="container">
+            <span>Наличными курьером</span>
+            <input type="radio" name="radio"/>
+            <span className="checkmark"></span>
+          </label>
+        }
+        {constraints.payment_option === 1 &&
+          <label className="container">
+            <span>Картой онлайн</span>
+            <input type="radio" name="radio" defaultChecked data-trash="true"/>
+            <span className="checkmark"></span>
+            <ButtonCard style={{transform: 'translateY(-5px)'}} onClick={() => setOpenNewCard(true)} data-trash="true">Добавить
+              карту</ButtonCard>
         </label>
-        <label class="container">
-          <span>Наличными курьером</span>
-          <input type="radio" name="radio"/>
-          <span class="checkmark"></span>
-        </label>
+        }
+        {constraints.payment_option === 2 &&
+          <>
+            <label class="container">
+              <span>Картой онлайн</span>
+              <input type="radio" name="radio" defaultChecked data-trash="true"/>
+              <span class="checkmark"></span>
+              <ButtonCard style={{transform: 'translateY(-5px)'}} onClick={() => setOpenNewCard(true)} data-trash="true">Добавить
+                карту</ButtonCard>
+            </label>
+              <label class="container">
+              <span>Наличными курьером</span>
+              <input type="radio" name="radio"/>
+              <span class="checkmark"></span>
+            </label>
+          </>
+        }
         {/* <SelectContainer>
           <input type="radio" id="carta" name="payment" value="carta" defaultChecked/>
           <SelectLabel for="carta">
@@ -291,7 +326,6 @@ const NumberContainer = styled.div`
 
 const Wrapper = styled.div`
   width: 100%;
-  
 `;
 
 const MainTitle = styled.div`

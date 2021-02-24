@@ -1,7 +1,9 @@
 import React, {useState, useEffect, useRef} from 'react';
 import styled from 'styled-components';
-import {NavLink} from 'react-router-dom';
+import {NavLink, useHistory} from 'react-router-dom';
 import {useDispatch, useSelector} from 'react-redux';
+
+import { useCookies } from 'react-cookie';
 
 import {setLang} from '../../../redux/actions/User';
 
@@ -14,7 +16,14 @@ const HeaderConnect = ({setEntry}) => {
   const dispatch = useDispatch();
 
   const [openLang, setOpenLang] = useState(false);
-  const lang = useSelector(({User}) => User.lang);
+
+  let history = useHistory()
+  let lang = useSelector(({User}) => User.lang);
+  let tokenType = useSelector(({User}) => User.tokenType)
+
+  const [cookies, setCookie] = useCookies(['token']);
+
+
   const LangButton = useRef(null);
   useEffect(() => {
     document.addEventListener('click', (event) => {
@@ -45,33 +54,46 @@ const HeaderConnect = ({setEntry}) => {
           {lang === "uz" && "Uzb"}
         </span>
         <SortWrapper openSort={openLang} onClick={(event) => event.stopPropagation()}>
-          <label class="container" style={{fontSize: 17, marginTop: 10}} onClick={() => handleSelect("en")}>
+          <label class="container" style={{fontSize: 17, marginTop: 10}}>
             <span>English</span>
-            <input type="radio" name="radio2" checked={lang === "en"}/>
+            <input type="radio" name="radio2" checked={lang === "en"} onChange={() => handleSelect("en")}/>
             <span class="checkmark"></span>
           </label>
-              <label class="container" style={{fontSize: 17}} onClick={() => handleSelect("ru")}>
+          <label class="container" style={{fontSize: 17}}>
             <span>Русский</span>
-            <input type="radio" name="radio2" checked={lang === "ru"}/>
+            <input type="radio" name="radio2" checked={lang === "ru"} onChange={() => handleSelect("ru")}/>
             <span class="checkmark" ></span>
           </label>
-          <label class="container" style={{fontSize: 17}} onClick={() => handleSelect("uz")}>
+          <label class="container" style={{fontSize: 17}}>
             <span>Uzbek</span>
-            <input type="radio" name="radio2" checked={lang === "uz"}/>
+            <input type="radio" name="radio2" checked={lang === "uz"} onChange={() => handleSelect("uz")}/>
             <span class="checkmark"></span>
           </label>
         </SortWrapper>
       </RightItem>
-      <NavLink to='/makeOrder'>
-        <RightItem>
+      {/*<NavLink to='/makeOrder'>*/}
+        <RightItem onClick={() => {
+          if (tokenType === "GUEST") document.getElementById('signin').click()
+          else history.push('/makeOrder')
+        }}>
             <img src={headerBasket}/>
             <span>0 сумм</span>
         </RightItem>
-      </NavLink>
-      <RightItem onClick={() => setEntry(true)} style={{cursor: "pointer"}}>
-        <img src={headerUser}/>
-        <span>Войти</span>
-      </RightItem>
+      {/*</NavLink>*/}
+      {(tokenType && tokenType === "USER") && 
+        <NavLink to='/account/profile'>
+          <RightItem style={{cursor: "pointer"}}>
+            <img src={headerUser}/>
+            <span>Аккаунт</span>
+          </RightItem>
+        </NavLink>
+      }
+      {!(tokenType && tokenType === "USER")  && 
+        <RightItem onClick={() => setEntry(true)} style={{cursor: "pointer"}} id="signin">
+          <img src={headerUser}/>
+          <span>Войти</span>
+        </RightItem>
+      }
     </HeaderRight>
   ) 
 }
@@ -104,7 +126,7 @@ const HeaderRight = styled.div`
   align-items: center;
   justify-content: space-between;
   @media (max-width: 1150px) {
-    flex: 1;
+    //flex: 1;
   }
   @media (max-width: 970px) {
     display: none;

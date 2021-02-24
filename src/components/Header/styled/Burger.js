@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
 const Burger = styled.div`
-  width: 35px;
-  height: 35px;
+  width: 30px;
+  height: 30px;
   cursor: pointer;
   //background: red;
   margin-right: 10px;

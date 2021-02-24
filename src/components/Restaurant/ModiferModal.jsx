@@ -56,8 +56,10 @@ const ModiferModal = ({modal, setModal, openItem, handleClick, lang}) => {
   });
   useEffect(() => {
     console.log('addition:', addition)
-    setItemCount(1);
   }, [addition])
+  useEffect(() => {
+    setItemCount(1);
+  }, [openItem])
   console.log(addition.portion, ' ', openItem)
   return (
     <ModalWrapper modal={modal}>
@@ -82,7 +84,7 @@ const ModiferModal = ({modal, setModal, openItem, handleClick, lang}) => {
             {openItem.portions && openItem.portions.length > 1 && 
               <AdditionalName style={{marginBottom: 15}}>Выберите порцию:</AdditionalName>
             }
-            {openItem.portions && openItem.portions.length > 1 && openItem.portions.map(portion => (
+            {openItem.portions && openItem.portions.length > 1 && openItem.portions.map((portion, index) => (
               <Additional>
                 <label class="container" style={{width: "auto", margin: 0}} onClick={() => setAddition({
                   ...addition,
@@ -126,14 +128,16 @@ const ModiferModal = ({modal, setModal, openItem, handleClick, lang}) => {
               </CountButton>
               </CountContainer> 
               <Button onClick={() => {
-                  setItemCount(1);  
+                  if (addition.portion === null) return;
+                  handleClick(openItem, itemCount, addition)
+                  setItemCount(1);
                   setAddition({
                     portion: null,
                     modiferGroups: []
                   })
-                  handleClick(openItem, itemCount, addition)
-                }}>
-                В корзину {openItem.portions[0].price} {openItem.portions[0].currency}
+                }} active={addition.portion}>
+                В корзину
+                {/*В корзину {openItem.portions[0].price} {openItem.portions[0].currency}*/}
               </Button>
             </Bottom>
           </Container>
@@ -265,6 +269,7 @@ const Container = styled.div`
   @media(max-width: 1000px) {
      width: 100%;
      margin-top: 20px;
+     margin-left: 0;
   }
 `;
 
@@ -330,15 +335,19 @@ const Bottom = styled.div`
 
 const Button = styled.div`
   padding: 14px 20px;
-  cursor: pointer;
   border-radius: 5px;
   font-size: 14px;
   color: #fff;
-  background: ${props => props.theme.primary};
+  background: ${props => props.active ? props.theme.primary : "#878787"};
   transition: .2s all;
+  ${(props) => props.active ? `
   :hover {
+    cursor: pointer;
     background: ${props => props.theme.primaryDark};
     transition: .2s all;
+  }
+  `
+    : ''
   }
   @media(max-width: 1000px) {
     /* margin-bottom: 30px; */

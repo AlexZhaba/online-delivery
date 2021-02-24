@@ -12,17 +12,19 @@ import CircleLoader from '@components/Loader/CircleLoader';
 import trash from '@assets/trash_full.png';
 
 import lightning from '@assets/lightning.png';
-import { constants } from 'fs-extra';
+
 
 const Basket = ({clearBasketModal, setClearBasketModal, ...props}) => {
   const dispatch = useDispatch();
   const history  = useHistory();
   let   {match, lang}  = props;
   let basketSum = useSelector(({Order}) => Order.basketSum);
+  let [localPackage, setLocalPackage] = useState(0);
   let basketLoading = useSelector(({Order}) => Order.basketLoading);
   let lat = useSelector(({User}) => User.lat);
   let lon = useSelector(({User}) => User.lon);
-
+  let token = useSelector(({User}) => User.token)
+  let tokenType = useSelector(({User}) => User.tokenType)
   let constraints = useSelector(({Order}) => Order.constraints);
   let basket = useSelector(({Order}) => Order.basketItems);
   // const [sum, setSum] = useState(0);
@@ -45,24 +47,28 @@ const Basket = ({clearBasketModal, setClearBasketModal, ...props}) => {
   useEffect(() => {
     if (basket.length !== 0) {
       let sum = 0;
+      let packagePr = 0;
       basket.forEach(item => {
         let itemSum = 0;
         itemSum = item.portion.price;
+        packagePr += item.packaging_price * item.count;
         item.modifer_groups.forEach(group => {
           itemSum += group.price;
         })
         sum += itemSum * item.count;
       })     
       dispatch(setBasketSum(sum))
+      console.log('packagePr:',packagePr)
+      setLocalPackage(packagePr)
       // setSum(sum);
     } else localStorage.setItem('basketVenue', '');
   }, [basket])
 
   useEffect(() => {
-    if (basket.length !== 0) {
+    if (basket.length !== 0 && token) {
       dispatch(fetchOrderConstraints())
     }
-  }, [basket, lon, lat])
+  }, [basket, lon, lat, token])
 
   return (
     <Wrapper>
@@ -121,15 +127,17 @@ const Basket = ({clearBasketModal, setClearBasketModal, ...props}) => {
         {(basket.length !== 0 && constraints) &&
         <>
         <AdditionContainer>
-          <DeliveryContainer>
-            <DeliveryText>
-              Доставка
-              <img src={lightning} style={{marginLeft: 5}}/>
-            </DeliveryText>
-            <DelliverySum>
-              {`${constraints.statements.delivery_fare} ${constraints.currency}`}
-            </DelliverySum>
-          </DeliveryContainer>
+          {constraints.statements.delivery_fare &&
+            <DeliveryContainer>
+              <DeliveryText>
+                Доставка
+                <img src={lightning} style={{marginLeft: 5}}/>
+              </DeliveryText>
+              <DelliverySum>
+                {`${constraints.statements.delivery_fare} ${constraints.currency}`}
+              </DelliverySum>
+            </DeliveryContainer>
+          }
           <AdditionSubstring>
             {constraints.statements.delivery_fare_notes && constraints.statements.delivery_fare_notes.ru}
           </AdditionSubstring>
@@ -139,7 +147,7 @@ const Basket = ({clearBasketModal, setClearBasketModal, ...props}) => {
               Стоимость упаковки
             </DeliveryText>
             <DelliverySum>
-              {`${constraints.statements.packaging_charge} ${constraints.currency}`}
+              {`${constraints.statements.packaging_charge + localPackage} ${constraints.currency}`}
             </DelliverySum>
           </DeliveryContainer>
           <AdditionSubstring>
@@ -174,15 +182,21 @@ const Basket = ({clearBasketModal, setClearBasketModal, ...props}) => {
         <BottomContainer>
           <TimeContainer>
             <TimeTitle>Время доставки</TimeTitle>
-            {/* <TimeValue>{constraints.statements.hours}</TimeValue> */}
+            <TimeValue>{constraints.hours && constraints.hours[0]}</TimeValue>
           </TimeContainer>
           <TimeContainer>
             <TimeTitle>Итого</TimeTitle>
-            <TimeValue>{basketSum} {basket[0].portion.currency}</TimeValue>
+            <TimeValue>
+              {basketSum + (constraints.statements.delivery_fare || 0) + constraints.statements.service_charge + constraints.statements.packaging_charge + localPackage - constraints.statements.discount_value}
+              &nbsp;{basket[0].portion.currency}
+              </TimeValue>
           </TimeContainer>
         </BottomContainer>
         { match.path !== "/makeOrder" && 
-          <MakeButton onClick={() => history.push('/makeOrder')}>
+          <MakeButton onClick={() => {
+            if (tokenType === "GUEST") document.getElementById('signin').click()
+            else history.push('/makeOrder')
+          }}>
             Оформить заказ
           </MakeButton>
         }
@@ -312,7 +326,7 @@ const DeliveryText = styled.div`
 `;
 
 const DelliverySum = styled.div`
-  font-size: 17px;
+  font-size: 15px;
   line-height: 20px;
   font-weight: 500;
   color: #000003;
@@ -387,8 +401,10 @@ const ListItem = styled.div`
 const ListItemPrice = styled.div`
   line-height: 20px;
   color: #000003;
-  font-size: 17px;
+  font-size: 15px;
   flex: 4;
+  display: flex;
+  justify-content: flex-end;
 `;
 
 const CountContainer = styled.div`

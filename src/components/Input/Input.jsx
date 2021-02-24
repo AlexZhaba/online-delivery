@@ -23,18 +23,18 @@ let Input = ({borderColor = null, flex = null, marginLeft = null, style = null})
         <img src={mapPoint} className="header__mapPoint"/>
       </div>
       <InputEl placeholder="Адрес доставки"/>
-      <div style={{position: 'relative'}}>
-        <Select ref={timeRef} onClick={(event) => {
-          event.stopPropagation();
-          setOpenTime(!openTime);
-        }}>
-          <span>Сейчас</span>
-          <img src={arrow} style={{marginLeft: 5}}/>
-        </Select>
-        <TimeWrapper openTime={openTime} onClick={(event) => event.stopPropagation()}>
-          
-        </TimeWrapper>
-      </div>
+      {/*<div style={{position: 'relative'}}>*/}
+      {/*  <Select ref={timeRef} onClick={(event) => {*/}
+      {/*    event.stopPropagation();*/}
+      {/*    setOpenTime(!openTime);*/}
+      {/*  }}>*/}
+      {/*    <span>Сейчас</span>*/}
+      {/*    <img src={arrow} style={{marginLeft: 5}}/>*/}
+      {/*  </Select>*/}
+      {/*  <TimeWrapper openTime={openTime} onClick={(event) => event.stopPropagation()}>*/}
+      {/*    */}
+      {/*  </TimeWrapper>*/}
+      {/*</div>*/}
     </InputWrapper>
   )
 }

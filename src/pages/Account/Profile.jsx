@@ -3,9 +3,12 @@ import styled from 'styled-components';
 
 import selectArrow from '@assets/selectArrow.png';
 
-import {useDispatch, useSelector} from 'react-redux';
-import { fetchProfile, fetchUpdateProfile } from '../../redux/actions/User';
+import {Redirect} from 'react-router-dom';
 
+import {useDispatch, useSelector} from 'react-redux';
+import {fetchProfile, fetchUpdateProfile, setProfile} from '../../redux/actions/User';
+
+import { useCookies } from 'react-cookie';
 
 const SelProfile = ({date, children}) => {
 
@@ -41,16 +44,22 @@ const Profile = (props) => {
   const dispatch = useDispatch();
 
   let profile = useSelector(({User}) => User.profile)
+  let token   = useSelector(({User}) => User.token);
+  
   const [activeProfile, setActiveProfile] = useState(null);
 
   const [sex, setSex] = useState("WOMAN"); // WOMAN OR MAN
   const [date, setDate] = useState('дд')
   const [month, setMonth] = useState('мм');
   const [year, setYear] = useState('гггг');
+  const [cookies, setCookie] = useCookies(['token', 'tokenType']);
+
 
   useEffect(() => {
-    dispatch(fetchProfile());
-  }, [])
+    if (token) {
+      dispatch(fetchProfile());
+    }
+  }, [token])
 
   useEffect(() => {
     if (profile) {
@@ -58,14 +67,20 @@ const Profile = (props) => {
       console.log(birth)
       console.log('birth:', birth)
       setActiveProfile(profile);
-    }
+    } 
   }, [profile])
 
   const handleSave = () => {
     dispatch(fetchUpdateProfile(activeProfile))
+    dispatch(setProfile(activeProfile))
   }
 
   let currentTime = new Date()
+  console.log('cookies.token:',cookies.token)
+  console.log(typeof cookies.token)
+  console.log(cookies.tokenType)
+  if ((!cookies.token || typeof cookies.token === "undefined") || 
+  (cookies.tokenType === "GUEST")) return <Redirect to='/'></Redirect>
   if (!activeProfile) return <div></div>;
   return (
     <Wrapper>

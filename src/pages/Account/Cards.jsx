@@ -1,35 +1,176 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
+
+import axios from 'axios';
 
 import creditCard from '@assets/creditCard.png';
 import delete_adr from '@assets/delete_adr.png';
 import edit from '@assets/edit.png';
 
+import {useDispatch, useSelector} from 'react-redux';
+import { fetchCreateCardWithPin, fetchDeleteCard, fetchListCards } from '../../redux/actions/User';
+
+import NewCardModal from '@components/Account/NewCardModal';
 
 const Cards = (props) => {
+  const dispatch = useDispatch()
+
+  let cards = useSelector(({User}) => User.cards);
+  let token = useSelector(({User}) => User.token);
+
+  let [isOpen, setIsOpen] = useState(false);
+  let [isLoad, setIsLoad] = useState(false);
+  let [verifyData, setVerifyData] = useState(null);
+  let [card, setCard] = useState(null);
+
+
+  let [page, setPage] = useState(0);
+
+  const handle = () => {
+    setIsOpen(true)
+  }
+
+  const getCode = (number, expire) => {
+    setIsLoad(true)
+    axios({
+      method: "post",
+      url: "https://checkout.test.paycom.uz/api",
+      headers: {
+        "X-Auth": "585ba89501362a830d245454",
+      },
+      data: {
+        id: 1,
+        method: "cards.create",
+        params: {
+          card: {
+            number,
+            expire
+          },
+          save: true
+        }
+      }
+    }).then(({data}) => {
+  
+      axios({
+        method: "post",
+        url: "https://checkout.test.paycom.uz/api",
+        headers: {
+          "X-Auth": "585ba89501362a830d245454",
+        },
+        data: {
+          id: 1,
+          method: "cards.get_verify_code",
+          params: {
+            token: data.result.card.token
+          }
+        }
+      }).then((response) => {
+        setIsLoad(false)
+        console.log('verify:',response)
+        setVerifyData({...response.data.result, token: data.result.card.token})
+        setPage(1);
+      })
+    });
+    // dispatch(fetchCreateCard("8600069195406311", "0399"));
+  }
+
+  useEffect(() => {
+    setIsLoad(false)
+    setIsOpen(false);
+    if (cards === null && token) {
+      setIsLoad(true);
+      dispatch(fetchListCards());
+    }
+  }, [cards, token])
+
+  const verifyCode = (code) => {
+    setIsLoad(true)
+    axios({
+      method: "post",
+      url: "https://checkout.test.paycom.uz/api",
+      headers: {
+        "X-Auth": "585ba89501362a830d245454",
+      },
+      data: {
+        id: 1,
+        method: "cards.verify",
+        params: {
+          token: verifyData.token,
+          code,
+        }
+      }
+    }).then(response => {
+      console.log('verifyCode:',response)
+      setPage(2)
+      setIsLoad(false)
+      setCard(response.data.result.card)
+    })
+  }
+
+  const addPin = (pin) => {
+    setIsLoad(true)
+    dispatch(fetchCreateCardWithPin(card, pin));
+  }
+
+  const deleteCard = (card) => {
+    console.log('card:',card)
+    // axios({
+    //   method: "post",
+    //   url: "https://checkout.test.paycom.uz/api",
+    //   headers: {
+    //     "X-Auth": "585ba89501362a830d245454",
+    //   },
+    //   data: {
+    //     id: 1,
+    //     method: "cards.remove",
+    //     params: {
+    //       token: card.card_token,
+    //     }
+    //   }
+    // }).then(response => {
+      dispatch(fetchDeleteCard(card.guid));
+    // })
+  }
+
   return (
     <Wrapper>
+      <NewCardModal 
+          isOpen={isOpen} 
+          setIsOpen={setIsOpen}
+          getCode={getCode}
+          isLoad={isLoad}
+          page={page}
+          verifyData={verifyData}
+          verifyCode={verifyCode}
+          addPin={addPin}
+      />
       <TopHeader>
         Карты
       </TopHeader>
       <Container>
         <ListWrapper>
-        {Array(5).fill(0).map((e, index) => (
+        {cards && cards.map((card, index) => (
           <ListContainer>
             <span style={{marginRight: 34, width: 30}}>{index + 1}.</span>
             <img src={creditCard}/>
-            <span style={{margin: "0 20px"}}>8600 **** **** 1234</span>
-            <InputImage src={edit} data-trash="true"/>
-            <InputImage src={delete_adr} style={{width: 15, height: 23}}/>
+            <span style={{margin: "0 20px"}}>{card.number}</span>
+            <InputImage src={delete_adr} style={{width: 15, height: 23}} onClick={() => deleteCard(card)}/>
           </ListContainer>
         ))}
         </ListWrapper>
+        <div style={{display: 'flex', justifyContent: 'center', marginTop: 50}}>
+        <Button onClick={() => handle()} data-trash="true">
+          Добавить
+        </Button>
+        </div>
       </Container>
     </Wrapper>
   )
 }
 
 export {Cards};
+
+
 
 const InputImage = styled.img`
   width: 20px;
@@ -66,7 +207,7 @@ const Container = styled.div`
 `;
 
 const Button = styled.div`
-  width: 300px;
+  width: 200px;
   padding: 13px 0;
   background: ${props => props.theme.primary};
   transition: .2s all;

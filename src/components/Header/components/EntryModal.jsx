@@ -1,42 +1,134 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import EntryLogo from '@assets/EntryLogo.png';
 import EntryPhone from '@assets/EntryPhone.png';
 
+import CircleLoader from '@components/Loader/CircleLoader';
+
+import {useDispatch, useSelector} from 'react-redux';
+import { useCookies } from 'react-cookie';
+
+import {fetchUserSignUp, fetchUserConfirmSMS, setUserGUID} from '../../../redux/actions/User';
+
 const EntryModal = ({entry, setEntry}) => {
+  const dispatch = useDispatch();
+
+
+  const [isLoad, setIsLoad] = useState('');
+  const [name, setName] = useState('');
+  const [password, setPassword] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('+988');
+  const [phoneCode, setPhoneCode] = useState('');
+
+  const user_guid = useSelector(({User}) => User.user_guid);
+  const token = useSelector(({User}) => User.token);
+
+  const handlePhone = (event) => {
+    if (isNaN(parseInt(event.target.value[event.target.value.length - 1]))) return;
+    if (event.target.value.length === 0) setPhoneNumber('+988')
+    else if (event.target.value.length > 3 && event.target.value.length < 13) {
+      setPhoneNumber(event.target.value)
+    }
+  }
+
+  useEffect(() => {
+    if (token && entry) {
+      // setCookie('token', token)
+      alert('nice');
+      // setCookie('tokenType', "USER")
+      setEntry(false);
+    }
+  }, [token])
+
+  useEffect(() => {
+    if (user_guid) setIsLoad(false)
+  }, [user_guid])
+
+  useEffect(() => {
+    setPassword('');
+    setPhoneNumber('+988');
+    setPhoneCode('');
+    setName('');
+  }, [entry])
+
+  const handleClickCode = () => {
+    setIsLoad(true);
+    dispatch(fetchUserSignUp(name, "85808", "+998901234567"));
+    // dispatch(fetchUserSignUp(name, password, phoneNumber));
+  }
+
+  const handlePhoneCode = (event) => {
+    if (isNaN(parseInt(event.target.value[event.target.value.length - 1]))) return;
+    setPhoneCode(event.target.value);
+  }
+
+  const handleSignin = () => {
+    dispatch(fetchUserConfirmSMS(user_guid, "85808", "64819"));
+  }
+
   return (
     <ModalWrapper modal={entry} onClick={() => setEntry(null)}>
       <ModalContainer  modal={entry} onClick={(event) => {
         event.preventDefault();
         event.stopPropagation()
       }}>
+        {
+          isLoad && <LoaderWrapper>
+                      <CircleLoader/>
+                    </LoaderWrapper>
+        }
         <Header>
           <Logo src={EntryLogo}/>
           <PhoneContainer>71 207 34 34</PhoneContainer>
         </Header>
         <MainBody>
-          <InputName>Ваше имя</InputName>
-          <Input placeholder="Имя"/>
-          <InputName>Номер телефона</InputName>
+          {!user_guid &&
+            <>
+              <InputName>Ваше имя</InputName>
+              <Input placeholder="Имя" value={name} onChange={(event) => setName(event.target.value)}/>
+              <InputName>Ваш пароль</InputName>
+              <Input placeholder="Пароль" value={password} onChange={(event) => setPassword(event.target.value)}/>
+              <InputName>Номер телефона</InputName>
+            </>
+          }
           <CodeContainer>
-          <Input placeholder="+998 12 345 67 89" style={{margin: 0}}/>
-            <Button>
+          <Input placeholder="+998 12 345 67 89" style={{margin: 0}} value={phoneNumber} onChange={(event) => handlePhone(event)}/>
+          {!user_guid && 
+            <Button onClick={() => handleClickCode()}>
               Получить код
             </Button>
+          }
           </CodeContainer>
-          <InputName>Введите код</InputName>
-          <Input placeholder="111111"/>
-          <div style={{justifyContent: 'center', display: 'flex'}}>
-            <Entry>
-              Войти
-            </Entry>
-          </div>
+          {user_guid && 
+            <>
+              <InputName>Введите код</InputName>
+              <Input placeholder="111111" value={phoneCode} onChange={(event) => handlePhoneCode(event) } maxLength={6}/>
+              <div style={{justifyContent: 'center', display: 'flex'}}>
+                <Entry onClick={() => handleSignin()}>
+                  Войти
+                </Entry>
+              </div>
+            </>
+          }
         </MainBody>
       </ModalContainer>
     </ModalWrapper>
   )
 }
+
+const LoaderWrapper = styled.div`
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.5);
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 
 const CodeContainer = styled.div`
   display: flex;

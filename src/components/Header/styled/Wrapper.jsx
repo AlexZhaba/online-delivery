@@ -13,6 +13,10 @@ const Wrapper = styled.div`
   justify-content: center;
   box-shadow: ${props => props.theme.shadow};
   flex-shrink: 1;
+  @media(max-width: 960px) {
+    height: 70px;
+    margin-bottom: 70px;
+  }
 `;
 
 export default Wrapper;

@@ -17,7 +17,7 @@ export const setOrderConstraints = (constraints) => ({type: "SET_CONSTRAINTS", c
 
 export const setBasketLoading = (basketLoading) => ({type: "SET_BASKET_LOADING", basketLoading});
 
-export const fetchOrderConstraints = () => (dispatch, getState) => {
+export const fetchOrderConstraints = (type = "delivery") => (dispatch, getState) => {
   const lat = getState().User.lat;
   const lon = getState().User.lon;
   const venue_guid = getState().Order.basketVenue.guid;
@@ -33,7 +33,7 @@ export const fetchOrderConstraints = () => (dispatch, getState) => {
         `Bearer ${token}`
     }
   }).then(({data}) => { 
-    dispatch(setOrderConstraints(data.delivery))
+    dispatch(setOrderConstraints(data[type]))
     dispatch(setBasketLoading(false));
     // console.log('%c',data, 'font-size: 20px; color: blue; font-weight: bold')
   })

@@ -2,6 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import {NavLink, BrowserRouter, Route, Switch, Redirect} from 'react-router-dom';
 
+import {useCookies} from 'react-cookie';
+
+import {useDispatch, useSelector} from 'react-redux';
+import { setToken, setTokenType, setUserGUID } from '../redux/actions/User';
+
 import Back from '@components/Back/Back';
 
 import {Profile} from './Account/Profile';
@@ -10,8 +15,23 @@ import {Orders} from './Account/Orders';
 import {FavPlaces} from './Account/FavPlaces';
 import {Cards} from './Account/Cards';
 import {Addresses} from './Account/Addresses';
+
 const AccountContainer = (props) => {
+  const dispatch = useDispatch();
+
+
+  let [cookies, setCookies, removeCookie] = useCookies([]);
   let {location} = props;
+  
+  let handleExit = () => {
+    // setCookies('token', '');
+    removeCookie('token', {path: '/', maxAge: 2592000});
+    removeCookie('tokenType', {path: '/', maxAge: 2592000});
+    dispatch(setUserGUID(null))
+    dispatch(setToken(null))
+    dispatch(setTokenType(null))
+  }
+
   return (
     <Wrapper>
       <MContainer>
@@ -69,7 +89,7 @@ const AccountContainer = (props) => {
             <NavLink to='/account/cards'>
             <SidebarItem active={location.pathname === '/account/cards'}>Карты</SidebarItem>
             </NavLink>
-            <SidebarItem>Выход</SidebarItem>
+            <SidebarItem onClick={handleExit}>Выход</SidebarItem>
           </LeftSidebar>
         </Container>
       </MContainer>
@@ -120,7 +140,7 @@ const LeftSidebar = styled.div`
   flex-direction: column;
   justify-content: space-evenly;
   padding: 20px;
-  @media(max-width: 1000px) {
+  @media(max-width: 970px) {
     display: none;
   }
 `;

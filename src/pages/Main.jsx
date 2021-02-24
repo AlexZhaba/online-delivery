@@ -52,15 +52,16 @@ const DesktopMain = () => {
   const restaurantLoading = useSelector(({Menus}) => Menus.restaurantLoading);
   const banners = useSelector(({Menus}) => Menus.banners);
   const city = useSelector(({User}) => User.city);
+  let token = useSelector(({User}) => User.token);
   
   useEffect(() => {  
-    if (city) {
+    if (city && token) {
       if (!Array.isArray(venues)) dispatch(fetchVenues());
       if (!Array.isArray(collections)) dispatch(fetchCollections());
       dispatch(fetchCategories())
       dispatch(fetchBanners());
     }
-  }, [city])
+  }, [city, token])
   useEffect(() => {
     console.log('VENUES = ', venues)
   }, [venues])

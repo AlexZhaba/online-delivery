@@ -16,12 +16,11 @@ let ItemsList = ({venues, venuesLoad, history, handleOpenRestaurant}) => {
   const lang = useSelector(({User}) => User.lang);
 
   //onClick={ () => history.push(`restaurant/${venue.guid}`)}
-
+  if (!venues) return <LoaderContainer>
+    <Loader/>
+  </LoaderContainer>
   return (
     <Wrapper>
-      {(!venues) && <LoaderContainer>
-        <Loader/>
-      </LoaderContainer>}
       {(venues && venuesLoad) && <LoaderShadow>
         <Loader/>
       </LoaderShadow>}
@@ -64,7 +63,8 @@ let ItemsList = ({venues, venuesLoad, history, handleOpenRestaurant}) => {
 const LoaderContainer = styled.div`
   display: flex;
   justify-content: center;
-  width: calc(300% + 30px);
+  //width: calc(300% + 30px);
+  width: 100%;
   margin-top: 20px;
 `;
 

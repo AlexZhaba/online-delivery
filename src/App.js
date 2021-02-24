@@ -7,9 +7,12 @@ import {BrowserRouter, Route, Switch, Redirect} from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 import Loader from '@components/Loader/Loader'
 
+import { useCookies } from 'react-cookie';
+
+
 //redux
 import {useSelector, useDispatch} from 'react-redux'
-import {userSignUp, getCity} from './redux/actions/User'
+import {userSignUp, getCity, setToken, fetchGuestToken, setTokenType, fetchProfile} from './redux/actions/User'
 
 //components
 import {MobileFooter, DesktopFooter} from '@components/Footer/Footer.jsx';
@@ -64,6 +67,49 @@ let MobileLayout = () => {
 
 let DeskTopLayout = () => {
   const dispatch = useDispatch();
+
+  let token = useSelector(({User}) => User.token)
+  let tokenType = useSelector(({User}) => User.tokenType)
+  const [cookies, setCookie, removeCookie] = useCookies(['token']);
+
+  useEffect(() => {
+    if (cookies.token) {
+      // alert(cookies.token)
+      dispatch(setTokenType(cookies.tokenType)) 
+      dispatch(setToken(cookies.token));
+    }
+  }, [])
+
+  useEffect(() => {
+    if (token === null && !cookies.token) {
+      // alert(cookies.token)
+      dispatch(fetchGuestToken())
+    }
+  }, [token])
+
+  useEffect(() => {
+    if (token) {
+      dispatch(fetchProfile());
+    }
+  }, [token])
+
+  // useEffect(() => {
+  //   console.log('%c COOKIES',"color:blue; font-size: 17px; font-weight: bold")
+  //   console.log(cookies);
+  //   console.log(document.cookie)
+  // }, [cookies])
+
+  useEffect(() => {
+    if (tokenType && token) {
+      // removeCookie('tokenType');
+      // console.log('%c SET_TOKEN_TYPE',"color:red; font-size: 20px; font-weight: bold")
+      // console.log(cookies);
+      setCookie('tokenType', tokenType, {path: '/', maxAge: 2592000})
+      setCookie('token', token, {path: '/', maxAge: 2592000})
+    }
+  }, [tokenType, token])
+
+
   const restaurantLoading = useSelector(({Menus}) => Menus.restaurantLoading);
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(function(position) {
@@ -80,7 +126,7 @@ let DeskTopLayout = () => {
       <BrowserRouter>
         <Route path='/' render={(props) => <DesktopHeader {...props}/>}/>
         
-        <div style={{marginBottom: 100}}/>
+        <HeaderMargin/>
         
         <Switch>
           <Route
@@ -149,7 +195,12 @@ const App = () => {
 
 export default App;
 
-
+const HeaderMargin = styled.div`
+  height: 100px;
+  @media(max-width: 970px) {
+    height: 70px;
+  }
+`;
 
 const LoadingRestaurantWrapper = styled.div`
   position: fixed;

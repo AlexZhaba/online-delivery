@@ -50,7 +50,7 @@ const BurgerMenu = ({isOpen, setIsOpen, profile, setEntry}) => {
             setIsOpen(false)
           }}>Войти</Button>
         }
-        {
+        { 
           (profile && tokenType === "USER") &&
           <SidebarMenu>
             <MenuItemName>

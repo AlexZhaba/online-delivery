@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import styled, { keyframes, css } from 'styled-components';
 import {useDispatch, useSelector} from 'react-redux';
-import {clearBasket, decreaseItemCount, increaseItemCount, setBasketSum, fetchOrderConstraints} from '../../redux/actions/Order'
+import {clearBasket, decreaseItemCount, increaseItemCount, setBasketSum, fetchOrderConstraints, setTotalPrice} from '../../redux/actions/Order'
 import Add from '@assets/add.png';
 import basketIcon from '@assets/basketIcon.png';
 // import {withRouter} from 'react-router-dom';
@@ -27,6 +27,7 @@ const Basket = ({clearBasketModal, setClearBasketModal, ...props}) => {
   let tokenType = useSelector(({User}) => User.tokenType)
   let constraints = useSelector(({Order}) => Order.constraints);
   let basket = useSelector(({Order}) => Order.basketItems);
+  let totalPrice = useSelector(({Order}) => Order.totalPrice);
   // const [sum, setSum] = useState(0);
 
   const onIncreaseCount = (item) => {
@@ -63,6 +64,12 @@ const Basket = ({clearBasketModal, setClearBasketModal, ...props}) => {
       // setSum(sum);
     } else localStorage.setItem('basketVenue', '');
   }, [basket])
+
+  useEffect(() => {
+    if (constraints && basket.length !== 0) {
+      dispatch(setTotalPrice(basketSum + (constraints.statements.delivery_fare || 0) + constraints.statements.service_charge + constraints.statements.packaging_charge + localPackage - constraints.statements.discount_value))
+    }
+  }, [basket, constraints])
 
   useEffect(() => {
     if (basket.length !== 0 && token) {
@@ -187,7 +194,8 @@ const Basket = ({clearBasketModal, setClearBasketModal, ...props}) => {
           <TimeContainer>
             <TimeTitle>Итого</TimeTitle>
             <TimeValue>
-              {basketSum + (constraints.statements.delivery_fare || 0) + constraints.statements.service_charge + constraints.statements.packaging_charge + localPackage - constraints.statements.discount_value}
+              {/* {basketSum + (constraints.statements.delivery_fare || 0) + constraints.statements.service_charge + constraints.statements.packaging_charge + localPackage - constraints.statements.discount_value} */}
+              {totalPrice}
               &nbsp;{basket[0].portion.currency}
               </TimeValue>
           </TimeContainer>

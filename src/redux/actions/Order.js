@@ -17,6 +17,8 @@ export const setOrderConstraints = (constraints) => ({type: "SET_CONSTRAINTS", c
 
 export const setBasketLoading = (basketLoading) => ({type: "SET_BASKET_LOADING", basketLoading});
 
+export const setTotalPrice = (totalPrice) => ({type: "SET_TOTAL_PRICE", totalPrice})
+
 export const fetchOrderConstraints = (type = "delivery") => (dispatch, getState) => {
   const lat = getState().User.lat;
   const lon = getState().User.lon;

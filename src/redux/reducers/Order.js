@@ -1,6 +1,7 @@
 const initialState = {
   basketItems: localStorage.getItem('basket') ? JSON.parse(localStorage.getItem('basket')) : [],
   basketVenue: localStorage.getItem('basketVenue') ? JSON.parse(localStorage.getItem('basketVenue')) : null,
+  totalPrice: 0,
   basketSum: 0,
   basketLoading: false,
   constraints: null,
@@ -10,6 +11,14 @@ const Order = (state = initialState, action) => {
   const lang = localStorage.getItem('lang');
   
   switch (action.type) {
+
+    case "SET_TOTAL_PRICE": {
+      return {
+        ...state,
+        totalPrice: action.totalPrice
+      }
+    }
+
     case "SET_BASKET_LOADING": {
       return {
         ...state,

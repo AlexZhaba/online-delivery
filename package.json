@@ -103,6 +103,7 @@
     ]
   },
   "devDependencies": {
+    "@babel/helper-define-map": "^7.12.13",
     "react-app-rewired": "^2.1.8"
   },
   "jest": {

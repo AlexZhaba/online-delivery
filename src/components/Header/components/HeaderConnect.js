@@ -20,7 +20,7 @@ const HeaderConnect = ({setEntry}) => {
   let history = useHistory()
   let lang = useSelector(({User}) => User.lang);
   let tokenType = useSelector(({User}) => User.tokenType)
-
+  let totalPrice = useSelector(({Order}) => Order.totalPrice);
   const [cookies, setCookie] = useCookies(['token']);
 
 
@@ -75,9 +75,10 @@ const HeaderConnect = ({setEntry}) => {
         <RightItem onClick={() => {
           if (tokenType === "GUEST") document.getElementById('signin').click()
           else history.push('/makeOrder')
-        }}>
+        }} >
+          {/* style={{flexDirection: 'column', alignItems: 'center'}} */}
             <img src={headerBasket}/>
-            <span>0 сумм</span>
+            <span >{totalPrice}</span>
         </RightItem>
       {/*</NavLink>*/}
       {(tokenType && tokenType === "USER") && 

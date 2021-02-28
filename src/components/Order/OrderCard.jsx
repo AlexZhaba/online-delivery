@@ -21,13 +21,17 @@ const OrderCard = ({constraints}) => {
 
   const [openNewCard, setOpenNewCard] = useState(false);
   const [isOrderMade, setIsOrderMade] = useState(false);
+  let [openTime, setOpenTime] = useState(false);
+  let [selectedTime, setSelectedTime] = useState(0);
   if (!constraints) return <div></div>
 
   const setDelivery = () => {
+    setSelectedTime(0);
     dispatch(fetchOrderConstraints('delivery'))
   }
 
   const setTakeaway = () => {
+    setSelectedTime(0);
     dispatch(fetchOrderConstraints('takeaway'))
   }
 
@@ -82,9 +86,22 @@ const OrderCard = ({constraints}) => {
         <OrderInput text="Комментарий к заказу" style={{width: 470}}/>
         
         <Title style={{marginTop: 30}}>Время доставки</Title>
-        <DateSelect>
-          <span>Как можно быстрее</span>
+        <DateSelect onClick={() => setOpenTime(!openTime)}>
+          <span>{constraints.hours && 
+            selectedTime === 0 ? "Как можно быстрее" : constraints.hours[selectedTime]}</span>
           <SelectImg src={arrowBottom}/>
+          {openTime && 
+          <DataWrapper>
+              {constraints.hours && constraints.hours.map((e, index) => {
+                if (index === 0) return <DataItem onClick={() => setSelectedTime(index)}>Как можно быстрее</DataItem>
+                return (
+                  <DataItem onClick={() => setSelectedTime(index)}>
+                    {e}
+                  </DataItem>
+                )
+              })}
+            </DataWrapper>
+          }
         </DateSelect>
         
         <Title style={{marginTop: 30, marginBottom: 30}}>Способы оплаты</Title>
@@ -162,6 +179,34 @@ const OrderCard = ({constraints}) => {
 
 export default OrderCard;
 
+const DataWrapper = styled.div`
+  position: absolute;
+  top: 100%;
+  left: -2px;
+  width: calc(100% + 4px);
+  /* height: 200px; */
+  max-height: 400px;
+  overflow: auto;
+  z-index: 2;
+  background: white;
+  border: 2px solid ${props => props.theme.primary};
+  /* background: red; */
+`;
+
+const DataItem = styled.div`
+  width: 100%;
+  padding: 10px 0;
+  font-size: 20px;
+  text-align: center;
+  transition: .2s all;
+  :hover {
+    cursor: pointer;
+    background: ${props => props.theme.primary};
+    color: #FFF;
+    transition: .2s all;
+  }
+`;
+
 const ButtonCard = styled.div`
   color: ${props => props.theme.primary};
   padding: 7px 16px;  
@@ -217,6 +262,7 @@ const DateSelect = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative;
 `;
 
 const SelectImg = styled.img`

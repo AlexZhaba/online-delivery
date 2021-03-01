@@ -47,6 +47,24 @@ export const setCards = (cards) => ({
   cards
 })
 
+export const setDeliveries = (deliveries) => ({
+  type: "SET_DELIVERIES",
+  deliveries
+})
+
+export const fetchDelivery = () => (dispatch, getState) => {
+  const token = getState().User.token;
+  axios.get(`${config.API}/orders/delivery?&limit=10`, {
+    headers: {
+      "Authorization":
+        `Bearer ${token}`
+    }
+  }).then(({data}) => {
+    dispatch(setDeliveries(data.deliveries))
+    // console.log('LIST OF DELIVERY:', response)
+  })
+}
+
 export const fetchListCards = () => (dispatch, getState) => {
   const token = getState().User.token;
   axios.get(`${config.API}/payments/uzcard`, {

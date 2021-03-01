@@ -3,55 +3,47 @@ import styled from 'styled-components'
 import {clearBasket} from '../../redux/actions/Order';
 import {useDispatch} from 'react-redux';
 
-import lightning from '@assets/lightning.png';
-const ModalMakeOrder = ({isOrderMade, setIsOrderMade}) => {
+
+const ModalMaxCartPrice = ({isOpen, setIsOpen, constraints}) => {
   const modalRef = useRef(null);
   const dispatch = useDispatch()
   useEffect(() => {
     const handle = (event) => {
       if (typeof event.target.dataset.trash !=="undefined") return;
       if (modalRef.current && !modalRef.current.contains(event.target)) {
-        setIsOrderMade(false);
+        setIsOpen(false);
       } 
     }
     document.removeEventListener('click', handle, true)
     document.addEventListener('click', handle);
   }, [])
-
-  const handleClear = () => {
-    console.log(typeof clearBasket)
-    dispatch(clearBasket());
-    setIsOrderMade(false);
-  }
   return (
-    <ModalWrapper modal={isOrderMade}>
-    <ModalContainer  modal={isOrderMade} ref={modalRef}>
+    <ModalWrapper modal={isOpen}>
+    <ModalContainer  modal={isOpen} ref={modalRef}>
       <TitleClear>
-        Отлично!
+        Превышен лимит стоимости корзины
       </TitleClear>
       <Text>
-        Заказ передан на обработку
+        Стоимость корзины не должна превышать {constraints && `${constraints.max_cart_price} ${constraints.currency}`}
       </Text>
-      
-        
-        <ButtonClear onClick={handleClear}>
+      <ButtonWrapper>
+        <ButtonClear onClick={() => setIsOpen(false)}>
           Понятно
         </ButtonClear>
-      
+        
+      </ButtonWrapper>
     </ModalContainer>
   </ModalWrapper>
   
   )
 }
 
-export default ModalMakeOrder;
-
-
+export default ModalMaxCartPrice;
 
 const ModalWrapper = styled.div`
   opacity: ${props => props.modal ? "1" : "0"};
   visibility: ${props => props.modal ? "visible" : "hidden"};
-  z-index: 10;
+  z-index: 11;
   position: fixed;
   top: 0;
   left: 0;
@@ -76,7 +68,6 @@ const ModalContainer = styled.div`
   padding: 30px;
   display: flex;
   flex-direction: column;
-  align-items: center;
   overflow: hidden;
   margin: 0 10px;
 `;
@@ -115,12 +106,10 @@ const ButtonCancel = styled.div`
 `;
 
 const ButtonClear = styled.div`
-  margin-top: 25px;
+  margin-left: 10px;
   cursor: pointer;
   font-size: 14px;
   padding: 10px 20px;
-  min-width: 150px;
-  text-align: center;
   color: #fff;
   border-radius: 4px;
   background: ${props => props.theme.primary};

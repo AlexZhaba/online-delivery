@@ -9,13 +9,22 @@ const initialState = {
   cards: null,
   city: {
     guid: "e3bb5e76-014c-4dcf-90f6-fc4b5e827558"
-  }
+  },
+  deliveries: []
   // city: "e3bb5e76-014c-4dcf-90f6-fc4b5e827558" // Ташкент
 }
 
 const User = (state = initialState, action) => {
   console.log('ACTION:', action)
   switch (action.type) {
+
+    case "SET_DELIVERIES": {
+      return {
+        ...state,
+        deliveries: action.deliveries
+      }
+    }
+
     case "SET_TOKEN_TYPE": {
       return {
         ...state,

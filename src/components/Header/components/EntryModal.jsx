@@ -35,7 +35,6 @@ const EntryModal = ({entry, setEntry}) => {
   useEffect(() => {
     if (token && entry) {
       // setCookie('token', token)
-      alert('nice');
       // setCookie('tokenType', "USER")
       setEntry(false);
     }
@@ -93,7 +92,7 @@ const EntryModal = ({entry, setEntry}) => {
             </>
           }
           <CodeContainer>
-          <Input placeholder="+998 12 345 67 89" style={{margin: 0}} value={phoneNumber} onChange={(event) => handlePhone(event)}/>
+          <Input placeholder="+998 12 345 67 89" style={{margin: 0}} value={phoneNumber} onChange={(event) => handlePhone(event)} readOnly={user_guid}/>
           {!user_guid && 
             <Button onClick={() => handleClickCode()}>
               Получить код

@@ -53,7 +53,7 @@ const DesktopHeader = (props) => {
       <Main>
         <HeaderBurger profile={profile} setEntry={setEntry}/>
         <Link to='/main'>
-          <LogoImg src={logo} className="header__logo"/>
+          <LogoImg src={logo} className="header__logo" style={{width: 150}}/>
         </Link>
         {/*{*/}
         {/*  (props.location.pathname === "/makeOrder" && <MakeOrderTitle>Оформление заказа</MakeOrderTitle>*/}

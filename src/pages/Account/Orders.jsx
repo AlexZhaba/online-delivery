@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import styled from 'styled-components';
 
 //image
@@ -7,74 +7,100 @@ import check from '@assets/check.png';
 import cultery from '@assets/cultery.png';
 import finish from '@assets/finish.png';
 
+import {useSelector, useDispatch} from 'react-redux';
+import { fetchDelivery } from '../../redux/actions/User';
+
 const Orders = (props) => {
+  const dispatch = useDispatch();
+
+  let token = useSelector(({User}) => User.token)
+  let lang = useSelector(({User}) => User.lang)
+  let deliveries = useSelector(({User}) => User.deliveries);
+  useEffect(() => {
+    if (token) {
+      dispatch(fetchDelivery())
+    }
+  }, [token])
+
   return (
     <Wrapper>
       <TopHeader>
-        Заказы
+        <span>Заказы</span>
+        <span>
+          <span style={{fontSize: '28px'}}>{deliveries.length}</span>
+          <span style={{color: "#969595", fontSize: 20, marginLeft: 12, fontWeight: 'normal'}}>заказа</span>
+        </span>
       </TopHeader>
-      <Container>
-        <Title>Заказ 1</Title>
-        <MainWrapper>
-          
-            <DataWrapper>
-              <DataContainer>
-                <Text style={{fontSize: 18}}>10.01.2021  15:31</Text>
-              </DataContainer>
-              <DataContainer>
-                <Text style={{fontWeight: 'bold'}}>Название ресторана</Text>
-              </DataContainer>
-            </DataWrapper>
-            <DataWrapper>
-              <DataContainer>
-                <Text>Пеке с лососем</Text>
-              </DataContainer>
-              <DataContainer>
-                <Text style={{fontWeight: 'bold'}}>250 р</Text>
-              </DataContainer>
-            </DataWrapper>
-            <DataWrapper>
-              <DataContainer>
-                <Text>Ролл Филадельфия</Text>
-              </DataContainer>
-              <DataContainer>
-                <Text style={{fontWeight: 'bold'}}>520 р</Text>
-              </DataContainer>
-            </DataWrapper>
-            <DataWrapper style={{marginTop: 20}}>
-              <DataContainer>
-                <Text style={{fontSize: 20}}>Доставка: 23р </Text>
-              </DataContainer>
-              <DataContainer>
-                <Text style={{fontWeight: 'bold', fontSize: 24}}>Итог: 770р</Text>
-              </DataContainer>
-            </DataWrapper>
-            <Center style={{marginTop: 40}}>
-              <Status>Ваш заказ в пути</Status>
-            </Center>
-            <StepWrapper>
-              <StepContainer>
-                <StepImage src={check}/>
-              </StepContainer>
+      {deliveries.map((delivery, index) => {
+        return (
+          <Container>
+            <Title>
+              <span>Заказ {index +1}</span>
+            </Title>
+            <MainWrapper>
               
-              <StepContainer>
-                <StepImage src={cultery}/>
-              </StepContainer>
+                <DataWrapper>
+                  <DataContainer>
+                    <Text style={{fontSize: 18}}>  
+                    {new Date(delivery.created_at).getHours()}:{new Date(delivery.created_at).getMinutes()} &nbsp;
+                    {new Date(delivery.created_at).getDate()}:{new Date(delivery.created_at).getUTCMonth()}:{new Date(delivery.created_at).getFullYear()}</Text>
+                  </DataContainer>
+                  <DataContainer>
+                    <Text style={{fontWeight: 'bold'}}>{delivery.venue_name[lang]}</Text>
+                  </DataContainer>
+                </DataWrapper>
+                <DataWrapper>
+                  <DataContainer>
+                    <Text>Пеке с лососем</Text>
+                  </DataContainer>
+                  <DataContainer>
+                    <Text style={{fontWeight: 'bold'}}>250 р</Text>
+                  </DataContainer>
+                </DataWrapper>
+                <DataWrapper>
+                  <DataContainer>
+                    <Text>Ролл Филадельфия</Text>
+                  </DataContainer>
+                  <DataContainer>
+                    <Text style={{fontWeight: 'bold'}}>520 р</Text>
+                  </DataContainer>
+                </DataWrapper>
+                <DataWrapper style={{marginTop: 20}}>
+                  <DataContainer>
+                    <Text style={{fontSize: 20}}>Доставка: 23р </Text>
+                  </DataContainer>
+                  <DataContainer>
+                    <Text style={{fontWeight: 'bold', fontSize: 24}}>Итог: 770р</Text>
+                  </DataContainer>
+                </DataWrapper>
+                <Center style={{marginTop: 40}}>
+                  <Status>{delivery.current_status}</Status>
+                </Center>
+                <StepWrapper>
+                  <StepContainer>
+                    <StepImage src={check}/>
+                  </StepContainer>
+                  
+                  <StepContainer>
+                    <StepImage src={cultery}/>
+                  </StepContainer>
 
-              <StepContainer>
-                <StepImage src={carDelivery}/>
-              </StepContainer>
+                  <StepContainer>
+                    <StepImage src={carDelivery}/>
+                  </StepContainer>
 
-              <StepContainer>
-                <StepImage src={finish}/>
-              </StepContainer>
-              
-            </StepWrapper>
-            <Center style={{marginTop: 60}}>
-              <Button>Связаться с нами</Button>
-            </Center>
-        </MainWrapper>
-      </Container>
+                  <StepContainer>
+                    <StepImage src={finish}/>
+                  </StepContainer>
+                  
+                </StepWrapper>
+                <Center style={{marginTop: 60}}>
+                  <Button>Связаться с нами</Button>
+                </Center>
+            </MainWrapper>
+          </Container>
+        )
+      })}
     </Wrapper>
   )
 }
@@ -164,6 +190,7 @@ const TopHeader = styled.div`
   color: #282828;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   
   @media(max-width: 700px) {
     font-size: 18px;
@@ -189,6 +216,8 @@ const Title = styled.div`
   line-height: 29px;
   padding: 35px 70px;
   color: #282828;
+  display: flex;
+  justify-content: space-between;
   padding-bottom: 15px;
   border: 1px solid #EAEAEA;
 `;

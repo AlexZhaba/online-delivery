@@ -17,7 +17,23 @@ export const setOrderConstraints = (constraints) => ({type: "SET_CONSTRAINTS", c
 
 export const setBasketLoading = (basketLoading) => ({type: "SET_BASKET_LOADING", basketLoading});
 
-export const setTotalPrice = (totalPrice) => ({type: "SET_TOTAL_PRICE", totalPrice});
+export const setTotalPrice = (totalPrice) => ({type: "SET_TOTAL_PRICE", totalPrice})
+
+export const fetchMakeOrder = (cart) => (dispatch, getState) => {
+  const token = getState().User.token;
+  axios({
+    method: "post",
+    url: `${config.API}/orders/new`,
+    data: cart,
+    headers: {
+      "Authorization":
+        `Bearer ${token}`
+    }
+  }).then(response => {
+    console.log('MAKE_ORDER: ', response)
+  })
+}
+
 
 export const fetchOrderConstraints = (type = "delivery") => (dispatch, getState) => {
   const lat = getState().User.lat;

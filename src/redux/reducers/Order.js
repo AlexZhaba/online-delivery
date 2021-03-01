@@ -1,7 +1,7 @@
 const initialState = {
   basketItems: localStorage.getItem('basket') ? JSON.parse(localStorage.getItem('basket')) : [],
   basketVenue: localStorage.getItem('basketVenue') ? JSON.parse(localStorage.getItem('basketVenue')) : null,
-  totalPrice: 0,
+  totalPrice: localStorage.getItem('totalPrice') || 0,
   basketSum: 0,
   basketLoading: false,
   constraints: null,
@@ -13,6 +13,7 @@ const Order = (state = initialState, action) => {
   switch (action.type) {
 
     case "SET_TOTAL_PRICE": {
+      localStorage.setItem('totalPrice',action.totalPrice);
       return {
         ...state,
         totalPrice: action.totalPrice
@@ -68,6 +69,7 @@ const Order = (state = initialState, action) => {
           max_order_size: action.item.max_order_size,
           min_order_size: action.item.min_order_size,
           guid: action.item.guid,
+          cooking_desc: action.item.cooking_desc,
           name: action.item.name,
           packaging_price: action.addition.portion ? action.addition.portion.packaging_price : action.item.portions[0].packaging_price,
           image_url: action.item.image_urls,

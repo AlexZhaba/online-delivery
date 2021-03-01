@@ -5,7 +5,7 @@ import BurgerItem from '../styled/BurgerItem';
 
 import {NavLink} from 'react-router-dom';
 
-import logo from '@assets/logoSmall.png';
+import logo from '@assets/logo.png';
 import cancel from '@assets/cancel.png';
 import phone from '@assets/phone.png';
 import {setToken, setTokenType, setUserGUID} from "../../../redux/actions/User";
@@ -40,7 +40,7 @@ const BurgerMenu = ({isOpen, setIsOpen, profile, setEntry}) => {
       <Sidebar isOpen={isOpen} ref={barRef}>
         <SidebarTop>
           <NavLink to='/main' onClick={() => setIsOpen(false)}>
-            <img src={logo}/>
+            <img src={logo} style={{width: 100}}/>
           </NavLink>
           <img src={cancel} style={{width: 18, height: 18}} onClick={() => setIsOpen(false)} style={{cursor: "pointer"}}/>
         </SidebarTop>

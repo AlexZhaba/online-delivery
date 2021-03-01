@@ -61,6 +61,7 @@ const Container = styled.div`
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
+  /* height: calc(100% + 200px); */
   @media(max-width: 1180px) {
     justify-content: center;
   }

@@ -41,10 +41,10 @@ const ImageSwiper = ({banners}) => {
   // console.log('banners: ', banners)
   return (
     <SwiperContainer>
-      <SwiperButton style={{left: -20}}  onClick={() => sw.slidePrev()}>
+      <SwiperButton style={{left: -20}}  onClick={() => sw.slidePrev()} grey={banners ? banners.length === 1 : banners}>
         <img src={swiperArrow} style={{transform: "rotate(180deg)"}}/>
       </SwiperButton>
-      <SwiperButton style={{right: -20}} onClick={() => sw.slideNext()}>
+      <SwiperButton style={{right: -20}} onClick={() => sw.slideNext()} grey={banners ? banners.length === 1 : banners}>
         <img src={swiperArrow}/>
       </SwiperButton>
       <Swiper
@@ -98,6 +98,7 @@ const SwiperButton = styled.div`
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  ${props => props.grey ? "filter: grayscale(1);" : ""}
   img {
     padding: 5px;
     box-shadow: 0px 4px 9px rgba(0, 0, 0, 0.25);

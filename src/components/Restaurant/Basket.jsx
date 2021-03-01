@@ -9,6 +9,9 @@ import Delete from '@assets/delete.png';
 import { NavLink, useHistory } from "react-router-dom";
 import CircleLoader from '@components/Loader/CircleLoader';
 
+import ModalMaxCartPrice from './ModalMaxCartPrice'
+import ModalMinCartPrice from './ModalMinCartPrice'
+
 import trash from '@assets/trash_full.png';
 
 import lightning from '@assets/lightning.png';
@@ -20,6 +23,9 @@ const Basket = ({clearBasketModal, setClearBasketModal, ...props}) => {
   let   {match, lang}  = props;
   let basketSum = useSelector(({Order}) => Order.basketSum);
   let [localPackage, setLocalPackage] = useState(0);
+  let [maxCartOpen, setMaxCartOpen] = useState(false);
+  let [minCartOpen, setMinCartOpen] = useState(false);
+
   let basketLoading = useSelector(({Order}) => Order.basketLoading);
   let lat = useSelector(({User}) => User.lat);
   let lon = useSelector(({User}) => User.lon);
@@ -67,9 +73,11 @@ const Basket = ({clearBasketModal, setClearBasketModal, ...props}) => {
 
   useEffect(() => {
     if (constraints && basket.length !== 0) {
+      // alert(JSON.stringify(constraints))
       dispatch(setTotalPrice(basketSum + (constraints.statements.delivery_fare || 0) + constraints.statements.service_charge + constraints.statements.packaging_charge + localPackage - constraints.statements.discount_value))
     }
-  }, [basket, constraints])
+    
+  }, [constraints, basket, localPackage])
 
   useEffect(() => {
     if (basket.length !== 0 && token) {
@@ -78,144 +86,158 @@ const Basket = ({clearBasketModal, setClearBasketModal, ...props}) => {
   }, [basket, lon, lat, token])
 
   return (
-    <Wrapper>
-      {basket.length !== 0 && match.path !== "/makeOrder"  &&
+    <>
+      <ModalMaxCartPrice constraints={constraints} isOpen={maxCartOpen} setIsOpen={setMaxCartOpen}/>
+      <ModalMinCartPrice constraints={constraints} isOpen={minCartOpen} setIsOpen={setMinCartOpen}/>
+      <Wrapper>
+        {basket.length !== 0 && match.path !== "/makeOrder"  &&
 
-        <MobileWrapper onClick={() => history.push('/makeOrder')}>
-            <BasketIcon src={basketIcon}/>
-            <span>168 000 сум</span>
-        </MobileWrapper>
-        
-      }
-      {basketLoading && <LoaderWrapper>
-                          <CircleLoader/>
-                          
-                        </LoaderWrapper>}
-      <GlobalContainer>
-        <TitleContainer>
-          Мой заказ
-        </TitleContainer>
-        {
-          basket.length !== 0 && <TrashImg src={trash} onClick={handleClearBasket} data-trash="trash"/>
+          <MobileWrapper onClick={() => history.push('/makeOrder')}>
+              <BasketIcon src={basketIcon}/>
+              <span>168 000 сум</span>
+          </MobileWrapper>
+          
         }
-        <ListContainer>
-          {basket.map(item => {
-            return (
-              <>
-            <ListItem>
-              <div style={{flex: 5}}>
-                <div>{item.name[lang]}</div>
+        {basketLoading && <LoaderWrapper>
+                            <CircleLoader/>
+                            
+                          </LoaderWrapper>}
+        <GlobalContainer>
+          <TitleContainer>
+            Мой заказ
+          </TitleContainer>
+          {
+            basket.length !== 0 && <TrashImg src={trash} onClick={handleClearBasket} data-trash="trash"/>
+          }
+          <AdaptiveBox>
+          <ListContainer>
+            {basket.map(item => {
+              return (
+                <>
+              <ListItem>
+                <div style={{flex: 5}}>
+                  <div>{item.name[lang]}</div>
+                </div>
+                <CountContainer>
+                  <CountButton onClick={() => onDecreaseCount(item)}>
+                    <CountImage src={Delete}/>
+                  </CountButton>
+                  <CountValue>
+                    {item.count}
+                  </CountValue>
+                  <CountButton onClick={() => onIncreaseCount(item)}>
+                    <CountImage src={Add}/>
+                  </CountButton>
+                </CountContainer> 
+                <ListItemPrice>
+                  {item.portion.price} {item.portion.currency}
+                </ListItemPrice>
+              </ListItem>
+              <div style={{fontSize: 12, marginTop: -10}}>
+                <div>{item.portion && item.portion.name[lang]}</div>
+                {item.modifer_groups && item.modifer_groups.map(group => {
+                  return <div>{group.name[lang]}</div>
+                })}
               </div>
-              <CountContainer>
-                <CountButton onClick={() => onDecreaseCount(item)}>
-                  <CountImage src={Delete}/>
-                </CountButton>
-                <CountValue>
-                  {item.count}
-                </CountValue>
-                <CountButton onClick={() => onIncreaseCount(item)}>
-                  <CountImage src={Add}/>
-                </CountButton>
-              </CountContainer> 
-              <ListItemPrice>
-                {item.portion.price} {item.portion.currency}
-              </ListItemPrice>
-            </ListItem>
-            <div style={{fontSize: 12, marginTop: -10}}>
-              <div>{item.portion && item.portion.name[lang]}</div>
-              {item.modifer_groups && item.modifer_groups.map(group => {
-                return <div>{group.name[lang]}</div>
-              })}
-            </div>
-            </>
-            )
-          })}
-        </ListContainer>
-        {(basket.length !== 0 && constraints) &&
-        <>
-        <AdditionContainer>
-          {constraints.statements.delivery_fare &&
+              </>
+              )
+            })}
+          </ListContainer>
+          {(basket.length !== 0 && constraints) &&
+          <AdditionContainer>
+            {constraints.statements.delivery_fare &&
+              <DeliveryContainer>
+                <DeliveryText>
+                  Доставка
+                  <img src={lightning} style={{marginLeft: 5}}/>
+                </DeliveryText>
+                <DelliverySum>
+                  {`${constraints.statements.delivery_fare} ${constraints.currency}`}
+                </DelliverySum>
+              </DeliveryContainer>
+            }
+            <AdditionSubstring>
+              {constraints.statements.delivery_fare_notes && constraints.statements.delivery_fare_notes.ru}
+            </AdditionSubstring>
+            
             <DeliveryContainer>
               <DeliveryText>
-                Доставка
-                <img src={lightning} style={{marginLeft: 5}}/>
+                Стоимость упаковки
               </DeliveryText>
               <DelliverySum>
-                {`${constraints.statements.delivery_fare} ${constraints.currency}`}
+                {`${constraints.statements.packaging_charge + localPackage} ${constraints.currency}`}
               </DelliverySum>
             </DeliveryContainer>
+            <AdditionSubstring>
+              {constraints.statements.packaging_charge_notes && constraints.statements.packaging_charge_notes.ru}
+            </AdditionSubstring>
+
+            <DeliveryContainer>
+              <DeliveryText>
+                Обслуживание
+              </DeliveryText>
+              <DelliverySum>
+                {`${constraints.statements.service_charge} ${constraints.currency}`}
+              </DelliverySum>
+            </DeliveryContainer>
+            <AdditionSubstring>
+              {constraints.statements.service_charge_notes && constraints.statements.service_charge_notes.ru}
+            </AdditionSubstring>
+
+            <DeliveryContainer>
+              <DeliveryText>
+                Скидка
+              </DeliveryText>
+              <DelliverySum>
+                {`${constraints.statements.discount_value} ${constraints.currency}`}
+              </DelliverySum>
+            </DeliveryContainer>
+            <AdditionSubstring>
+              {constraints.statements.discount_value_notes && constraints.statements.discount_value_notes.ru}
+            </AdditionSubstring>
+
+          </AdditionContainer>
           }
-          <AdditionSubstring>
-            {constraints.statements.delivery_fare_notes && constraints.statements.delivery_fare_notes.ru}
-          </AdditionSubstring>
-          
-          <DeliveryContainer>
-            <DeliveryText>
-              Стоимость упаковки
-            </DeliveryText>
-            <DelliverySum>
-              {`${constraints.statements.packaging_charge + localPackage} ${constraints.currency}`}
-            </DelliverySum>
-          </DeliveryContainer>
-          <AdditionSubstring>
-            {constraints.statements.packaging_charge_notes && constraints.statements.packaging_charge_notes.ru}
-          </AdditionSubstring>
-
-          <DeliveryContainer>
-            <DeliveryText>
-              Обслуживание
-            </DeliveryText>
-            <DelliverySum>
-              {`${constraints.statements.service_charge} ${constraints.currency}`}
-            </DelliverySum>
-          </DeliveryContainer>
-          <AdditionSubstring>
-            {constraints.statements.service_charge_notes && constraints.statements.service_charge_notes.ru}
-          </AdditionSubstring>
-
-          <DeliveryContainer>
-            <DeliveryText>
-              Скидка
-            </DeliveryText>
-            <DelliverySum>
-              {`${constraints.statements.discount_value} ${constraints.currency}`}
-            </DelliverySum>
-          </DeliveryContainer>
-          <AdditionSubstring>
-            {constraints.statements.discount_value_notes && constraints.statements.discount_value_notes.ru}
-          </AdditionSubstring>
-
-        </AdditionContainer>
-        <BottomContainer>
-          <TimeContainer>
-            <TimeTitle>Время доставки</TimeTitle>
-            <TimeValue>{constraints.hours && constraints.hours[0]}</TimeValue>
-          </TimeContainer>
-          <TimeContainer>
-            <TimeTitle>Итого</TimeTitle>
-            <TimeValue>
-              {/* {basketSum + (constraints.statements.delivery_fare || 0) + constraints.statements.service_charge + constraints.statements.packaging_charge + localPackage - constraints.statements.discount_value} */}
-              {totalPrice}
-              &nbsp;{basket[0].portion.currency}
-              </TimeValue>
-          </TimeContainer>
-        </BottomContainer>
-        { match.path !== "/makeOrder" && 
-          <MakeButton onClick={() => {
-            if (tokenType === "GUEST") document.getElementById('signin').click()
-            else history.push('/makeOrder')
-          }}>
-            Оформить заказ
-          </MakeButton>
-        }
-        </>
-        }
-      </GlobalContainer>
-    </Wrapper>
+          </AdaptiveBox>
+          {(basket.length !== 0 && constraints) &&
+          <>
+            <BottomContainer>
+              <TimeContainer>
+                <TimeTitle>Время доставки</TimeTitle>
+                <TimeValue>{constraints.hours && constraints.hours[0]}</TimeValue>
+              </TimeContainer>
+              <TimeContainer>
+                <TimeTitle>Итого</TimeTitle>
+                <TimeValue>
+                  {totalPrice}
+                  &nbsp;{basket[0].portion.currency}
+                  </TimeValue>
+              </TimeContainer>
+            </BottomContainer>
+            { match.path !== "/makeOrder" && 
+              <MakeButton onClick={() => {
+                setMinCartOpen(true);
+                return;
+                if (tokenType === "GUEST") document.getElementById('signin').click()
+                else history.push('/makeOrder')
+              }} data-trash="true">
+                Оформить заказ
+              </MakeButton>
+            }
+          </>
+          }
+        </GlobalContainer>
+      </Wrapper>
+    </>
   )
 }
 
 export default Basket;
+
+const AdaptiveBox = styled.div`
+  max-height: calc(100vh - 325px);
+  overflow: auto;
+`;
 
 const AdditionSubstring = styled.div`
   color: grey;
@@ -307,7 +329,6 @@ const TimeContainer = styled.div`
 `;
 
 const TimeTitle = styled.div`
-
 `;
 
 const TimeValue = styled.div`
@@ -315,7 +336,6 @@ const TimeValue = styled.div`
   font-weight: bold;
   font-size: 20px;
   line-height: 25px;
-
 `;
 
 const DeliveryContainer = styled.div`
@@ -342,9 +362,10 @@ const DelliverySum = styled.div`
 
 const Wrapper = styled.div`
   position: sticky;
-  top: 180px;
+  top: 150px;
   min-width: 380px;
-  min-height: 320px; 
+  min-height: 320px;
+  max-height: calc(100vh - 150px); 
   box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.15);
   border-radius: 5px;
   margin-left: 20px;
@@ -384,7 +405,6 @@ const TrashImg = styled.img`
   :hover {
     transform: translateY(-5px);
     transition: .3s all;
-
   }
 `;
 

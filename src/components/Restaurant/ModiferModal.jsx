@@ -128,14 +128,14 @@ const ModiferModal = ({modal, setModal, openItem, handleClick, lang}) => {
               </CountButton>
               </CountContainer> 
               <Button onClick={() => {
-                  if (addition.portion === null) return;
+                  if (addition.portion === null && openItem.portions.length !== 1) return;
                   handleClick(openItem, itemCount, addition)
                   setItemCount(1);
                   setAddition({
                     portion: null,
                     modiferGroups: []
                   })
-                }} active={addition.portion}>
+                }} active={addition.portion || openItem.portions.length === 1}>
                 В корзину
                 {/*В корзину {openItem.portions[0].price} {openItem.portions[0].currency}*/}
               </Button>

@@ -5,8 +5,8 @@ import arrowBottom from '@assets/arrowBottom.png';
 
 import ModalNewCard from './ModalNewCard';
 import ModalMakeOrder from './ModalMakeOrder';
-import {useDispatch} from "react-redux";
-import {fetchOrderConstraints} from "../../redux/actions/Order";
+import {useDispatch, useSelector} from "react-redux";
+import {clearBasket, fetchMakeOrder, fetchOrderConstraints} from "../../redux/actions/Order";
 const OrderInput = ({text, style}) => (
   <div class="group" style={style}>      
     <input type="text" class="input__order" required/>
@@ -21,16 +21,81 @@ const OrderCard = ({constraints}) => {
 
   const [openNewCard, setOpenNewCard] = useState(false);
   const [isOrderMade, setIsOrderMade] = useState(false);
+
+  let [openTime, setOpenTime] = useState(false);
+  let [selectedTime, setSelectedTime] = useState(0);
+  let [orderType, setOrderType] = useState('delivery');
+
+  let basketVenue = useSelector(({Order}) => Order.basketVenue);
+  let totalPrice = useSelector(({Order}) => Order.totalPrice)
+  let basket = useSelector(({Order}) => Order.basketItems);
+
   if (!constraints) return <div></div>
 
   const setDelivery = () => {
+    setSelectedTime(0);
+    setOrderType('delivery')
     dispatch(fetchOrderConstraints('delivery'))
   }
 
   const setTakeaway = () => {
+    setSelectedTime(0);
+    setOrderType('takeaway')
     dispatch(fetchOrderConstraints('takeaway'))
   }
 
+  const handleMakeOrder = () => {
+
+    const date = new Date();
+
+    // const event = new Date('05 October 2011 14:48 UTC');
+    const event = new Date(`${date.getDate()} ${date.getMonth()} ${date.getFullYear()} ${constraints.hours[selectedTime]} UTC`);
+    console.log(`${date.getDate()} ${date.getMonth()} ${date.getFullYear()} ${constraints.hours[selectedTime]} UTC`)
+
+    const cart = {
+      venue_guid: basketVenue.guid,
+      order_type: orderType,
+      order_price: totalPrice,
+      currency: basket[0].portion.currency,
+      time: event.toISOString(),
+      asap: selectedTime === 0,
+      user_card_guid: "",
+      user_notes: "Положите огурчик, пожалуйста :)",
+      payment_method: 0,
+      user_address_guid: "",
+      address: {
+        name: "Г.Ташкент, улица Большого Рога, дом 32, квартира 21",
+        lat: 41.2995,
+        lon: 69.2401,
+        notes: "Будьте тише!"
+      },
+      items: basket.map(item => {
+        return {
+          item_guid: item.guid,
+          name: item.name,
+          description: item.portion.metric,
+          price: item.portion.price,
+          packaging_price: item.packaging_price,
+          count: item.count,
+          portion_id: item.portion.id,
+          portion_name: item.portion.name,
+          modifier_options: item.modifer_groups.map(option => {
+            return {
+              guid: option.guid,
+              name: option.name,
+              price: option.price
+            }
+          })
+        }
+      })
+    }
+    dispatch(fetchMakeOrder(cart))
+    dispatch(clearBasket())
+    setIsOrderMade(true)
+    // console.log(cart)
+  }
+
+  console.log(constraints.hours)
   return ( 
     <Wrapper>
       <ModalNewCard openNewCard={openNewCard} setOpenNewCard={setOpenNewCard}/>
@@ -82,9 +147,23 @@ const OrderCard = ({constraints}) => {
         <OrderInput text="Комментарий к заказу" style={{width: 470}}/>
         
         <Title style={{marginTop: 30}}>Время доставки</Title>
-        <DateSelect>
-          <span>Как можно быстрее</span>
+        <DateSelect onClick={() => setOpenTime(!openTime)}>
+          <span>{constraints.hours ? 
+            selectedTime === 0 ? "Как можно быстрее" : constraints.hours[selectedTime] : ""}
+          </span>
           <SelectImg src={arrowBottom}/>
+          {openTime && 
+          <DataWrapper>
+              {constraints.hours && constraints.hours.map((e, index) => {
+                if (index === 0) return <DataItem onClick={() => setSelectedTime(index)}>Как можно быстрее</DataItem>
+                return (
+                  <DataItem onClick={() => setSelectedTime(index)}>
+                    {e}
+                  </DataItem>
+                )
+              })}
+            </DataWrapper>
+          }
         </DateSelect>
         
         <Title style={{marginTop: 30, marginBottom: 30}}>Способы оплаты</Title>
@@ -133,7 +212,7 @@ const OrderCard = ({constraints}) => {
             <span>Наличными курьером</span>
           </SelectLabel>
         </SelectContainer> */}
-        <OrderInput text="Промокод" style={{width: 200, marginTop: 30}}/>
+        {/* <OrderInput text="Промокод" style={{width: 200, marginTop: 30}}/> */}
         {/* <DateWrapper>
           <DateTitle>Сегодня</DateTitle>
           <DateLine/>
@@ -151,7 +230,7 @@ const OrderCard = ({constraints}) => {
           </DateContainer>
         </DateWrapper> */}
         <ButtonContainer>
-          <OrderButton onClick={() => setIsOrderMade(true)} data-trash="true">
+          <OrderButton onClick={() => handleMakeOrder()} data-trash="true">
             Заказать
           </OrderButton>
         </ButtonContainer>
@@ -161,6 +240,34 @@ const OrderCard = ({constraints}) => {
 }
 
 export default OrderCard;
+
+const DataWrapper = styled.div`
+  position: absolute;
+  top: 100%;
+  left: -2px;
+  width: calc(100% + 4px);
+  /* height: 200px; */
+  max-height: 400px;
+  overflow: auto;
+  z-index: 2;
+  background: white;
+  border: 2px solid ${props => props.theme.primary};
+  /* background: red; */
+`;
+
+const DataItem = styled.div`
+  width: 100%;
+  padding: 10px 0;
+  font-size: 20px;
+  text-align: center;
+  transition: .2s all;
+  :hover {
+    cursor: pointer;
+    background: ${props => props.theme.primary};
+    color: #FFF;
+    transition: .2s all;
+  }
+`;
 
 const ButtonCard = styled.div`
   color: ${props => props.theme.primary};
@@ -188,7 +295,7 @@ const ButtonContainer = styled.div`
 `;
 
 const OrderButton = styled.div`
-  margin-top: 60px;
+  margin-top: 30px;
   background: #FF2C55;
   border-radius: 5px;
   padding: 9px 90px;
@@ -217,6 +324,7 @@ const DateSelect = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative;
 `;
 
 const SelectImg = styled.img`
@@ -333,6 +441,10 @@ const MainTitle = styled.div`
   font-size: 35px;
   line-height: 55px;
   margin-bottom: 26px;
+  @media(max-width: 700px) {
+    font-size: 25px;
+    margin-top: -20px;
+  }
 `;
 
 const Title = styled.div`
@@ -342,6 +454,9 @@ const Title = styled.div`
   font-size: 25px;
   line-height: 37px;
   color: #000;
+  @media(max-width: 700px) {
+    font-size: 20px;
+  }
 `;
 
 const OrderWrapper = styled.div`

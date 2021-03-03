@@ -5,7 +5,11 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import { useCookies } from 'react-cookie';
 
+
 import {setLang} from '../../../redux/actions/User';
+
+import ModalMaxCartPrice from '@components/Restaurant/ModalMaxCartPrice'
+import ModalMinCartPrice from '@components/Restaurant/ModalMinCartPrice'
 
 import headerPhone from '@assets/headerPhone.png'
 import headerLang from '@assets/headerLang.png'
@@ -21,6 +25,10 @@ const HeaderConnect = ({setEntry}) => {
   let lang = useSelector(({User}) => User.lang);
   let tokenType = useSelector(({User}) => User.tokenType)
   let totalPrice = useSelector(({Order}) => Order.totalPrice);
+  let constraints = useSelector(({Order}) => Order.constraints);
+
+  let [maxCartOpen, setMaxCartOpen] = useState(false);
+  let [minCartOpen, setMinCartOpen] = useState(false);
   const [cookies, setCookie] = useCookies(['token']);
 
 
@@ -40,6 +48,8 @@ const HeaderConnect = ({setEntry}) => {
   }
   return (
     <HeaderRight>
+      <ModalMaxCartPrice constraints={constraints} isOpen={maxCartOpen} setIsOpen={setMaxCartOpen}/>
+      <ModalMinCartPrice constraints={constraints} isOpen={minCartOpen} setIsOpen={setMinCartOpen}/>
       <RightItem>
         <img src={headerPhone}/>
         <span>71 207 34 34</span>
@@ -73,14 +83,23 @@ const HeaderConnect = ({setEntry}) => {
       </RightItem>
       {/*<NavLink to='/makeOrder'>*/}
       {
-        true &&
+        totalPrice > 0 &&
         <RightItem onClick={() => {
+          if (!constraints || constraints.min_cart_price > totalPrice) {
+            setMinCartOpen(true)
+            return;
+          }
+
+          if (constraints.max_cart_price < totalPrice) {
+            setMaxCartOpen(true)
+            return;
+          }
           if (tokenType === "GUEST") document.getElementById('signin').click()
           else history.push('/makeOrder')
-        }} >
+        }} data-trash="true">
           {/* style={{flexDirection: 'column', alignItems: 'center'}} */}
-            <img src={headerBasket}/>
-            <span >{totalPrice}</span>
+            <img src={headerBasket} data-trash="true"/>
+            <span data-trash="true">{totalPrice.toString().replace(/(\d)(?=(\d{3})+(\D|$))/g, '$1 ')}</span>
         </RightItem>
       }
       {/*</NavLink>*/}

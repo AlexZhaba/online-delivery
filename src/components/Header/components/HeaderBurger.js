@@ -96,27 +96,33 @@ const BurgerMenu = ({isOpen, setIsOpen, profile, setEntry}) => {
             </MenuItem>
           </SidebarMenu>
         }
-        <div style={{marginTop: 40}}>
-          <NavLink to='/cooperation'>
-            <QuickInfo>
+        <SidebarBottom>
+        
+          {/* <NavLink to='/cooperation'> */}
+            <QuickInfo href="https://docs.google.com/forms/d/e/1FAIpQLSeifgRz5dDqZZdIkciJ3cmnkiTVnZOzFj-c61gRpgyzC6tHSQ/viewform?c=0&w=1" target="_blank">
               Ресторанам
             </QuickInfo>
-          </NavLink>
-          <NavLink to='/cooperation'>
-            <QuickInfo>
+          {/* </NavLink> */}
+          {/* <NavLink to='/cooperation'> */}
+            <QuickInfo href="https://t.me/stolikuz" target="_blank">
               Курьерам
             </QuickInfo>
-          </NavLink>
-        </div>
-        <SidebarBottom>
-          Связаться с нами <img src={phone} style={{marginLeft: 5}}/>
+          {/* </NavLink> */}
+          <QuickInfo>
+            Связаться с нами <img src={phone} style={{marginLeft: 5}}/>
+          </QuickInfo>
         </SidebarBottom>
       </Sidebar>
     </Wrapper>
   )
 }
 
-const QuickInfo = styled.div`
+const BottomInfo = styled.div`
+  position: absolute;
+
+`;
+
+const QuickInfo = styled.a`
   font-weight: 500;
   font-size: 16px;
   line-height: 29px;
@@ -201,9 +207,11 @@ const SidebarTop = styled.div`
 `;
 
 const SidebarBottom = styled.div`
-  height: 54px;
   width: 100%;
+  position: absolute;
+  bottom: 20px;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   font-size: 14px;

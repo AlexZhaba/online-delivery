@@ -153,10 +153,12 @@ const Order = (state = initialState, action) => {
     case "CLEAR_BASKET": {
       localStorage.setItem('basket', '');
       localStorage.setItem('basketVenue', '');
+      localStorage.setItem('totalPrice', 0)
       return {
         ...state,
         basketItems: [],
-        basketVenue: null
+        basketVenue: null,
+        totalPrice: 0
       }
     }
     default: {

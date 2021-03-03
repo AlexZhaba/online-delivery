@@ -50,7 +50,7 @@ const Profile = (props) => {
 
   const [sex, setSex] = useState("WOMAN"); // WOMAN OR MAN
   const [date, setDate] = useState('дд')
-  const [month, setMonth] = useState('мм');
+  const [month, setMonth] = useState('месяц  ');
   const [year, setYear] = useState('гггг');
   const [cookies, setCookie] = useCookies(['token', 'tokenType']);
 
@@ -105,9 +105,37 @@ const Profile = (props) => {
           </SelProfile>
           <SelProfile date={month}>
             {Array(12).fill(0).map((e, index) => <DropdownItem onClick={(event) => {
-              setMonth(index + 1);
+              // setMonth(index + 1);
+              switch (index) {
+                case 0: return setMonth("Январь")
+                case 1: return setMonth("Февраль")
+                case 2: return setMonth("Март")
+                case 3: return setMonth("Апрель")
+                case 4: return setMonth("Май")
+                case 5: return setMonth("Июнь")
+                case 6: return setMonth("Июль")
+                case 7: return setMonth("Август")
+                case 8: return setMonth("Сентябрь")
+                case 9: return setMonth("Окрябрь")
+                case 10: return setMonth("Ноябрь")
+                case 11: return setMonth("Декабрь")
+              }
               // event.stopPropagation();
-            }}>{index + 1}</DropdownItem>)}          
+            }}>
+              {index === 0 && "Январь"}
+              {index === 1 && "Февраль"}
+              {index === 2 && "Март"}
+              {index === 3 && "Апрель"}
+              {index === 4 && "Май"}
+              {index === 5 && "Июнь"}
+              {index === 6 && "Июль"}
+              {index === 7 && "Август"}
+              {index === 8 && "Сентябрь"}
+              {index === 9 && "Окрябрь"}
+              {index === 10 && "Ноябрь"}
+              {index === 11 && "Декабрь"}
+              
+            </DropdownItem>)}          
           </SelProfile>
           <SelProfile date={year}>
             {Array(100).fill(0).map((e, index) => <DropdownItem onClick={(event) => {
@@ -160,9 +188,9 @@ const Button = styled.div`
 
 const Dropdown = styled.div`
   position: absolute;
-  left: -1px;
+  right: -1px;
   top: 100%;
-  width: calc(100% + 2px);
+  width: calc(100% + 20px);
   height: 200px;
   overflow-y: scroll;
   background: #FFF;

@@ -106,7 +106,7 @@ const ModiferModal = ({modal, setModal, openItem, handleClick, lang}) => {
                     {group.name[lang]}
                   </AdditionalName>
                   <AdditionalContainer>
-                    {group.options.map(option => <AdditionalEl option={option} setAddition={setAddition} addition={addition} modal={modal}/>)}
+                    {group.options && group.options.map(option => <AdditionalEl option={option} setAddition={setAddition} addition={addition} modal={modal}/>)}
                   </AdditionalContainer>
                 </>
               )

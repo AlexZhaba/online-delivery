@@ -205,7 +205,7 @@ const Description = styled.div`
   margin-top: 10px;
   display: flex;
   font-size: 12px;
-  width: 370px;
+  width: 100%;
   color: grey;
 `;
 

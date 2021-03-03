@@ -31,7 +31,7 @@ let ItemsList = ({venues, venuesLoad, history, handleOpenRestaurant}) => {
             <Heart>
               <img src={heart} style={{width: 30, height: 27}}/>
             </Heart>
-            <ItemImg style={{backgroundImage: `url(${ venue.thumb_image_urls ? venue.thumb_image_urls : "https://diabetno.ru/wp-content/uploads/2020/07/pp_image_7236_22yecuiyctplaceholder.png"})`}}>
+            <ItemImg style={{backgroundImage: `url(${ venue.featured_image_urls ? venue.featured_image_urls[0] : "https://diabetno.ru/wp-content/uploads/2020/07/pp_image_7236_22yecuiyctplaceholder.png"})`}}>
             </ItemImg>
             <ItemBottom>
               <BottomName>{venue.name[lang]}</BottomName>
@@ -46,7 +46,7 @@ let ItemsList = ({venues, venuesLoad, history, handleOpenRestaurant}) => {
                   <span>4,5</span>
                 </BottomItem>
                 <BottomItem>
-                  <span style={{margin: 0}}>от {venue.check_value} {venue.check_currency}</span>
+                  <span style={{margin: 0}}>от {venue.check_value.toString().replace(/(\d)(?=(\d{3})+(\D|$))/g, '$1 ')} {venue.check_currency}</span>
                 </BottomItem>
               </BottomData>
             </ItemBottom>
@@ -108,7 +108,8 @@ const ItemContainer = styled.div`
   transition: .3s all ease-in-out;
   ${props => !props.online ? "filter: grayscale(100%);" : ""}
   :hover {
-    transform: translateY(-7px);
+    /* transform: translateY(-7px); */
+    transform: scale(1.04);
     transition: .3s all ease-in-out;
   }
   ${props => {
@@ -146,7 +147,7 @@ const ItemImg = styled.div`
 `;
 
 const ItemBottom = styled.div`
-  height: 114px;
+  /* height: 114px; */
   width: 100%;
   padding: 20px;
 `;

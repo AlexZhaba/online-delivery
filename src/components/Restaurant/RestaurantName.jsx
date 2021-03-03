@@ -13,7 +13,7 @@ const DesktopRestaurantName = ({venue}) => {
   const [review, setReview] = useState(null);
   const [reviewModal, setReviewModal] = useState(false);
   return (
-    <Wrapper>
+    <Wrapper image={venue ? venue.featured_image_urls ? venue.featured_image_urls[0] : "https://diabetno.ru/wp-content/uploads/2020/07/pp_image_7236_22yecuiyctplaceholder.png" : "https://diabetno.ru/wp-content/uploads/2020/07/pp_image_7236_22yecuiyctplaceholder.png"}>
       <ReviewsModal reviewModal={reviewModal} setReviewModal={setReviewModal}/>
       {venue &&
       <>
@@ -43,11 +43,11 @@ const DesktopRestaurantName = ({venue}) => {
             25-35 мин
           </Character>
           <Character>
-            от {venue.check_value} {venue.check_currency}
+            от {venue.check_value.toString().replace(/(\d)(?=(\d{3})+(\D|$))/g, '$1 ')} {venue.check_currency}
           </Character>
           <Character>
             <CharacterImage src={whiteDelivery} style={{marginRight: 7}}/>
-            от 10 000 сум
+            от {venue.check_value.toString().replace(/(\d)(?=(\d{3})+(\D|$))/g, '$1 ')} {venue.check_currency}
           </Character>
         </CharacterWrapper>
       </>
@@ -58,10 +58,10 @@ const DesktopRestaurantName = ({venue}) => {
 
 const Wrapper = styled.div`
   width: 100%;
-  
+  height: 300px;
   margin-bottom: 40px;
   color: #FFF;
-  background-image: url("${mainTitle}");
+  background-image: url("${props => props.image}");
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -69,6 +69,9 @@ const Wrapper = styled.div`
   //background-;
   padding: 30px 45px;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   ::before {
     content: '';
     position: absolute;
@@ -76,12 +79,13 @@ const Wrapper = styled.div`
     left: 0;
     height: 100%;
     width: 100%;
-    background: linear-gradient(to right,rgba(0,0,0,1) 50%,rgba(0,0,0,0.7) 100%);
+    background: linear-gradient(to right,rgba(0,0,0, 0.4) 0%,rgba(0,0,0,0.3) 100%);
   }
   @media(max-width: 790px) {
     color: #080808;
     margin-bottom: 0;
     padding: 10px 20px;
+    height: auto;
     &::before {
       background: white;
     }

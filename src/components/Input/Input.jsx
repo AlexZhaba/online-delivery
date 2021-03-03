@@ -2,27 +2,40 @@ import React, {useRef, useEffect, useState} from 'react';
 
 import styled from "styled-components";
 
+import {useDispatch} from 'react-redux';
+
 import mapPoint from "@assets/mapPoint.png";
 import arrow from "@assets/arrow.png";
+import { setSelectAddress } from '../../redux/actions/Modals';
 
 let Input = ({borderColor = null, flex = null, marginLeft = null, style = null}) => {
+  const dispatch = useDispatch();
   const [openTime, setOpenTime] = useState(false);
   let timeRef = useRef(null);
-  useEffect(() => {
-    document.addEventListener('click', (event) => {
-      if (timeRef.current && timeRef.current.contains(event.target)) {
-        setOpenTime(true)
-      } else {
-        setOpenTime(false)
-      }
-    })
-  }, [])
+  // useEffect(() => {
+  //   document.addEventListener('click', (event) => {
+  //     if (timeRef.current && timeRef.current.contains(event.target)) {
+  //       setOpenTime(true)
+  //     } else {
+  //       setOpenTime(false)
+  //     }
+  //   })
+  // }, [])
   return (
     <InputWrapper borderColor={borderColor} flex={flex} marginLeft={marginLeft} style={style}>
       <div>
         <img src={mapPoint} className="header__mapPoint"/>
       </div>
-      <InputEl placeholder="Адрес доставки"/>
+      <InputEl placeholder="Адрес доставки" onFocus={(event) => {
+          event.persist();
+          event.target.blur();
+          //TODO: FIX THIS SHIT
+          setTimeout(() => {
+            dispatch(setSelectAddress(true))  
+          }, 100)
+          event.stopPropagation();
+          // event.stopImmediatePropagation();
+        }} data-trash="true"/>
       {/*<div style={{position: 'relative'}}>*/}
       {/*  <Select ref={timeRef} onClick={(event) => {*/}
       {/*    event.stopPropagation();*/}

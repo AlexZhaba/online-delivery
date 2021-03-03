@@ -19,6 +19,9 @@ import {MobileFooter, DesktopFooter} from '@components/Footer/Footer.jsx';
 import {MobileHeader, DesktopHeader} from './components/Header/Header.jsx';
 import {DesktopRestaurant} from "./pages/Restaurant";
 
+//modals
+import ModalSelectAddress from '@components/Modals/SelectAddress'
+
 //pages
 import {MobileMain} from './pages/Main';
 import {MobileNew, DesktopNew} from './pages/New'
@@ -26,6 +29,8 @@ import {Cooperation} from './pages/Cooperation'
 import {MakeOrder} from './pages/MakeOrder'
 import DesktopMain from './pages/Main';
 import {AccountContainer} from './pages/AccountContainer';
+import { fetchOrderConstraints } from './redux/actions/Order';
+import { setSelectAddress } from './redux/actions/Modals';
 
 let MobileLayout = () => {
   return (
@@ -70,6 +75,12 @@ let DeskTopLayout = () => {
 
   let token = useSelector(({User}) => User.token)
   let tokenType = useSelector(({User}) => User.tokenType)
+  let constraints = useSelector(({Order}) => Order.constraints)
+  let basket = useSelector(({Order}) => Order.basketItems)
+  
+  //modals
+  let selectAddress = useSelector(({Modals}) => Modals.selectAddress)
+
   const [cookies, setCookie, removeCookie] = useCookies(['token']);
 
   useEffect(() => {
@@ -93,17 +104,13 @@ let DeskTopLayout = () => {
     }
   }, [token])
 
-  // useEffect(() => {
-  //   console.log('%c COOKIES',"color:blue; font-size: 17px; font-weight: bold")
-  //   console.log(cookies);
-  //   console.log(document.cookie)
-  // }, [cookies])
-
+  useEffect(() => {
+    if (basket.length !== 0 && token && !constraints) {
+      dispatch(fetchOrderConstraints())
+    }
+  }, [basket, token])
   useEffect(() => {
     if (tokenType && token) {
-      // removeCookie('tokenType');
-      // console.log('%c SET_TOKEN_TYPE',"color:red; font-size: 20px; font-weight: bold")
-      // console.log(cookies);
       setCookie('tokenType', tokenType, {path: '/', maxAge: 2592000})
       setCookie('token', token, {path: '/', maxAge: 2592000})
     }
@@ -123,6 +130,7 @@ let DeskTopLayout = () => {
       <LoadingRestaurantWrapper restaurantLoading={restaurantLoading}>
         <Loader/>
       </LoadingRestaurantWrapper>
+      <ModalSelectAddress isOrderMade={selectAddress} setIsOrderMade={(selectAddress) => dispatch(setSelectAddress(selectAddress))}/>
       <BrowserRouter>
         <Route path='/' render={(props) => <DesktopHeader {...props}/>}/>
         

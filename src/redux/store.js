@@ -4,11 +4,13 @@ import thunk from 'redux-thunk';
 import Menus from './reducers/Menus';
 import User from './reducers/User';
 import Order from './reducers/Order';
+import Modals from './reducers/Modals';
 
 const reducers = combineReducers({
   Menus,
   User,
-  Order
+  Modals,
+  Order,
 })
 
 

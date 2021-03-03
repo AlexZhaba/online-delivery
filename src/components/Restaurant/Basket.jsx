@@ -94,7 +94,7 @@ const Basket = ({clearBasketModal, setClearBasketModal, ...props}) => {
 
           <MobileWrapper onClick={() => history.push('/makeOrder')}>
               <BasketIcon src={basketIcon}/>
-              <span>168 000 сум</span>
+              <span>{totalPrice.toString().replace(/(\d)(?=(\d{3})+(\D|$))/g, '$1 ')}</span>
           </MobileWrapper>
           
         }
@@ -130,7 +130,7 @@ const Basket = ({clearBasketModal, setClearBasketModal, ...props}) => {
                   </CountButton>
                 </CountContainer> 
                 <ListItemPrice>
-                  {item.portion.price} {item.portion.currency}
+                  {item.portion.price.toString().replace(/(\d)(?=(\d{3})+(\D|$))/g, '$1 ')} {item.portion.currency}
                 </ListItemPrice>
               </ListItem>
               <div style={{fontSize: 12, marginTop: -10}}>
@@ -152,7 +152,7 @@ const Basket = ({clearBasketModal, setClearBasketModal, ...props}) => {
                   <img src={lightning} style={{marginLeft: 5}}/>
                 </DeliveryText>
                 <DelliverySum>
-                  {`${constraints.statements.delivery_fare} ${constraints.currency}`}
+                  {`${constraints.statements.delivery_fare.toString().replace(/(\d)(?=(\d{3})+(\D|$))/g, '$1 ')} ${constraints.currency}`}
                 </DelliverySum>
               </DeliveryContainer>
             }
@@ -165,7 +165,7 @@ const Basket = ({clearBasketModal, setClearBasketModal, ...props}) => {
                 Стоимость упаковки
               </DeliveryText>
               <DelliverySum>
-                {`${constraints.statements.packaging_charge + localPackage} ${constraints.currency}`}
+                {`${(constraints.statements.packaging_charge + localPackage).toString().replace(/(\d)(?=(\d{3})+(\D|$))/g, '$1 ')} ${constraints.currency}`}
               </DelliverySum>
             </DeliveryContainer>
             <AdditionSubstring>
@@ -177,7 +177,7 @@ const Basket = ({clearBasketModal, setClearBasketModal, ...props}) => {
                 Обслуживание
               </DeliveryText>
               <DelliverySum>
-                {`${constraints.statements.service_charge} ${constraints.currency}`}
+                {`${constraints.statements.service_charge.toString().replace(/(\d)(?=(\d{3})+(\D|$))/g, '$1 ')} ${constraints.currency}`}
               </DelliverySum>
             </DeliveryContainer>
             <AdditionSubstring>
@@ -189,7 +189,7 @@ const Basket = ({clearBasketModal, setClearBasketModal, ...props}) => {
                 Скидка
               </DeliveryText>
               <DelliverySum>
-                {`${constraints.statements.discount_value} ${constraints.currency}`}
+                {`${constraints.statements.discount_value.toString().replace(/(\d)(?=(\d{3})+(\D|$))/g, '$1 ')} ${constraints.currency}`}
               </DelliverySum>
             </DeliveryContainer>
             <AdditionSubstring>
@@ -209,15 +209,23 @@ const Basket = ({clearBasketModal, setClearBasketModal, ...props}) => {
               <TimeContainer>
                 <TimeTitle>Итого</TimeTitle>
                 <TimeValue>
-                  {totalPrice}
+                  {totalPrice.toString().replace(/(\d)(?=(\d{3})+(\D|$))/g, '$1 ')}
                   &nbsp;{basket[0].portion.currency}
                   </TimeValue>
               </TimeContainer>
             </BottomContainer>
             { match.path !== "/makeOrder" && 
               <MakeButton onClick={() => {
-                setMinCartOpen(true);
-                return;
+                // setMinCartOpen(true);
+                // return;
+                if (constraints.max_cart_price < totalPrice) {
+                  setMaxCartOpen(true)
+                  return;
+                }
+                if (constraints.min_cart_price > totalPrice) {
+                  setMinCartOpen(true)
+                  return;
+                }
                 if (tokenType === "GUEST") document.getElementById('signin').click()
                 else history.push('/makeOrder')
               }} data-trash="true">

@@ -62,7 +62,7 @@ const ProductsList = ({menu, lang, venue}) => {
               </CategoryName>
               {category.child_type === "food" &&
                 <ProductsContainer>
-                  {category.items.map(item => <Product 
+                  {category.items && category.items.map(item => <Product 
                                                 venue={venue} 
                                                 setModal={setModal} 
                                                 item={item} 

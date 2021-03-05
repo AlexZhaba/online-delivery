@@ -41,7 +41,7 @@ const DesktopRestaurant = (props) => {
         <DesktopRestaurantName venue={venue}/>
         <List menu={menu} lang={lang}/>
         <Container>
-          <div>
+          <div style={{width: '100%'}}>
             <Input placeholder="Поиск блюд..."/>
             <Button>Найти</Button>
             <ProductsList menu={menu} lang={lang} venue={venue}/>

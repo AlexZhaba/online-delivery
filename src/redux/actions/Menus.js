@@ -152,9 +152,11 @@ export const fetchVenues = () => (dispatch, getState) => {
   const token = getState().User.token;
   const sortVenues = getState().Menus.sortVenues;
   const cityGUID = getState().User.city.guid;
+  const lon = getState().User.lon;
+  const lat = getState().User.lat;
   console.log('token:', token);
   dispatch(setVenuesLoad(true))
-  axios.get(`${config.API}/venues?city_id=${cityGUID}&sort=${sortVenues}&limit=10`, {
+  axios.get(`${config.API}/venues?city_id=${cityGUID}&sort=${sortVenues}${sortVenues === "distance" ? `&ll=${lon},${lat}` : ""}&limit=10`, {
     headers: {
       "Authorization":
         `Bearer ${token}`
@@ -165,3 +167,16 @@ export const fetchVenues = () => (dispatch, getState) => {
   })
 }
 
+export const fetchSearchVenues = (search) => (dispatch, getState) => {
+  const token = getState().User.token;
+  const cityGUID = getState().User.city.guid;
+  axios.get(`${config.API}/venues/search?q=${search}&city_id=${cityGUID}&limit=100&offset=0`, {
+    headers: {
+      "Authorization":
+        `Bearer ${token}`
+    }
+  }).then(({data}) => {
+    // console.log('response:',response)
+    dispatch(setVenues(data.venues))
+  })
+}

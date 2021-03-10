@@ -105,9 +105,9 @@ const HeaderConnect = ({setEntry}) => {
       {/*</NavLink>*/}
       {(tokenType && tokenType === "USER") && 
         <NavLink to='/account/profile'>
-          <RightItem style={{cursor: "pointer"}}>
+          <RightItem style={{cursor: "pointer",}}>
             <img src={headerUser}/>
-            <span>Аккаунт</span>
+            <span style={{ transform: 'translateY(-1px)'}}>Аккаунт</span>
           </RightItem>
         </NavLink>
       }
@@ -164,7 +164,7 @@ const RightItem = styled.div`
   cursor: pointer;
   & > span {
     margin-left: 3px;
-    line-height: 20px;
+    /* line-height: 20px; */
     height: 20px;
     font-weight: 500;
   }

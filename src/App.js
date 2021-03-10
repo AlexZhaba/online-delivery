@@ -29,8 +29,12 @@ import {Cooperation} from './pages/Cooperation'
 import {MakeOrder} from './pages/MakeOrder'
 import DesktopMain from './pages/Main';
 import {AccountContainer} from './pages/AccountContainer';
+import {BasketMobile} from './pages/Basket';
+
+
 import { fetchOrderConstraints } from './redux/actions/Order';
 import { setSelectAddress } from './redux/actions/Modals';
+
 
 let MobileLayout = () => {
   return (
@@ -140,7 +144,7 @@ let DeskTopLayout = () => {
           <Route
             path='/main'
             exact
-            render={() => <DesktopMain/>}
+            render={(props) => <DesktopMain {...props}/>}
           />
           <Route
             path='/new'
@@ -165,6 +169,10 @@ let DeskTopLayout = () => {
           <Route
             path='/account'
             render={(props) => <AccountContainer {...props}/>}
+          />
+          <Route
+            path='/basket'
+            render={(props) => <BasketMobile {...props}/>}
           />
           <Route
             path='/'

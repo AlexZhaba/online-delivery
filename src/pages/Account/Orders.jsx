@@ -39,7 +39,7 @@ const Orders = (props) => {
             </Title>
             <MainWrapper>
               
-                <DataWrapper>
+                {/* <DataWrapper>
                   <DataContainer>
                     <Text style={{fontSize: 18}}>  
                     {new Date(delivery.created_at).getHours()}:{new Date(delivery.created_at).getMinutes()} &nbsp;
@@ -65,14 +65,14 @@ const Orders = (props) => {
                     <Text style={{fontWeight: 'bold'}}>520 р</Text>
                   </DataContainer>
                 </DataWrapper>
-                <DataWrapper style={{marginTop: 20}}>
+                <DataWrapper style={{marginTop: 20}}> 
                   <DataContainer>
                     <Text style={{fontSize: 20}}>Доставка: 23р </Text>
                   </DataContainer>
                   <DataContainer>
                     <Text style={{fontWeight: 'bold', fontSize: 24}}>Итог: 770р</Text>
                   </DataContainer>
-                </DataWrapper>
+                </DataWrapper>*/}
                 <Center style={{marginTop: 40}}>
                   <Status>{delivery.current_status}</Status>
                 </Center>

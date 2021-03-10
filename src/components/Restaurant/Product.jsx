@@ -76,7 +76,7 @@ const Product = ({setModal, item, setOpenItem, setClearBasketModal, clearBasketM
           {item.ingredient_desc[lang]}
         </Description>
         <Price>
-          {item.portions[0].price} {item.portions[0].currency}
+          {item.portions[0].price.toString().replace(/(\d)(?=(\d{3})+(\D|$))/g, '$1 ')} {item.portions[0].currency}
         </Price>
         <BottomContainer >
         {(itemInBasket) &&

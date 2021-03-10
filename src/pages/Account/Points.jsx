@@ -5,7 +5,11 @@ const Points = (props) => {
   return (
     <Wrapper>
       <TopHeader>
-        Мои баллы
+        <span>Мои баллы</span>
+        <span>
+          <span style={{fontSize: '28px'}}>2000</span>
+          <span style={{color: "#969595", fontSize: 20, marginLeft: 12, fontWeight: 'normal'}}>баллов</span>
+        </span>
       </TopHeader>
       <Container>
           <FlexContainer style={{fontWeight: '600', marginBottom: 30}}>
@@ -118,6 +122,8 @@ const TopHeader = styled.div`
   color: #282828;
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  
   @media(max-width: 700px) {
     font-size: 18px;
     line-height: 22px;
@@ -126,3 +132,4 @@ const TopHeader = styled.div`
 
   }
 `;
+

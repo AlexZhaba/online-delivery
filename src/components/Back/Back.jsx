@@ -2,11 +2,12 @@ import React from 'react';
 import styled from 'styled-components';
 import {NavLink} from 'react-router-dom';
 import BackImage from "@assets/backImage.png";
-const Back = ({text, margin = "32px 0"}) => {
+const Back = ({text, margin = "32px 0", toRed = '/main'}) => {
+  console.log('toRed:',toRed)
   return (
     <BackWrapper margin={margin}>
       <BackText>
-        <NavLink to='/main'>
+        <NavLink to={toRed}>
           {text}
         </NavLink>
       </BackText>

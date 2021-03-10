@@ -2,14 +2,18 @@ import React from 'react';
 import styled from 'styled-components';
 import {NavLink} from "react-router-dom";
 import Loader from "@components/Loader/Loader";
-import {useSelector} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 
 import pasta from '@assets/food/pasta.jpg'
 import greyStar from '@assets/greyStar.png';
 import greyTime from '@assets/greyTime.png';
 import heart from '@assets/heart.png'
+import { addFavouriteVenue } from '../../redux/actions/User';
 
 let ItemsList = ({venues, venuesLoad, history, handleOpenRestaurant}) => {
+  const dispatch = useDispatch();
+
+
   console.log('venues =',venues);
   console.log('venuesLoad:',venuesLoad)
 
@@ -29,7 +33,11 @@ let ItemsList = ({venues, venuesLoad, history, handleOpenRestaurant}) => {
           <div onClick={() => handleOpenRestaurant(venue.guid)}>
           <ItemContainer venuesLoad={venuesLoad} online={venue.online}>
             <Heart>
-              <img src={heart} style={{width: 30, height: 27}}/>
+              <img src={heart} style={{width: 30, height: 27}} onClick={(event) => {
+                event.stopPropagation();
+                // alert('good')
+                dispatch(addFavouriteVenue(venue.guid))
+              }}/>
             </Heart>
             <ItemImg style={{backgroundImage: `url(${ venue.featured_image_urls ? venue.featured_image_urls[0] : "https://diabetno.ru/wp-content/uploads/2020/07/pp_image_7236_22yecuiyctplaceholder.png"})`}}>
             </ItemImg>

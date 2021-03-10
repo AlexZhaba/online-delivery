@@ -25,7 +25,8 @@ const SelProfile = ({date, children}) => {
           setIsOpen(!isOpen)
           event.stopPropagation();
         }}>
-        <span style={{padding: "0 10px", minWidth: 40, textAlign: 'center'}}>{date}</span>
+        <span style={{padding: "0 10px", 
+        minWidth: 72, textAlign: 'center', color: (date !== "месяц" && date !== "дд" && date !== "гггг") ? "#000" : ""}}>&nbsp;{date}&nbsp;</span>
         <ArrowContainer>
           <img src={selectArrow}/>
         </ArrowContainer>
@@ -50,7 +51,7 @@ const Profile = (props) => {
 
   const [sex, setSex] = useState("WOMAN"); // WOMAN OR MAN
   const [date, setDate] = useState('дд')
-  const [month, setMonth] = useState('месяц  ');
+  const [month, setMonth] = useState('месяц');
   const [year, setYear] = useState('гггг');
   const [cookies, setCookie] = useCookies(['token', 'tokenType']);
 
@@ -190,7 +191,7 @@ const Dropdown = styled.div`
   position: absolute;
   right: -1px;
   top: 100%;
-  width: calc(100% + 20px);
+  width: calc(100% + 2px);
   height: 200px;
   overflow-y: scroll;
   background: #FFF;

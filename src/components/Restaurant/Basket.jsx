@@ -92,7 +92,7 @@ const Basket = ({clearBasketModal, setClearBasketModal, ...props}) => {
       <Wrapper>
         {basket.length !== 0 && match.path !== "/makeOrder"  &&
 
-          <MobileWrapper onClick={() => history.push('/makeOrder')}>
+          <MobileWrapper onClick={() => history.push('/basket')}>
               <BasketIcon src={basketIcon}/>
               <span>{totalPrice.toString().replace(/(\d)(?=(\d{3})+(\D|$))/g, '$1 ')}</span>
           </MobileWrapper>

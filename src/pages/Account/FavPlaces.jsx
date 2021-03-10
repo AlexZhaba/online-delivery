@@ -1,12 +1,24 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import styled from 'styled-components';
 
 import testFav from '@assets/testFav.png';
 
 import redHeart from '@assets/redHeart.png';
 
+import {useSelector, useDispatch} from 'react-redux';
+import { fetchListFavoriteVenues } from '../../redux/actions/User';
 
 const FavPlaces = (props) => {
+  const dispatch = useDispatch();
+
+  let token = useSelector(({User}) => User.token);
+
+  useEffect(() => {
+    if (token) {
+      dispatch(fetchListFavoriteVenues());
+    }
+  }, [token])
+
   return (
     <Wrapper>
       <TopHeader>

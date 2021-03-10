@@ -9,8 +9,9 @@ import Loader from '@components/Loader/Loader';
 import { useSelector, useDispatch } from "react-redux";
 import axios from 'axios';
 import {fetchCategories, fetchVenues, fetchCollections, fetchBanners,
-  setActiveVenue, setActiveMenu, fetchVenueById, fetchMenuById, setRestaurantLoading } from "../redux/actions/Menus";
+  setActiveVenue, setActiveMenu, fetchVenueById, fetchMenuById, setRestaurantLoading, fetchSearchVenues } from "../redux/actions/Menus";
 import { useHistory } from "react-router-dom";
+import basketIcon from '@assets/basketIcon.png';
 
 import {config} from '../config';
 //styled
@@ -41,7 +42,7 @@ import {config} from '../config';
 //   );
 // }
 
-const DesktopMain = () => {
+const DesktopMain = (props) => {
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -50,10 +51,13 @@ const DesktopMain = () => {
   const categories = useSelector(({Menus}) => Menus.categories);
   const collections = useSelector(({Menus}) => Menus.collections);
   const restaurantLoading = useSelector(({Menus}) => Menus.restaurantLoading);
+
   const banners = useSelector(({Menus}) => Menus.banners);
   const city = useSelector(({User}) => User.city);
   let token = useSelector(({User}) => User.token);
-  
+  let totalPrice = useSelector(({Order}) => Order.totalPrice)
+  let basket = useSelector(({Order}) => Order.basketItems)
+
   useEffect(() => {  
     if (city && token) {
       if (!Array.isArray(venues)) dispatch(fetchVenues());
@@ -82,8 +86,26 @@ const DesktopMain = () => {
     }
   }, [restaurantLoading])
 
+  const handleSearch = () => {
+    if (document.getElementById('search__rest').value === "") {
+      dispatch(fetchVenues())
+    }
+    else {
+      dispatch(fetchSearchVenues(document.getElementById('search__rest').value))
+      document.getElementById('search__rest').value = ""
+    }
+  }
+
   return (
     <Wrapper>
+      {basket.length !== 0 && props.match.path !== "/makeOrder"  &&
+
+        <MobileWrapper onClick={() => history.push('/basket')}>
+            <BasketIcon src={basketIcon}/>
+            <span>{totalPrice.toString().replace(/(\d)(?=(\d{3})+(\D|$))/g, '$1 ')}</span>
+        </MobileWrapper>
+
+        }
       <MContainer>
         <TitlePicture/>
         <DiscountsSwiper collections={collections} />
@@ -91,8 +113,8 @@ const DesktopMain = () => {
           Рестораны
         </BigTitle>
         <div style={{width: '100%', display: 'flex', alignItems: "center", marginTop: 20}}>
-          <Input placeholder="Название ресторана, кухни или блюда..."/>
-          <Button>Найти</Button>
+          <Input placeholder="Название ресторана, кухни или блюда..." id="search__rest"/>
+          <Button onClick={handleSearch}>Найти</Button>
         </div>
         <FoodSection categories={categories}/>
         <ImageSwiper banners={banners}/>
@@ -112,6 +134,39 @@ const MobileMain = DesktopMain;
 export default DesktopMain;
 export {DesktopMain, MobileMain};
 
+
+const BasketIcon = styled.img`
+  margin-right: 20px;
+  width: 20px;
+  height: 20px;
+`;
+
+
+const MobileWrapper = styled.div`
+  position: fixed;
+  left: 0px;
+  bottom: 0;
+  width: 100%;
+  /* right: 20px; */
+  height: 60px;
+  z-index: 9;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  font-weight: 500;
+  font-size: 18px;
+  background: ${props => props.theme.primary};
+  transition: .2s all;
+  @media(max-width: 970px) {
+    display: flex;
+  }
+  :hover {
+    cursor: pointer;
+    transition: .2s all;
+    background: ${props => props.theme.primaryDark};
+  }
+`;
 
 const BigTitle = styled.div`
   font-size: 40px;
@@ -145,6 +200,11 @@ const Button = styled.div`
   line-height: 10px;
   cursor: pointer;
   transition: .3s all;
+  :hover {
+    transition: .3s all;
+    /* background: blue; */
+    background: ${props => props.theme.primaryDark};
+  }
 `;
 
 const Input = styled.input`

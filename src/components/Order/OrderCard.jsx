@@ -116,7 +116,7 @@ const OrderCard = ({constraints}) => {
         {/*    </CodeButton>*/}
         {/*  </div>*/}
         {/*</NumberContainer>*/}
-        <Title style={{marginBottom: 30}}>Тип доставки</Title>
+        <Title style={{marginBottom: 20}}>Тип доставки</Title>
         <label class="container" onClick={() => setDelivery()}>
           <span>Доставка курьером</span>
           <input type="radio" name="radio1" defaultChecked/>
@@ -136,7 +136,7 @@ const OrderCard = ({constraints}) => {
           <SelectLabel for="huey1">Самовызов</SelectLabel>
         </SelectContainer> */}
 
-        <Title style={{marginTop: 30}}>Адрес доставки</Title>
+        <Title style={{marginTop: 20}}>Адрес доставки</Title>
         <OrderInput text="Адрес доставки" style={{width: 470}}/>
         <AddressDetail>
           <OrderInput text="Подъезд" style={{width: 110, marginRight: 10}}/>
@@ -146,7 +146,7 @@ const OrderCard = ({constraints}) => {
         </AddressDetail>
         <OrderInput text="Комментарий к заказу" style={{width: 470}}/>
         
-        <Title style={{marginTop: 30}}>Время доставки</Title>
+        <Title style={{marginTop: 20}}>Время доставки</Title>
         <DateSelect onClick={() => setOpenTime(!openTime)}>
           <span>{constraints.hours ? 
             selectedTime === 0 ? "Как можно быстрее" : constraints.hours[selectedTime] : ""}
@@ -166,7 +166,7 @@ const OrderCard = ({constraints}) => {
           }
         </DateSelect>
         
-        <Title style={{marginTop: 30, marginBottom: 30}}>Способы оплаты</Title>
+        <Title style={{marginTop: 20, marginBottom: 20}}>Способы оплаты</Title>
         {constraints.payment_option === 0 &&
           <label className="container">
             <span>Наличными курьером</span>
@@ -434,6 +434,7 @@ const NumberContainer = styled.div`
 
 const Wrapper = styled.div`
   width: 100%;
+  background: inherit;
 `;
 
 const MainTitle = styled.div`
@@ -442,8 +443,9 @@ const MainTitle = styled.div`
   line-height: 55px;
   margin-bottom: 26px;
   @media(max-width: 700px) {
-    font-size: 25px;
+    font-size: 22px;
     margin-top: -20px;
+    margin-bottom: -10px;
   }
 `;
 
@@ -455,7 +457,8 @@ const Title = styled.div`
   line-height: 37px;
   color: #000;
   @media(max-width: 700px) {
-    font-size: 20px;
+    font-size: 18px;
+
   }
 `;
 
@@ -464,4 +467,8 @@ const OrderWrapper = styled.div`
   box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.15);
   width: 100%;
   padding: 30px;
+  @media(max-width: 700px) {
+    padding: 10px;
+    box-shadow: none;
+  }
 `;

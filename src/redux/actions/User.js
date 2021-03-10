@@ -52,6 +52,11 @@ export const setDeliveries = (deliveries) => ({
   deliveries
 })
 
+export const setFavoriteVenues = (favoriteVenues) => ({
+  type: "SET_FAVORITE_VENUES",
+  favoriteVenues
+})
+
 export const fetchDelivery = () => (dispatch, getState) => {
   const token = getState().User.token;
   axios.get(`${config.API}/orders/delivery?&limit=10`, {
@@ -199,4 +204,33 @@ export const fetchUserConfirmSMS = (user_guid, password, code) => (dispatch, get
     dispatch(setToken(data.token))
     dispatch(setTokenType("USER"))
   })  
+}
+
+export const addFavouriteVenue = (venue_guid) => (dispatch, getState) => {
+  const token = getState().User.token;
+  axios({
+    url: `${config.API}/users/favorites`, 
+    method: "post",
+    data: {
+      venue_guid
+    },
+    headers: {
+      "Authorization":
+        `Bearer ${token}`
+    }
+  }).then(({data}) => {
+    alert(data)
+  })
+}
+
+export const fetchListFavoriteVenues = () => (dispatch, getState) => {
+  const token = getState().User.token;
+  axios.get(`${config.API}/users/favorites`, {
+    headers: {
+      "Authorization":
+        `Bearer ${token}`
+    }
+  }).then(({data}) => {
+    console.log('LIST:',data)
+  })
 }

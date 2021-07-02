@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import {NavLink} from "react-router-dom";
 import Loader from "@components/Loader/Loader";
@@ -8,7 +8,48 @@ import pasta from '@assets/food/pasta.jpg'
 import greyStar from '@assets/greyStar.png';
 import greyTime from '@assets/greyTime.png';
 import heart from '@assets/heart.png'
+import heartFilled from '@assets/heart-filled.png'
 import { addFavouriteVenue } from '../../redux/actions/User';
+import axios from 'axios';
+
+const Item = ({venue, index, venuesLoad, lang, handleOpenRestaurant}) => {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    
+  }, [])
+  return (
+    <div onClick={() => handleOpenRestaurant(venue.guid)}>
+    <ItemContainer venuesLoad={venuesLoad} online={venue.online}>
+      <Heart>
+        <HeartImg src={heart} style={{width: 30, height: 27}} onClick={(event) => {
+          event.stopPropagation();
+          // alert('good')
+          dispatch(addFavouriteVenue(venue.guid))
+        }}/>
+      </Heart>
+      <ItemImg style={{backgroundImage: `url(${ venue.featured_image_urls ? venue.featured_image_urls[0] : "https://diabetno.ru/wp-content/uploads/2020/07/pp_image_7236_22yecuiyctplaceholder.png"})`}}>
+      </ItemImg>
+      <ItemBottom>
+        <BottomName>{venue.name[lang]}</BottomName>
+        <BottomSub>{venue.description[lang]}</BottomSub>
+        <BottomData>
+          <BottomItem>
+            <img src={greyStar}/>
+            <span>{venue.rating}</span>
+          </BottomItem>
+          <BottomItem>
+            <img src={greyTime}/>
+            <span>4,5</span>
+          </BottomItem>
+          <BottomItem>
+            <span style={{margin: 0}}>от {venue.check_value.toString().replace(/(\d)(?=(\d{3})+(\D|$))/g, '$1 ')} {venue.check_currency}</span>
+          </BottomItem>
+        </BottomData>
+      </ItemBottom>
+    </ItemContainer>
+    </div>
+  )
+}
 
 let ItemsList = ({venues, venuesLoad, history, handleOpenRestaurant}) => {
   const dispatch = useDispatch();
@@ -28,45 +69,51 @@ let ItemsList = ({venues, venuesLoad, history, handleOpenRestaurant}) => {
       {(venues && venuesLoad) && <LoaderShadow>
         <Loader/>
       </LoaderShadow>}
-      {(venues) && venues.map((venue, index) => {
-        return (
-          <div onClick={() => handleOpenRestaurant(venue.guid)}>
-          <ItemContainer venuesLoad={venuesLoad} online={venue.online}>
-            <Heart>
-              <img src={heart} style={{width: 30, height: 27}} onClick={(event) => {
-                event.stopPropagation();
-                // alert('good')
-                dispatch(addFavouriteVenue(venue.guid))
-              }}/>
-            </Heart>
-            <ItemImg style={{backgroundImage: `url(${ venue.featured_image_urls ? venue.featured_image_urls[0] : "https://diabetno.ru/wp-content/uploads/2020/07/pp_image_7236_22yecuiyctplaceholder.png"})`}}>
-            </ItemImg>
-            <ItemBottom>
-              <BottomName>{venue.name[lang]}</BottomName>
-              <BottomSub>{venue.description[lang]}</BottomSub>
-              <BottomData>
-                <BottomItem>
-                  <img src={greyStar}/>
-                  <span>{venue.rating}</span>
-                </BottomItem>
-                <BottomItem>
-                  <img src={greyTime}/>
-                  <span>4,5</span>
-                </BottomItem>
-                <BottomItem>
-                  <span style={{margin: 0}}>от {venue.check_value.toString().replace(/(\d)(?=(\d{3})+(\D|$))/g, '$1 ')} {venue.check_currency}</span>
-                </BottomItem>
-              </BottomData>
-            </ItemBottom>
-          </ItemContainer>
-          </div>
-        )
-      })}
+      {(venues) && venues.map((venue, index) => <Item venue={venue} index={index} venuesLoad={venuesLoad} lang={lang} handleOpenRestaurant={handleOpenRestaurant}/>
+        // useEffect(() => {
+        //   console.log('left')
+        // }, [])
+        // return (
+        //   <div onClick={() => handleOpenRestaurant(venue.guid)}>
+        //   <ItemContainer venuesLoad={venuesLoad} online={venue.online}>
+        //     <Heart>
+        //       <img src={heart} style={{width: 30, height: 27}} onClick={(event) => {
+        //         event.stopPropagation();
+        //         // alert('good')
+        //         dispatch(addFavouriteVenue(venue.guid))
+        //       }}/>
+        //     </Heart>
+        //     <ItemImg style={{backgroundImage: `url(${ venue.featured_image_urls ? venue.featured_image_urls[0] : "https://diabetno.ru/wp-content/uploads/2020/07/pp_image_7236_22yecuiyctplaceholder.png"})`}}>
+        //     </ItemImg>
+        //     <ItemBottom>
+        //       <BottomName>{venue.name[lang]}</BottomName>
+        //       <BottomSub>{venue.description[lang]}</BottomSub>
+        //       <BottomData>
+        //         <BottomItem>
+        //           <img src={greyStar}/>
+        //           <span>{venue.rating}</span>
+        //         </BottomItem>
+        //         <BottomItem>
+        //           <img src={greyTime}/>
+        //           <span>4,5</span>
+        //         </BottomItem>
+        //         <BottomItem>
+        //           <span style={{margin: 0}}>от {venue.check_value.toString().replace(/(\d)(?=(\d{3})+(\D|$))/g, '$1 ')} {venue.check_currency}</span>
+        //         </BottomItem>
+        //       </BottomData>
+        //     </ItemBottom>
+        //   </ItemContainer>
+        //   </div>
+        // )
+      )}
 
 
     </Wrapper>
   )
 }
+
+const HeartImg = styled.img`
+`;
 
 const LoaderContainer = styled.div`
   display: flex;

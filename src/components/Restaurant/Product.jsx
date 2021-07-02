@@ -62,8 +62,6 @@ const Product = ({setModal, item, setOpenItem, setClearBasketModal, clearBasketM
     if (!item.online) return;
     dispatch(decreaseItemCount(item))
   }
-
-
   
   if (!item) return <div></div>
   return (

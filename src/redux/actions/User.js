@@ -231,6 +231,28 @@ export const fetchListFavoriteVenues = () => (dispatch, getState) => {
         `Bearer ${token}`
     }
   }).then(({data}) => {
-    console.log('LIST:',data)
+    // console.log('LIST:',data)
+    dispatch(setFavoriteVenues(data.favorites))
   })
 }
+
+export const removeFavoriteVenue = (favorite_guid, venue_guid) => (dispatch, getState) => {
+  const token = getState().User.token;
+  axios.delete(`${config.API}/users/favorites/${favorite_guid}`, {
+    headers: {
+      "Authorization":
+        `Bearer ${token}`
+    }
+  }).then(response => {
+    let favoriteVenues = getState().User.favoriteVenues;
+    let newFavoriteVenues = [...favoriteVenues];
+    let deleteIndex = -1;
+    newFavoriteVenues.forEach((venue, index) => {
+      if (venue.guid === favorite_guid) deleteIndex = index
+    })
+    console.log('deleteIndex:',deleteIndex)
+    newFavoriteVenues.splice(deleteIndex, 1);
+    console.log(newFavoriteVenues)
+    dispatch(setFavoriteVenues(newFavoriteVenues))
+  })
+} 

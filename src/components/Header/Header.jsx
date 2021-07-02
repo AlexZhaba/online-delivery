@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import styled from 'styled-components'
 
-import logo from '@assets/logo2.png';
+import logo from '@assets/logo.svg';
 import mapPoint from "@assets/mapPoint.png";
 import arrow from "@assets/arrow.png";
 import {Link, NavLink} from 'react-router-dom';

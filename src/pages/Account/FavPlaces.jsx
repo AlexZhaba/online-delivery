@@ -6,12 +6,15 @@ import testFav from '@assets/testFav.png';
 import redHeart from '@assets/redHeart.png';
 
 import {useSelector, useDispatch} from 'react-redux';
-import { fetchListFavoriteVenues } from '../../redux/actions/User';
+import { fetchListFavoriteVenues, removeFavoriteVenue } from '../../redux/actions/User';
+import { NavLink } from 'react-router-dom';
 
 const FavPlaces = (props) => {
   const dispatch = useDispatch();
 
   let token = useSelector(({User}) => User.token);
+  let lang = useSelector(({User}) => User.lang);
+  let favoriteVenues = useSelector(({User}) => User.favoriteVenues)
 
   useEffect(() => {
     if (token) {
@@ -19,31 +22,41 @@ const FavPlaces = (props) => {
     }
   }, [token])
 
+  const handleRemoveFav = (favorite_guid, venue_guid) => {
+    dispatch(removeFavoriteVenue(favorite_guid, venue_guid));
+  }
+
   return (
     <Wrapper>
       <TopHeader>
         Любимые места
       </TopHeader>
       <Container>
-        {Array(9).fill(0).map(e => {
+        {favoriteVenues.map(venue => {
           return (
-            <VenuesWrapper>
-              <VenueImage src={testFav}/>
-              <VenueTitle>
-                Ресторан
-              </VenueTitle>
-              <VenueSubTitle>
-              Европейские обеды комплексы
-              </VenueSubTitle>
-            </VenuesWrapper>
+              <VenuesWrapper>
+                <VenueLove onClick={(event) => {
+                  event.stopPropagation();
+                  handleRemoveFav(venue.guid, venue.venue_guid)
+                }}/>
+                <VenueImage src={venue.venue_image_url}/>
+                <NavLink to={`/restaurant/${venue.venue_guid}`}>
+                  <VenueTitle>
+                    {venue.venue_name[lang]}
+                  </VenueTitle>
+                </NavLink>
+                <VenueSubTitle>
+                  {venue.venue_address[lang]}
+                </VenueSubTitle>
+              </VenuesWrapper>
           )
         })}
       </Container>
-      <div style={{display: 'flex', justifyContent: "center", marginTop: 50}}>
+      {/* <div style={{display: 'flex', justifyContent: "center", marginTop: 50}}>
         <Button>
           Показать ещё
         </Button>
-      </div>
+      </div> */}
     </Wrapper>
   )
 }
@@ -73,23 +86,27 @@ const Wrapper = styled.div`
 `;
 
 const VenuesWrapper = styled.div`
-  box-shadow: 0 0 15px #cdcdcd;
+  /* box-shadow: 0 0 15px #cdcdcd; */
   /* box-shadow: 0 0 15px #cdcdcd; */
   border-radius: 5px;
-  cursor: pointer;
+  /* cursor: pointer; */
   position: relative;
 
   ::before {
     content: '';
-    position: absolute;
-    top: 13px;
-    right: 13px;
-    background-image: url('${redHeart}');
-    background-repeat: no-repeat;
-    background-position: center;
-    width: 22px;
-    height: 22px;
   }
+`;
+
+const VenueLove = styled.div`
+  position: absolute;
+  top: 13px;
+  cursor: pointer;
+  right: 13px;
+  background-image: url('${redHeart}');
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 22px;
+  height: 22px;
 `;
 
 const VenueImage = styled.img`
@@ -103,9 +120,14 @@ const VenueTitle = styled.div`
   line-height: 24px;
   color: #404040;
   padding-left: 15px;
+  transition: .2s all;
   @media(max-width: 500px) {
     font-size: 11.6667px;
   line-height: 14px;
+  }
+  :hover {
+    transition: .2s all;
+    color: ${props => props.theme.primary};
   }
 `;
 

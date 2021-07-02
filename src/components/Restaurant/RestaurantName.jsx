@@ -39,7 +39,7 @@ const DesktopRestaurantName = ({venue}) => {
             {venue.rating}
           </Character>
           <Character>
-            <CharacterImage src={whiteTime}/>
+            {/* <CharacterImage src={whiteTime}/> */}
             25-35 мин
           </Character>
           <Character>
